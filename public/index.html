@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pixofix Color Library</title>
+  <meta name="description" content="Pixofix Color Library — a controlled workspace for color approvals, versions, and production delivery.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="/brand/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/color-details.css">
+  <link rel="stylesheet" href="/tokens.css">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/pixofix-library.css">
+  <link rel="stylesheet" href="/workflow-ui.css">
+  <link rel="stylesheet" href="/activity.css">
+  <style>[hidden]{display:none!important}dialog section>header,dialog section>footer{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line)}dialog section>header h2{margin:0}dialog section>footer{justify-content:flex-end;border-top:1px solid var(--line);border-bottom:0}</style>
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  <main id="loginView" class="login-shell">
+    <div class="login-atmosphere" aria-hidden="true"></div>
+    <section class="login-card">
+      <header class="login-intro">
+        <img class="login-logo" src="/brand/pixofix-logo-white.png" alt="Pixofix">
+        <p class="login-product">Color Library</p>
+      </header>
+      <h1>Sign in to Color Library</h1>
+      <p id="loginDescription" class="muted">Use the Google account authorized for your company.</p>
+      <a id="googleSignIn" class="google-sign-in" href="/api/auth/google/start" hidden><svg viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.205c0-.638-.057-1.252-.164-1.841H9v3.482h4.844a4.14 4.14 0 0 1-1.797 2.715v2.258h2.909c1.702-1.567 2.684-3.875 2.684-6.614Z"/><path fill="#34A853" d="M9 18c2.43 0 4.468-.806 5.956-2.181l-2.909-2.258c-.806.54-1.836.859-3.047.859-2.344 0-4.328-1.585-5.037-3.714H.956v2.332A9 9 0 0 0 9 18Z"/><path fill="#FBBC05" d="M3.963 10.706A5.41 5.41 0 0 1 3.682 9c0-.592.102-1.168.281-1.706V4.962H.956A9 9 0 0 0 0 9c0 1.452.347 2.826.956 4.038l3.007-2.332Z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.507.454 3.442 1.346l2.581-2.58C13.464.892 11.426 0 9 0A9 9 0 0 0 .956 4.962l3.007 2.332C4.672 5.165 6.656 3.58 9 3.58Z"/></svg><span>Continue with Google</span></a>
+      <div id="loginDivider" class="login-divider" hidden><span>Development access</span></div>
+      <form id="loginForm" class="stack">
+        <label>Email<input name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="primary" type="submit">Sign in</button>
+        <p id="loginError" class="form-error" role="alert" hidden></p>
+      </form>
+      <p id="loginSecurityNote" class="security-note">Only email addresses approved by Pixofix can access a company library.</p>
+    </section>
+  </main>
+
+  <div id="appView" class="app" hidden>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
+    <aside class="sidebar">
+      <header class="sidebar-brand">
+        <img class="brand-mark" src="/brand/pixofix-mark.png" alt="">
+        <div class="sidebar-brand-copy">
+          <img class="brand-wordmark" src="/brand/pixofix-logo-white.png" alt="Pixofix">
+          <strong class="sidebar-product">Color Library</strong>
+        </div>
+      </header>
+      <nav id="navigation" class="sidebar-nav" aria-label="Main"></nav>
+      <div class="account"><span id="accountName"></span><small id="accountRole"></small><button id="logoutButton" class="ghost">Sign out</button></div>
+    </aside>
+    <main id="mainContent" class="page" tabindex="-1">
+      <header class="page-header"><div><p id="pageEyebrow" class="eyebrow"></p><h1 id="pageTitle"></h1><p id="pageDescription" class="muted"></p></div><div class="page-header-tools"><div class="notification-center"><button id="notificationButton" class="notification-button" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false" aria-controls="notificationPopover"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 21a2 2 0 0 0 3.4 0"/><path d="M3.3 15.3A1 1 0 0 0 4 17h16a1 1 0 0 0 .7-1.7C19.4 14 18 12.5 18 8a6 6 0 0 0-12 0c0 4.5-1.4 6-2.7 7.3"/></svg><b id="notificationBadge" hidden>0</b></button><section id="notificationPopover" class="notification-popover" role="dialog" aria-modal="false" aria-label="Notifications" tabindex="-1" hidden></section></div><div id="pageActions"></div></div></header>
+      <div id="content" class="content"></div>
+    </main>
+  </div>
+
+  <dialog id="confirmDialog" class="confirm-dialog" aria-labelledby="confirmTitle" aria-describedby="confirmMessage"><section><button id="confirmClose" class="icon-button confirm-close" type="button" aria-label="Close confirmation">×</button><div id="confirmIcon" class="confirm-icon" aria-hidden="true">?</div><p id="confirmEyebrow" class="eyebrow">CONFIRM ACTION</p><h2 id="confirmTitle">Are you sure?</h2><p id="confirmMessage"></p><div id="confirmChallenge" class="confirm-challenge" hidden><label for="confirmChallengeInput">Type <code id="confirmChallengeWord">delete</code> to confirm.</label><input id="confirmChallengeInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="confirmChallengeError"><p id="confirmChallengeError" class="confirm-challenge-error" hidden>Type delete to continue.</p></div><footer><button id="confirmCancel" class="secondary" type="button">Cancel</button><button id="confirmAccept" class="primary" type="button">Confirm</button></footer></section></dialog>
+  <dialog id="modal" aria-labelledby="modalTitle"><form id="modalForm" method="dialog"><header><div><p id="modalEyebrow" class="eyebrow"></p><h2 id="modalTitle"></h2></div><button type="button" class="icon-button" data-close aria-label="Close dialog">&times;</button></header><div id="modalBody" class="modal-body"></div><footer><button id="modalDanger" class="confirm-danger" type="button" hidden>Delete library</button><button type="button" class="secondary" data-close>Cancel</button><button id="modalSubmit" class="primary" type="submit">Save</button></footer></form></dialog>
+  <dialog id="folderModal" aria-labelledby="folderModalTitle"><section><header><div><p class="eyebrow">SERVER FOLDERS</p><h2 id="folderModalTitle">Choose production folder</h2></div><button id="closeFolder" type="button" class="icon-button" aria-label="Close folder picker">&times;</button></header><div id="folderBody" class="modal-body"></div><footer><button id="useFolder" class="primary" type="button">Use this folder</button></footer></section></dialog>
+  <dialog id="colorDetail" class="color-detail-dialog" aria-labelledby="detailTitle">
+    <article class="color-detail-shell">
+      <header class="detail-topbar">
+        <button id="detailBack" class="detail-back" type="button" aria-label="Close color details"><span aria-hidden="true">&larr;</span> All colors</button>
+        <div class="detail-nav" aria-label="Browse colors">
+          <button id="previousColor" class="icon-button" type="button" aria-label="Previous color">&larr;</button>
+          <button id="nextColor" class="icon-button" type="button" aria-label="Next color">&rarr;</button>
+          <button id="closeColorDetail" class="icon-button" type="button" aria-label="Close color details">&times;</button>
+        </div>
+      </header>
+      <div id="colorDetailBody" class="color-detail-body"></div>
+    </article>
+  </dialog>
+  <script src="/client-representatives.js"></script>
+  <script src="/adobe-rgb.js"></script>
+  <script src="/color-shades.js"></script>
+  <script src="/navigation.js"></script>
+  <script src="/app.js"></script>
+  <script src="/activity.js"></script>
+  <script src="/requests.js"></script>
+  <script src="/pixofix-library.js"></script>
+  <script src="/client-profile.js"></script>
+  <script src="/notifications.js"></script>
+</body>
+</html>

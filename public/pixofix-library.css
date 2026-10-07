@@ -1,0 +1,1179 @@
+.pixofix-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pixofix-card {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  container-type: inline-size;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ececec;
+  animation: pixofix-card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(0.16s + var(--pixofix-i, 0) * 0.05s);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.pixofix-grid.is-settled .pixofix-card {
+  animation: none;
+}
+
+.pixofix-open {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.pixofix-open {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+}
+
+.pixofix-swatch,
+.pixofix-swatch img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pixofix-swatch {
+  display: block;
+  background: #ececec;
+}
+
+.pixofix-swatch img {
+  display: block;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pixofix-hex-label {
+  position: absolute;
+  z-index: 2;
+  top: clamp(10px, 3.6cqi, 14px);
+  left: clamp(10px, 3.6cqi, 14px);
+  max-width: calc(100% - clamp(20px, 7.2cqi, 28px));
+  padding: clamp(4px, 1.8cqi, 6px) clamp(8px, 3cqi, 11px);
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(12, 12, 12, .72);
+  color: #fff;
+  font-size: clamp(10px, 4.2cqi, 12px);
+  font-weight: 750;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+
+.pixofix-card:hover .pixofix-hex-label,
+.pixofix-card:focus-within .pixofix-hex-label { opacity: 1; }
+
+.pixofix-name {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+  padding: 26% 12px 10px;
+  color: #fff;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+  background: var(--card-name-vignette);
+  transition: padding-right 160ms ease;
+}
+
+.pixofix-card.is-saved .pixofix-name {
+  padding-right: 46px;
+}
+
+.pixofix-card:hover .pixofix-name,
+.pixofix-card:focus-within .pixofix-name {
+  padding-right: 78px;
+}
+
+.pixofix-actions {
+  position: absolute;
+  z-index: 2;
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+}
+
+.pixofix-action {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(17, 17, 17, .38) 0%, rgba(17, 17, 17, .2) 42%, rgba(17, 17, 17, .08) 68%, transparent 100%);
+  color: #fff;
+  line-height: 0;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 160ms ease, transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.pixofix-copy {
+  right: 34px;
+}
+
+.pixofix-action svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pixofix-action .pixofix-copy-glyph {
+  stroke-width: 1.8;
+}
+
+.pixofix-save path {
+  fill: none;
+}
+
+.pixofix-save[aria-pressed="true"] {
+  color: #f0c14b;
+  background: radial-gradient(circle, rgba(17, 17, 17, .5) 0%, rgba(17, 17, 17, .24) 46%, rgba(17, 17, 17, .08) 72%, transparent 100%);
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.pixofix-save[aria-pressed="true"] path {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.pixofix-action .pixofix-copied-glyph {
+  display: none;
+}
+
+.pixofix-copy.is-copied .pixofix-copy-glyph {
+  display: none;
+}
+
+.pixofix-copy.is-copied .pixofix-copied-glyph {
+  display: block;
+}
+
+.pixofix-action-label {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #161616;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 150ms ease;
+}
+
+.pixofix-action:hover .pixofix-action-label,
+.pixofix-action:focus-visible .pixofix-action-label {
+  opacity: 1;
+}
+
+.pixofix-card:hover .pixofix-action,
+.pixofix-card:focus-within .pixofix-action,
+.pixofix-stage:hover .pixofix-action,
+.pixofix-stage:focus-within .pixofix-action,
+.pixofix-action:focus-visible,
+.pixofix-copy.is-copied {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.pixofix-card:hover,
+.pixofix-card:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .08);
+  transform: translateY(-3px);
+}
+
+.pixofix-card:hover .pixofix-swatch img,
+.pixofix-card:focus-within .pixofix-swatch img {
+  transform: scale(1.06);
+}
+
+.pixofix-action:hover,
+.pixofix-action:focus-visible {
+  background: radial-gradient(circle, rgba(17, 17, 17, .55) 0%, rgba(17, 17, 17, .28) 46%, rgba(17, 17, 17, .1) 72%, transparent 100%);
+}
+
+.pixofix-action:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(231, 98, 35, .85);
+}
+
+.pixofix-action:active {
+  transform: scale(0.96);
+}
+
+.pixofix-action:disabled {
+  cursor: progress;
+}
+
+.pixofix-grid .pixofix-empty {
+  grid-column: 1 / -1;
+}
+
+.pixofix-empty,
+.pixofix-status {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.pixofix-empty p,
+.pixofix-status p {
+  margin: 0;
+}
+
+.page.is-index:has(.pixofix-detail) {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+.page.is-index:has(.pixofix-detail) .content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 12px;
+  padding-bottom: 16px;
+}
+
+.pixofix-detail {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.pixofix-stage {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: auto;
+  align-self: stretch;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ececec;
+  box-shadow: 0 16px 40px rgba(17, 17, 17, .06);
+  animation:
+    pixofix-stage-opacity 2s linear both,
+    pixofix-stage-translate 2s linear both,
+    pixofix-stage-scale 2s linear both;
+  animation-iteration-count: 1;
+}
+
+.pixofix-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pixofix-stage-name {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  gap: 4px;
+  padding: 28% 20px 18px;
+  color: #fff;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+  background: var(--card-name-vignette);
+}
+
+.pixofix-stage-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.pixofix-stage-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pixofix-stage .pixofix-actions.is-stage {
+  position: static;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  width: auto;
+  height: auto;
+}
+
+.pixofix-stage .pixofix-action {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: 1.45em;
+  height: 1.45em;
+}
+
+.pixofix-stage .pixofix-action svg {
+  width: 0.78em;
+  height: 0.78em;
+}
+
+.pixofix-preview-label {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.pixofix-stage.is-preview .pixofix-preview-label {
+  display: block;
+}
+
+.pixofix-stage.is-swapping img {
+  animation: pixofix-swap 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pixofix-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pixofix-spec {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 16px;
+  align-content: stretch;
+  align-items: center;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(17, 17, 17, .04);
+  animation:
+    pixofix-spec-opacity 2s linear both,
+    pixofix-spec-translate 2s linear both;
+  animation-iteration-count: 1;
+}
+
+.pixofix-spec-head {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+.pixofix-spec .pixofix-request-color {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: 100%;
+  min-height: 40px;
+  margin: 4px 0;
+  padding: 0 14px;
+  justify-self: stretch;
+}
+
+.pixofix-spec:not(:has(.pixofix-spec-head)) .pixofix-request-color,
+.pixofix-spec:has(.pixofix-delete-swatch) .pixofix-request-color {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: 100%;
+  justify-self: stretch;
+}
+
+.pixofix-spec:has(.pixofix-delete-swatch) .pixofix-spec-head {
+  min-height: 42px;
+  padding-right: 156px;
+}
+
+.pixofix-spec:has(.pixofix-delete-swatch) {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.pixofix-spec:not(:has(.pixofix-related)) {
+  height: auto;
+  align-self: start;
+  grid-template-rows: none;
+}
+
+.pixofix-family {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  margin: 0;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.pixofix-facts {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.35fr) minmax(0, 0.9fr);
+  gap: 10px 18px;
+  margin: 0;
+}
+
+.pixofix-spec:has(.pixofix-delete-swatch) .pixofix-facts {
+  grid-row: 2;
+}
+
+.pixofix-facts div {
+  display: grid;
+  gap: 4px;
+}
+
+.pixofix-facts dt {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.pixofix-facts dd {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 28px;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.pixofix-facts dd.pixofix-hex-line {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pixofix-delete-swatch {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 1;
+  color: var(--danger);
+}
+
+.pixofix-delete-swatch:hover,
+.pixofix-delete-swatch:focus-visible {
+  color: #fff;
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.pixofix-delete-swatch:disabled {
+  cursor: progress;
+  opacity: .72;
+}
+
+.pixofix-hex {
+  margin: 0;
+  color: var(--ink);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 18px;
+}
+
+.pixofix-hex-copy {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px 0 8px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pixofix-hex-copy svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pixofix-hex-copy .pixofix-copied-glyph {
+  display: none;
+}
+
+.pixofix-hex-copy.is-copied .pixofix-copy-glyph {
+  display: none;
+}
+
+.pixofix-hex-copy.is-copied .pixofix-copied-glyph {
+  display: block;
+}
+
+.pixofix-hex-copy:hover,
+.pixofix-hex-copy:focus-visible {
+  border-color: var(--brand);
+  background: var(--mint);
+  color: var(--brand-dark);
+  outline: none;
+}
+
+.pixofix-hex-copy.is-copied,
+.pixofix-hex-copy.is-copied:hover {
+  border-color: #1f7a45;
+  background: #f3faf6;
+  color: #1f7a45;
+}
+
+.pixofix-hex-copy:disabled {
+  cursor: progress;
+}
+
+.pixofix-related {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 4;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.pixofix-spec:has(.pixofix-delete-swatch) .pixofix-related {
+  grid-row: 4;
+}
+
+.pixofix-related-head {
+  display: grid;
+  gap: 2px;
+}
+
+.pixofix-related h3,
+.pixofix-related-head p {
+  margin: 0;
+}
+
+.pixofix-related h3 {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pixofix-related-head p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pixofix-related-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-height: 0;
+  height: 100%;
+}
+
+.pixofix-related-card {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  animation: pixofix-related-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.2s + (var(--pixofix-i, 0) * 0.04s));
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.pixofix-related-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 0;
+}
+
+.pixofix-related-card img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #ececec;
+  transition: scale 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pixofix-related-hex {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  left: 6px;
+  width: max-content;
+  max-width: calc(100% - 12px);
+  padding: 2px 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .55);
+  color: #fff;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 4px;
+  transition: opacity 180ms ease, translate 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pixofix-related-card > span:last-child {
+  padding: 6px 8px 8px;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pixofix-related-card:hover,
+.pixofix-related-card:focus-visible,
+.pixofix-related-card.is-active {
+  border-color: var(--brand);
+  box-shadow: 0 8px 18px rgba(17, 17, 17, .06);
+  outline: none;
+}
+
+.pixofix-related-card:hover img,
+.pixofix-related-card:focus-visible img,
+.pixofix-related-card.is-active img {
+  scale: 1.04;
+}
+
+.pixofix-related-card:hover .pixofix-related-hex,
+.pixofix-related-card:focus-visible .pixofix-related-hex,
+.pixofix-related-card.is-active .pixofix-related-hex {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.pixofix-related-card:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@keyframes pixofix-stage-opacity {
+  0% {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0;
+  }
+
+  21% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes pixofix-stage-translate {
+  0% {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    translate: 0px 16px;
+  }
+
+  21% { translate: 0px 0px; }
+  100% { translate: 0px 0px; }
+}
+
+@keyframes pixofix-stage-scale {
+  0% {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    scale: 0.96 0.96;
+  }
+
+  21% { scale: 1 1; }
+  100% { scale: 1 1; }
+}
+
+@keyframes pixofix-spec-opacity {
+  0% { opacity: 0; }
+
+  4% {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 0;
+  }
+
+  25% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes pixofix-spec-translate {
+  0% { translate: 0px 12px; }
+
+  4% {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    translate: 0px 12px;
+  }
+
+  25% { translate: 0px 0px; }
+  100% { translate: 0px 0px; }
+}
+
+@keyframes pixofix-related-in {
+  from { opacity: 0; translate: 0px 8px; }
+  to { opacity: 1; translate: 0px 0px; }
+}
+
+@keyframes pixofix-swap {
+  from { opacity: .35; }
+  to { opacity: 1; }
+}
+
+@keyframes pixofix-title-in {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes pixofix-chip-in {
+  from { opacity: 0; translate: 16px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes pixofix-card-in {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (hover: none) {
+  .pixofix-action {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .pixofix-name {
+    padding-right: 84px;
+  }
+
+  .pixofix-action-label {
+    display: none;
+  }
+
+  .pixofix-related-hex {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+.pixofix-exists {
+  margin: -8px 0 0;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.pixofix-exists[hidden] {
+  display: none;
+}
+
+.pixofix-exists.is-checking {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .pixofix-detail {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(112px, 22vh) minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 720px) {
+  .pixofix-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pixofix-detail {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(120px, 22vh) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .pixofix-spec {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+  }
+
+  .pixofix-spec .pixofix-request-color,
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-request-color,
+  .pixofix-spec:not(:has(.pixofix-spec-head)) .pixofix-request-color {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .pixofix-facts,
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-facts {
+    grid-row: 2;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, .9fr);
+  }
+
+  .pixofix-related,
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-related {
+    grid-row: 4;
+  }
+
+  .pixofix-related-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .pixofix-spec:has(.pixofix-delete-swatch) {
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+  }
+
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-request-color {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-facts {
+    grid-row: 2;
+  }
+
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-related {
+    grid-row: 4;
+  }
+}
+
+@media (max-width: 560px) {
+  .app:has(.pixofix-detail) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app:has(.pixofix-detail) .sidebar {
+    flex: none;
+  }
+
+  .page.is-index:has(.pixofix-detail) {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .pixofix-detail {
+    grid-template-rows: minmax(88px, 16vh) minmax(0, 1fr);
+  }
+}
+
+.pixofix-controls {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 28px;
+  margin-bottom: 16px;
+}
+
+.pixofix-find {
+  display: flex;
+  flex: 1 1 280px;
+  flex-direction: column;
+  gap: 8px;
+  min-width: min(100%, 240px);
+}
+
+.pixofix-toolbar {
+  width: min(100%, 380px);
+  margin: 0;
+}
+
+.pixofix-toolbar .search-field {
+  max-width: none;
+}
+
+.pixofix-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+}
+
+.pixofix-find .color-result-summary {
+  margin: 0;
+}
+
+.pixofix-clear {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--brand-dark);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.pixofix-clear:hover {
+  color: var(--brand);
+}
+
+.pixofix-clear:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.page.is-pixofix .page-header h1 {
+  animation: pixofix-title-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.pixofix-find .search-field {
+  animation: pixofix-title-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
+}
+
+.pixofix-grid .pixofix-status {
+  grid-column: 1 / -1;
+}
+
+.shade-filters {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 8px 10px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 14px;
+}
+
+.pixofix-controls .shade-filters {
+  grid-template-columns: repeat(6, max-content);
+  gap: 8px;
+  justify-content: end;
+  margin: 0 0 0 auto;
+}
+
+.shade-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.shade-filter.is-selected {
+  border-color: #111;
+  background: var(--mint);
+  box-shadow: inset 0 0 0 1px #111;
+}
+
+.pixofix-controls .shade-filter {
+  animation: pixofix-chip-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(0.08s + var(--shade-i, 0) * 0.035s);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pixofix-controls .shade-filter:hover {
+  border-color: #d2d2d2;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+  transform: translateY(-1px);
+}
+
+.pixofix-controls .shade-filter:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.pixofix-controls .shade-filter.is-selected:hover,
+.pixofix-controls .shade-filter.is-selected:active {
+  border-color: #111;
+  background: var(--mint);
+}
+
+.shade-dot {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--shade-dot, #ccc);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+}
+
+@supports (background: color(a98-rgb 0 0 0)) {
+  .shade-dot {
+    background: var(--shade-dot-a98, var(--shade-dot, #ccc));
+  }
+}
+
+.shade-filter:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1180px) {
+  .pixofix-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pixofix-find {
+    flex: none;
+    width: min(100%, 420px);
+  }
+
+  .pixofix-controls .shade-filters {
+    margin-left: 0;
+    justify-content: start;
+  }
+}
+
+@media (max-width: 900px) {
+  .pixofix-controls .shade-filters {
+    grid-template-columns: repeat(4, max-content);
+  }
+}
+
+@media (max-width: 720px) {
+  .shade-filters,
+  .pixofix-controls .shade-filters {
+    grid-template-columns: repeat(2, max-content);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page.is-pixofix .page-header h1,
+  .pixofix-find .search-field,
+  .pixofix-controls .shade-filter,
+  .pixofix-card,
+  .pixofix-detail,
+  .pixofix-stage,
+  .pixofix-spec,
+  .pixofix-related-card,
+  .pixofix-related-card img,
+  .pixofix-related-hex,
+  .pixofix-swatch img,
+  .pixofix-action,
+  .pixofix-action-label,
+  .pixofix-hex-label,
+  .pixofix-name,
+  .pixofix-stage.is-swapping img {
+    animation: none;
+    transition: none;
+    translate: none;
+    scale: none;
+  }
+
+  .pixofix-card:hover,
+  .pixofix-card:focus-within,
+  .pixofix-card:hover .pixofix-swatch img,
+  .pixofix-card:focus-within .pixofix-swatch img,
+  .pixofix-related-card:hover,
+  .pixofix-related-card:focus-visible,
+  .pixofix-related-card.is-active,
+  .pixofix-related-card:hover img,
+  .pixofix-related-card:focus-visible img,
+  .pixofix-related-card.is-active img,
+  .pixofix-controls .shade-filter:hover,
+  .pixofix-controls .shade-filter:active {
+    transform: none;
+    translate: none;
+    scale: none;
+  }
+}

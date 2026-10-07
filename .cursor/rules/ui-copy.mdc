@@ -1,0 +1,22 @@
+---
+description: Keep interface labels, hints, and placeholders short and generic
+alwaysApply: true
+---
+
+# UI copy
+
+Write labels, hints, placeholders, empty states, and helper lines so they stay short and generic.
+
+- Prefer the label alone. Skip a hint when the label already says what the field is.
+- Do not put sample values in fields or placeholders. No client codes, personal names, or example sentences.
+- If a hint is necessary, use one short generic line. Do not explain the workflow, name a product behavior, or say what the user can do later.
+- Validation messages can name the problem. They should not include an example value.
+
+```text
+Bad: placeholder="CBI"
+Bad: Short identifier for this library, such as CBI.
+Bad: Add each person with the Google address they will use to sign in. You can add more people later.
+
+Good: Client initial
+Good: Add a name and email for each person.
+```

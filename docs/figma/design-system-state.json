@@ -1,0 +1,32 @@
+{
+  "runId": "pixofix-ds-2026-001",
+  "phase": "phase3",
+  "step": "login-screen",
+  "fileKey": "EGcqhxdoSvHn0URlqA1qFf",
+  "fileUrl": "https://www.figma.com/design/EGcqhxdoSvHn0URlqA1qFf",
+  "planKey": "team::1547129356850119280",
+  "entities": {
+    "collections": {
+      "Primitives": "VariableCollectionId:1:2",
+      "Spacing": "VariableCollectionId:1:20",
+      "Radius": "VariableCollectionId:1:29",
+      "Color": "VariableCollectionId:1:35"
+    },
+    "pages": {
+      "Cover": "0:1",
+      "Button": "2:17",
+      "Login": "2:34"
+    },
+    "screens": {
+      "Swatch detail": "5:2"
+    },
+    "components": {
+      "Button": "2:30"
+    }
+  },
+  "completedSteps": ["phase0", "phase1", "phase3-button", "phase3-login"],
+  "blocked": {
+    "shaders": "create_shader returned no permission on this Figma seat. Login grain is implemented in CSS.",
+    "motion": "Swatch detail entrance is on frame 5:2. The portal plays that 2s timeline once and holds the resting state."
+  }
+}

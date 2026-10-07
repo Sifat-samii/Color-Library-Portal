@@ -1,0 +1,41 @@
+---
+description: After a feature is implemented or a change needs cross-codebase wiring, run the codebase-alignment-auditor and keep docs in sync
+alwaysApply: true
+---
+
+# Codebase alignment audit
+
+Invoke the **codebase-alignment-auditor** subagent after a **feature is implemented**, or after any change that **requires wiring and alignment across the codebase**.
+
+Also invoke it when the user asks to audit alignment, sync docs, or verify implementation status.
+
+## When to invoke
+
+Run the auditor when any of the following is true for the work just completed (or about to be declared done):
+
+- A **feature** was implemented or materially extended (new route, screen, action, worker behavior, ingest path, or operator capability)
+- A change **wires or realigns** multiple layers — for example UI ↔ API ↔ DB, Prisma schema ↔ services ↔ docs, `authorization.ts` / `proxy.ts` ↔ route table, env / compose ↔ runbooks, ticket / status / role contracts, or `AGENTS.md` critical paths
+- Docs, schema, routes, or workflow conventions were changed in a way that other surfaces must stay consistent
+
+Do **not** invoke for:
+
+- Questions, planning, or read-only exploration with no code or contract change
+- Isolated copy, comment, style, or single-file bugfixes that do not change contracts, routes, schema, or documented behavior
+- The alignment audit itself (do not recurse)
+
+If a session implements a feature across several prompts, run **once after the feature is complete**, not after every intermediate edit. If later prompts add more wiring, run again after that batch.
+
+There is **no prompt-count cadence**. Do not schedule audits every N messages.
+
+## How to invoke
+
+Use the Task tool / subagent with:
+
+- Agent: `codebase-alignment-auditor` (project agent at `.cursor/agents/codebase-alignment-auditor.md`)
+- Prompt: summarize the feature or change just completed, list files touched if known, and ask for a full alignment pass plus necessary `.md` updates
+
+## After the audit
+
+- Surface the auditor’s verdict briefly to the user
+- Do not skip the audit because the session feels “busy”
+- Do not run the audit on every prompt — only after feature implementation, after cross-layer wiring, or on explicit request

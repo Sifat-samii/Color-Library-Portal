@@ -1,0 +1,84 @@
+:root {
+  --px-black-1000: #000000;
+  --px-black-950: #050505;
+  --px-black-900: #0c0c0c;
+  --px-black-800: #161616;
+  --px-black-700: #1f1f1f;
+  --px-black-600: #2a2a2a;
+  --px-gray-50: #fafafa;
+  --px-gray-100: #f5f5f5;
+  --px-gray-200: #e8e8e8;
+  --px-gray-300: #d4d4d4;
+  --px-gray-400: #a3a3a3;
+  --px-gray-500: #737373;
+  --px-gray-600: #525252;
+  --px-white: #ffffff;
+  --px-orange-50: #fbeee7;
+  --px-orange-100: #f8dccb;
+  --px-orange-500: #e76223;
+  --px-orange-600: #cf5318;
+  --px-orange-700: #b84814;
+  --px-green-600: #2f7d57;
+  --px-amber-600: #b5791a;
+  --px-red-600: #c24747;
+
+  --color-bg-canvas: var(--px-gray-100);
+  --color-bg-surface: var(--px-white);
+  --color-bg-muted: var(--px-gray-50);
+  --color-bg-chrome: var(--px-black-950);
+  --color-bg-login: var(--px-black-1000);
+  --color-bg-elevated: var(--px-black-800);
+  --color-bg-nav-active: var(--px-black-700);
+  --color-text-primary: var(--px-black-800);
+  --color-text-secondary: #6d6d6d;
+  --color-text-inverse: var(--px-white);
+  --color-text-on-chrome: var(--px-gray-50);
+  --color-text-muted-chrome: var(--px-gray-400);
+  --color-border-default: var(--px-gray-200);
+  --color-border-chrome: var(--px-black-600);
+  --color-action-primary: var(--px-orange-500);
+  --color-action-on-primary: var(--px-white);
+  --color-action-hover: var(--px-orange-600);
+  --color-focus: var(--px-orange-500);
+  --color-success: var(--px-green-600);
+  --color-warning: var(--px-amber-600);
+  --color-danger: var(--px-red-600);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .08);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, .28);
+
+  --font: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --duration-fast: 140ms;
+  --duration: 220ms;
+
+  --bg: var(--color-bg-canvas);
+  --surface: var(--color-bg-surface);
+  --ink: var(--color-text-primary);
+  --muted: var(--color-text-secondary);
+  --line: var(--color-border-default);
+  --brand: var(--px-orange-500);
+  --brand-dark: var(--px-orange-700);
+  --mint: var(--px-orange-50);
+  --warn: var(--color-warning);
+  --danger: var(--color-danger);
+  --shadow: var(--shadow-md);
+  --radius: var(--radius-lg);
+  --card-name-vignette: linear-gradient(to top, rgba(0, 0, 0, .6) 0%, rgba(0, 0, 0, .28) 36%, rgba(0, 0, 0, .08) 68%, transparent 100%);
+}

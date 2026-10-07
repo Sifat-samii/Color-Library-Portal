@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pixofix Color Library</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand-lockup">
+          <img class="brand-mark" src="icons/icon.png" alt="">
+          <div class="brand-copy"><div class="eyebrow">PIXOFIX</div><h1 id="libraryTitle">Color Library</h1></div>
+        </div>
+        <button id="refreshButton" class="icon-button" type="button" aria-label="Sync approved colors" title="Sync approved colors" disabled><span class="refresh-glyph" aria-hidden="true">↻</span></button>
+      </header>
+      <nav id="librarySwitch" class="library-switch" aria-label="Library">
+        <div id="showApprovedButton" class="library-tab is-active" role="button" tabindex="0" aria-pressed="true">Approved</div>
+        <div id="showSwatchesButton" class="library-tab" role="button" tabindex="0" aria-pressed="false">Swatches</div>
+      </nav>
+      <section id="clientBar" class="client-bar">
+        <div class="client-heading-row">
+          <span id="workspaceLabel" class="control-label">Workspace</span>
+          <div class="server-state"><span id="connectionDot" class="connection-dot"></span><strong id="connectionTitle">Connecting</strong></div>
+        </div>
+        <div id="clientDropdown" class="client-control">
+          <button id="clientSelect" class="client-select" type="button" aria-labelledby="workspaceLabel clientSelectLabel" aria-haspopup="listbox" aria-expanded="false" aria-controls="clientMenu" disabled>
+            <span id="clientSelectLabel" class="client-select-label">Connecting…</span>
+            <span class="client-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div id="clientMenu" class="client-menu is-hidden" role="listbox" aria-label="Select client"></div>
+        </div>
+        <span id="connectionPath" class="connection-path is-hidden"></span>
+      </section>
+      <section id="workspace" class="workspace is-hidden">
+        <div class="library-controls">
+          <div class="search-row">
+            <div class="search-control"><sp-textfield id="searchInput" type="search" placeholder="Search colors"></sp-textfield><button id="clearSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
+            <div id="sortDropdown" class="sort-control">
+              <button id="sortSelect" class="sort-select" type="button" aria-label="Sort colors: A–Z" aria-haspopup="listbox" aria-expanded="false" aria-controls="sortMenu">
+                <span id="sortSelectLabel" class="sort-select-label">A–Z</span>
+                <span class="sort-chevron" aria-hidden="true">▼</span>
+              </button>
+              <div id="sortMenu" class="sort-menu is-hidden" role="listbox" aria-label="Sort colors">
+                <div class="sort-option is-selected" role="option" tabindex="0" aria-selected="true" data-sort="name"><span>A–Z</span></div>
+                <div class="sort-option" role="option" tabindex="0" aria-selected="false" data-sort="recent"><span>Recent</span></div>
+              </div>
+            </div>
+          </div>
+          <nav class="filter-tabs" aria-label="Approved color filters">
+            <div id="filterAll" class="filter-tab is-active" role="button" tabindex="0" aria-pressed="true">All<span id="allCount" class="filter-count">0</span></div>
+            <div id="filterFavorites" class="filter-tab" role="button" tabindex="0" aria-pressed="false">Saved<span id="favoriteCount" class="filter-count">0</span></div>
+          </nav>
+        </div>
+        <div class="results-row"><div id="summaryBar" class="summary-bar"></div><span class="verified-label"><span class="verified-dot"></span>Approved only</span></div>
+        <div id="notice" class="notice is-hidden"></div>
+        <main id="colorGrid" class="color-grid"></main>
+        <div id="noResults" class="empty-state is-hidden"><div id="noResultsIcon" class="empty-icon"></div><h2 id="noResultsTitle">No colors found</h2><p id="noResultsCopy"></p></div>
+      </section>
+      <section id="swatchWorkspace" class="workspace is-hidden" aria-busy="false">
+        <div class="library-controls">
+          <div class="search-row">
+            <div class="search-control"><sp-textfield id="swatchSearch" type="search" placeholder="Search swatches"></sp-textfield><button id="clearSwatchSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
+          </div>
+          <div id="shadeFilters" class="shade-filters" role="group" aria-label="Shades">
+            <button class="shade-chip is-selected" type="button" data-shade="" aria-pressed="true">All</button>
+            <button class="shade-chip" type="button" data-shade="red" aria-pressed="false"><i class="shade-dot" style="background-color:#E53935"></i>Red</button>
+            <button class="shade-chip" type="button" data-shade="orange" aria-pressed="false"><i class="shade-dot" style="background-color:#FB8C00"></i>Orange</button>
+            <button class="shade-chip" type="button" data-shade="brown" aria-pressed="false"><i class="shade-dot" style="background-color:#8D6E63"></i>Brown</button>
+            <button class="shade-chip" type="button" data-shade="yellow" aria-pressed="false"><i class="shade-dot" style="background-color:#FDD835"></i>Yellow</button>
+            <button class="shade-chip" type="button" data-shade="green" aria-pressed="false"><i class="shade-dot" style="background-color:#43A047"></i>Green</button>
+            <button class="shade-chip" type="button" data-shade="turquoise" aria-pressed="false"><i class="shade-dot" style="background-color:#26C6DA"></i>Turquoise</button>
+            <button class="shade-chip" type="button" data-shade="blue" aria-pressed="false"><i class="shade-dot" style="background-color:#1E88E5"></i>Blue</button>
+            <button class="shade-chip" type="button" data-shade="violet" aria-pressed="false"><i class="shade-dot" style="background-color:#8E24AA"></i>Violet</button>
+            <button class="shade-chip" type="button" data-shade="pink" aria-pressed="false"><i class="shade-dot" style="background-color:#EC407A"></i>Pink</button>
+            <button class="shade-chip" type="button" data-shade="white" aria-pressed="false"><i class="shade-dot" style="background-color:#FFFFFF"></i>White</button>
+            <button class="shade-chip" type="button" data-shade="gray" aria-pressed="false"><i class="shade-dot" style="background-color:#9E9E9E"></i>Gray</button>
+            <button class="shade-chip" type="button" data-shade="black" aria-pressed="false"><i class="shade-dot" style="background-color:#212121"></i>Black</button>
+          </div>
+        </div>
+        <div class="results-row"><div id="swatchSummary" class="summary-bar"></div></div>
+        <p id="swatchNotice" class="swatch-notice is-hidden" role="alert"></p>
+        <main id="swatchGrid" class="color-grid"></main>
+        <div id="swatchStatus" class="empty-state is-hidden" role="status"><div class="empty-icon"><span class="empty-glyph">⌕</span></div><h2 id="swatchStatusTitle">Loading swatches</h2><p id="swatchStatusCopy"></p><button id="retrySwatchesButton" class="secondary-button is-hidden" type="button">Try again</button></div>
+      </section>
+      <section id="welcome" class="welcome">
+        <img class="welcome-logo" src="icons/pixofix-logo-white.png" alt="Pixofix Color Library"><span class="welcome-kicker">COLOR LIBRARY</span><h2 id="welcomeTitle">Connecting to color server…</h2>
+        <p id="welcomeCopy">Client libraries and approved references are managed centrally.</p>
+        <button id="retryConnectionButton" class="primary-button">Retry connection</button>
+        <p class="privacy-note">Read-only · Managed by your administrator</p>
+      </section>
+      <aside id="detailPanel" class="detail-panel is-hidden" aria-label="Color details">
+      <div class="detail-header">
+        <button id="closeDetailButton" class="back-button" type="button" aria-label="Back to approved colors" title="Back"><span class="back-glyph" aria-hidden="true">‹</span><span>Back</span></button>
+        <div class="detail-heading"><span class="eyebrow">APPROVED COLOR</span><h2 id="detailTitle"></h2></div>
+        <button id="detailFavoriteButton" class="favorite-detail-button" type="button" aria-label="Save color" title="Save color"></button>
+      </div>
+      <section class="detail-summary">
+        <div id="detailStatus" class="detail-status"></div>
+        <div id="detailIdentifiers" class="detail-identifiers is-hidden"></div>
+        <div id="detailInstructions" class="instruction-card is-hidden"><span class="instruction-label">Designer instructions</span><p id="detailInstructionCopy"></p></div>
+      </section>
+      <div class="detail-section-label"><span>References</span><span id="referenceCount" class="section-count"></span></div>
+      <div id="referenceList" class="reference-list"></div>
+      </aside>
+      <aside id="swatchDetail" class="detail-panel is-hidden" aria-label="Swatch details">
+        <div class="detail-header">
+          <button id="closeSwatchButton" class="back-button" type="button" aria-label="Back to swatches" title="Back"><span class="back-glyph" aria-hidden="true">‹</span><span>Back</span></button>
+          <div class="detail-heading"><span class="eyebrow">SWATCH</span><h2 id="swatchTitle"></h2></div>
+        </div>
+        <div id="swatchStage" class="swatch-stage"></div>
+        <div id="swatchCodeRow" class="swatch-code-row">
+          <div id="swatchIdentifiers" class="detail-identifiers"></div>
+          <button id="copyHexButton" class="copy-hex is-hidden" type="button" aria-label="Copy hex" disabled>Copy</button>
+        </div>
+        <p id="swatchOpenError" class="swatch-error is-hidden" role="alert"></p>
+        <button id="openSwatchButton" class="open-button" type="button">Open</button>
+      </aside>
+    </div>
+    <div id="busyOverlay" class="busy-overlay is-hidden" aria-live="polite"><div class="spinner"></div><strong id="busyTitle">Scanning approved colors…</strong><span id="busyDetail">Checking references and updates</span></div>
+    <script src="main.js"></script>
+  </body>
+</html>

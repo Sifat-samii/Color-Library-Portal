@@ -6,7 +6,8 @@ const config = require("../server/config");
 const { hashPassword, verifyPassword, parseCookies } = require("../server/security");
 const { pool } = require("../server/db");
 const { safeReturnTo, base64UrlHash, validateGoogleClaims } = require("../server/google-auth");
-const { protectUnsafeRequests } = require("../server/http-security");
+const { pluginCors, protectUnsafeRequests } = require("../server/http-security");
+const { lanIPv4Addresses, portalUrls, listenOptions } = require("../server/studio-network");
 
 async function main() {
   assert.equal(safeSegment('Wine: 01/02'), "Wine- 01-02");
@@ -44,14 +45,41 @@ async function main() {
   assert.doesNotMatch(pluginLibrary, /requireLocalPlugin/);
   assert.doesNotMatch(securitySource, /requireLocalPlugin|Plugin access is local only/);
   assert.match(configSource, /host: process\.env\.HOST \|\| "0\.0\.0\.0"/);
+  assert.deepEqual(listenOptions("0.0.0.0", 8787), { port: 8787, host: "::", ipv6Only: false });
+  assert.deepEqual(listenOptions("127.0.0.1", 8787), { port: 8787, host: "127.0.0.1" });
+  assert.ok(portalUrls(8787).includes("http://127.0.0.1:8787"));
+  assert.ok(Array.isArray(lanIPv4Addresses()));
+  assert.match(serverIndex, /listenOptions\(config\.host, config\.port\)/);
+  assert.match(serverIndex, /ensureLanFirewall\(config\.port\)/);
+  const catalogAt = serverIndex.indexOf("async function catalogForClient");
+  const catalogStart = serverIndex.slice(catalogAt, serverIndex.indexOf("const key = ", catalogAt));
+  assert.match(catalogStart, /if \(!RECORD_ID\.test\(String\(clientId \|\| ""\)\)\) return null/);
   assert.match(serverIndex, /\/api\/plugin\/versions\/:id\/file/);
   assert.match(serverIndex, /\/api\/plugin\/versions\/:id\/preview/);
   assert.match(serverIndex, /cachedPreview\(config\.storageRoot, asset\.assetPath, req\.params\.id\)/);
+  assert.match(fs.readFileSync(path.resolve(__dirname, "../server/previews.js"), "utf8"), /writePlaceholderPreview/);
   assert.match(serverIndex, /v\.status = 'APPROVED'/);
   assert.match(serverIndex, /r\.active_approved_version_id = v\.id/);
   assert.equal(validateGoogleClaims(claims, "expected-nonce", now), claims);
   assert.throws(() => validateGoogleClaims({ ...claims, nonce: "wrong" }, "expected-nonce", now), /verification failed/);
   assert.throws(() => validateGoogleClaims({ ...claims, iat: now - 3600 }, "expected-nonce", now), /verification failed/);
+
+  const preflight = { headers: {}, statusCode: 0, setHeader(name, value) { this.headers[name] = value; }, status(code) { this.statusCode = code; return this; }, end() { this.ended = true; } };
+  pluginCors({ method: "OPTIONS", headers: { "access-control-request-private-network": "true" } }, preflight, () => { throw new Error("OPTIONS should not continue"); });
+  assert.equal(preflight.statusCode, 204);
+  assert.equal(preflight.ended, true);
+  assert.equal(preflight.headers["Access-Control-Allow-Private-Network"], "true");
+  assert.equal(preflight.headers["Access-Control-Allow-Origin"], "*");
+  let continued = false;
+  const getRes = { headers: {}, setHeader(name, value) { this.headers[name] = value; }, status() { return this; }, end() {} };
+  pluginCors({ method: "GET", headers: {} }, getRes, () => { continued = true; });
+  assert.equal(continued, true);
+  assert.equal(getRes.headers["Access-Control-Allow-Private-Network"], "true");
+  const echoed = { headers: {}, setHeader(name, value) { this.headers[name] = value; }, status() { return this; }, end() {} };
+  pluginCors({ method: "GET", headers: { origin: "uxp://plugin" } }, echoed, () => {});
+  assert.equal(echoed.headers["Access-Control-Allow-Origin"], "uxp://plugin");
+  assert.equal(echoed.headers.Vary, "Origin");
+  assert.match(serverIndex, /app\.use\("\/api\/plugin", pluginCors\)/);
 
   let allowed = false;
   protectUnsafeRequests({ method: "POST", headers: { host: "portal.example", origin: "https://portal.example" } }, {}, () => { allowed = true; });

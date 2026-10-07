@@ -34,6 +34,26 @@ async function exists(filePath) {
   }
 }
 
+const previewWarned = new Set();
+
+async function writePreviewJpeg(source, destination) {
+  const temporaryPath = `${destination}.${process.pid}-${Date.now()}.tmp`;
+  try {
+    await source.jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(temporaryPath);
+    await fs.rename(temporaryPath, destination);
+  } catch (error) {
+    await fs.unlink(temporaryPath).catch(() => {});
+    throw error;
+  }
+}
+
+async function writePlaceholderPreview(previewPath) {
+  await writePreviewJpeg(
+    sharp({ create: { width: 720, height: 720, channels: 3, background: "#24282d" } }),
+    previewPath
+  );
+}
+
 async function cachedPreview(storageRoot, sourcePath, versionId) {
   if (!/^[a-z0-9-]+$/i.test(versionId)) throw new Error("Invalid preview identifier");
   const previewRoot = path.join(storageRoot, "previews");
@@ -42,20 +62,24 @@ async function cachedPreview(storageRoot, sourcePath, versionId) {
   if (inFlight.has(versionId)) return inFlight.get(versionId);
 
   const pending = schedule(async () => {
+    if (await exists(previewPath)) return previewPath;
     await fs.mkdir(previewRoot, { recursive: true });
-    const temporaryPath = `${previewPath}.${process.pid}-${Date.now()}.tmp`;
     try {
-      await sharp(sourcePath, { failOn: "none", pages: 1 })
-        .rotate()
-        .resize({ width: 720, height: 720, fit: "inside", withoutEnlargement: true })
-        .flatten({ background: "#24282d" })
-        .jpeg({ quality: 78, progressive: true, mozjpeg: true })
-        .toFile(temporaryPath);
-      await fs.rename(temporaryPath, previewPath);
+      await writePreviewJpeg(
+        sharp(sourcePath, { failOn: "none", pages: 1 })
+          .rotate()
+          .resize({ width: 720, height: 720, fit: "inside", withoutEnlargement: true })
+          .flatten({ background: "#24282d" }),
+        previewPath
+      );
       return previewPath;
     } catch (error) {
-      await fs.unlink(temporaryPath).catch(() => {});
-      throw error;
+      if (!previewWarned.has(versionId)) {
+        previewWarned.add(versionId);
+        console.warn("Preview unavailable", versionId, error.message);
+      }
+      await writePlaceholderPreview(previewPath);
+      return previewPath;
     }
   }).finally(() => inFlight.delete(versionId));
 

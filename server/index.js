@@ -5,6 +5,7 @@ const fs = require("fs/promises");
 const fsNative = require("fs");
 const path = require("path");
 const config = require("./config");
+const { portalUrls, listenOptions, ensureLanFirewall } = require("./studio-network");
 const db = require("./db");
 const {
   hashPassword,
@@ -26,12 +27,13 @@ const { registerPixofixLibrary } = require("./pixofix-library");
 const { registerClientProfile } = require("./client-profile");
 const { registerNotifications } = require("./notifications");
 const { registerGoogleAuth } = require("./google-auth");
-const { securityHeaders, protectUnsafeRequests, createRateLimiter } = require("./http-security");
+const { securityHeaders, pluginCors, protectUnsafeRequests, createRateLimiter } = require("./http-security");
 
 const app = express();
 if (config.trustProxy) app.set("trust proxy", 1);
 const catalogCache = new Map();
 const CATALOG_CACHE_TTL_MS = 15000;
+const RECORD_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const incomingRoot = path.join(config.storageRoot, "incoming");
 fsNative.mkdirSync(incomingRoot, { recursive: true });
 const allowedExtensions = new Set([".jpg", ".jpeg", ".png", ".tif", ".tiff", ".psd", ".psb"]);
@@ -49,14 +51,7 @@ app.use((req, res, next) => {
 });
 app.use(securityHeaders);
 app.use(express.json({ limit: "1mb" }));
-app.use("/api/plugin", (req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Accept");
-  res.setHeader("Access-Control-Max-Age", "86400");
-  if (req.method === "OPTIONS") return res.status(204).end();
-  next();
-});
+app.use("/api/plugin", pluginCors);
 app.use(authenticate);
 app.use(protectUnsafeRequests);
 app.use((req, res, next) => {
@@ -218,6 +213,7 @@ async function buildCatalogForClient(clientId, includeHistory, archivedOnly = fa
 }
 
 async function catalogForClient(clientId, includeHistory, archivedOnly = false) {
+  if (!RECORD_ID.test(String(clientId || ""))) return null;
   const key = `${clientId}:${Boolean(includeHistory)}:${Boolean(archivedOnly)}`;
   const cached = catalogCache.get(key);
   if (cached && cached.expiresAt > Date.now()) return cached.value;
@@ -1032,7 +1028,8 @@ app.get("/api/previews/:versionId", requireRole("CLIENT", "ADMIN"), asyncRoute(a
   }
 }));
 
-app.get("/api/plugin/clients", asyncRoute(async (_req, res) => {
+app.get("/api/plugin/clients", asyncRoute(async (req, res) => {
+  console.log("Plugin clients", req.socket && req.socket.remoteAddress, req.headers.origin || "-");
   const result = await db.query(
     `SELECT id,code,name,local_folder_path AS "localFolderPath",updated_at AS "updatedAt"
      FROM clients WHERE active=true AND local_folder_path<>'' ORDER BY name`
@@ -1046,10 +1043,8 @@ app.get("/api/plugin/clients/:id/catalog", asyncRoute(async (req, res) => {
   res.json(catalog);
 }));
 
-const PLUGIN_VERSION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 async function approvedPluginAsset(versionId) {
-  if (!PLUGIN_VERSION_ID.test(versionId)) return null;
+  if (!RECORD_ID.test(versionId)) return null;
   const version = (await db.query(
     `SELECT v.storage_path, v.original_filename, v.checksum_sha256
      FROM reference_versions v
@@ -1132,11 +1127,15 @@ async function start() {
   await fs.mkdir(config.storageRoot, { recursive: true });
   await db.query("DELETE FROM sessions WHERE expires_at<=now()");
   const server = await new Promise((resolve, reject) => {
-    const listener = app.listen(config.port, config.host);
+    const listener = app.listen(listenOptions(config.host, config.port));
     listener.once("listening", () => resolve(listener));
     listener.once("error", reject);
   });
-  console.log(`Pixofix Color Library portal: http://${config.host}:${config.port}`);
+  if (!ensureLanFirewall(config.port)) {
+    console.warn(`Allow inbound TCP ${config.port} in Windows Firewall so other computers can open the portal.`);
+  }
+  const urls = portalUrls(config.port);
+  console.log(`Pixofix Color Library portal: ${urls.join("  ")}`);
   console.log("Keep this window open. Press Ctrl+C to stop the portal.");
   server.on("close", () => console.log("Pixofix Color Library portal stopped."));
   return server;

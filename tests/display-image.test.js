@@ -34,6 +34,16 @@ async function main() {
     const cached = await displayImage(root, tiffPath, "tiff-version");
     assert.strictEqual(cached.path, tiffDisplay.path);
 
+    const brokenPath = path.join(root, "broken.psd");
+    await fs.writeFile(brokenPath, Buffer.from("not an image"));
+    const placeholderPath = await cachedPreview(root, brokenPath, "broken-version");
+    assert.strictEqual(placeholderPath, path.join(root, "previews", "broken-version.jpg"));
+    const placeholderMeta = await sharp(placeholderPath).metadata();
+    assert.strictEqual(placeholderMeta.format, "jpeg");
+    assert.ok(placeholderMeta.width <= 720 && placeholderMeta.height <= 720);
+    const again = await cachedPreview(root, brokenPath, "broken-version");
+    assert.strictEqual(again, placeholderPath);
+
     await assert.rejects(() => displayImage(root, jpegPath, "../not-an-id"));
     console.log("Display image tests passed.");
   } finally {

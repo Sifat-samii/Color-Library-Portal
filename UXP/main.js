@@ -639,7 +639,10 @@ async function openPortalFile(ref) {
   var name = catalogTools.remoteFileName(ref);
   try {
     var existing = await folder.getEntry(name);
-    if (existing && existing.isFile) return existing;
+    if (existing && existing.isFile) {
+      var metadata = await existing.getMetadata();
+      if (catalogTools.cachedDownloadIsComplete(metadata && metadata.size, ref.size)) return existing;
+    }
   } catch (error) {}
   var bytes = await portal.getFile("/api/plugin/versions/" + encodeURIComponent(ref.versionId) + "/file");
   var file = await folder.createFile(name, { overwrite: true });

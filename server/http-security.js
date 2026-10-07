@@ -1,9 +1,14 @@
+function pluginBridgePage(path) {
+  return path === "/plugin-bridge.html" || path === "/plugin-bridge.js";
+}
+
 function securityHeaders(req, res, next) {
+  const pluginPage = pluginBridgePage(req.path);
   res.setHeader("Content-Security-Policy", [
     "default-src 'self'",
     "base-uri 'self'",
-    "frame-ancestors 'none'",
-    "frame-src 'none'",
+    pluginPage ? "frame-ancestors *" : "frame-ancestors 'none'",
+    pluginPage ? "frame-src 'self'" : "frame-src 'none'",
     "object-src 'none'",
     "form-action 'self'",
     "img-src 'self' data: blob:",
@@ -12,10 +17,10 @@ function securityHeaders(req, res, next) {
     "connect-src 'self'"
   ].join("; "));
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-  res.setHeader("Cross-Origin-Resource-Policy", req.path.startsWith("/api/plugin/") ? "cross-origin" : "same-origin");
+  res.setHeader("Cross-Origin-Resource-Policy", req.path.startsWith("/api/plugin/") || pluginPage ? "cross-origin" : "same-origin");
   res.setHeader("Referrer-Policy", "no-referrer");
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
+  if (!pluginPage) res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-Permitted-Cross-Domain-Policies", "none");
   res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
   if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
@@ -33,6 +38,22 @@ function sameOriginRequest(req) {
   } catch (_error) {
     return false;
   }
+}
+
+function pluginCors(req, res, next) {
+  const origin = String(req.headers.origin || "").trim();
+  if (origin && origin.toLowerCase() !== "null") {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", String(req.headers["access-control-request-headers"] || "Accept"));
+  res.setHeader("Access-Control-Allow-Private-Network", "true");
+  res.setHeader("Access-Control-Max-Age", "86400");
+  if (req.method === "OPTIONS") return res.status(204).end();
+  next();
 }
 
 function protectUnsafeRequests(req, res, next) {
@@ -67,4 +88,4 @@ function createRateLimiter({ windowMs = 15 * 60 * 1000, limit = 30 } = {}) {
   };
 }
 
-module.exports = { securityHeaders, protectUnsafeRequests, createRateLimiter };
+module.exports = { securityHeaders, pluginBridgePage, pluginCors, protectUnsafeRequests, createRateLimiter };

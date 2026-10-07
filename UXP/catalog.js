@@ -33,6 +33,12 @@ function fileExtension(name) {
   return dot > 0 ? base.slice(dot + 1).toLowerCase() : "";
 }
 
+function cachedDownloadIsComplete(actualSize, expectedSize) {
+  var expected = Number(expectedSize);
+  if (!Number.isFinite(expected) || expected <= 0) return false;
+  return Number(actualSize) === expected;
+}
+
 function remoteFileName(ref) {
   var extension = fileExtension(ref && (ref.extension ? "file." + ref.extension : ref.baseName)) || "bin";
   var id = String(ref && ref.versionId || "file").replace(/[^a-z0-9-]/gi, "").slice(0, 36) || "file";
@@ -220,6 +226,7 @@ module.exports = {
   normalizeText: normalizeText,
   buildManagedCatalog: buildManagedCatalog,
   remoteFileName: remoteFileName,
+  cachedDownloadIsComplete: cachedDownloadIsComplete,
   referenceDisplayName: referenceDisplayName,
   matchesColor: matchesColor,
   filterSwatches: filterSwatches,

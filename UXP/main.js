@@ -1,17 +1,20 @@
-const { storage } = require("uxp");
+const { shell, storage } = require("uxp");
 const { app, core } = require("photoshop");
 const config = require("./config.js");
 const catalogTools = require("./catalog.js");
-const { createPortalClient } = require("./portal-client.js");
-const { createStudioSettings } = require("./studio-settings.js");
+const { createPortalClient, fetchWithTimeout, xhrFetch } = require("./portal-client.js");
+const { createStudioSettings, connectionHosts, orderedConnectHosts } = require("./studio-settings.js");
+const { ensureLanBridge } = require("./lan-bridge.js");
+const { createWebviewBridge } = require("./webview-bridge.js");
 const { createLibrarySession } = require("./library-session.js");
 const { createApprovedList, createSwatchList, cardPlan } = require("./library-list.js");
+const { bytesToDataUrl, createPreviewLoader } = require("./preview-data.js");
 const { scanLibraryFolder } = require("./folder-scan.js");
 
 const fs = storage.localFileSystem;
 const SEARCH_DELAY = 150;
 
-const studio = { serverUrls: [] };
+const studio = { serverUrls: [], preferredHost: "" };
 const approvedList = createApprovedList({ pageSize: 0 });
 const swatchList = createSwatchList({ pageSize: 0 });
 const ui = {
@@ -29,15 +32,28 @@ let swatchSearchTimer = 0;
 let copyHexTimer = 0;
 
 const settings = createStudioSettings({ storage: createSecretStorage(), namespace: config.storageNamespace });
+const portalBridge = createWebviewBridge({
+  element: function () { return document.getElementById("portalWebview"); },
+  pages: function () {
+    return orderedConnectHosts(connectionHosts(studio.serverUrls, config.portalHosts), studio.preferredHost).map(function (host) {
+      return host + "/plugin-bridge.html";
+    });
+  }
+});
 const portal = createPortalClient({
   hosts: function () {
-    var hosts = (studio.serverUrls || []).slice();
-    config.portalHosts.forEach(function (host) {
-      if (hosts.indexOf(host) === -1) hosts.push(host);
-    });
-    return hosts;
+    if (portalBridge.origin()) return [portalBridge.origin()];
+    return connectionHosts(studio.serverUrls, config.portalHosts);
   },
-  fetchImpl: fetch
+  fetchImpl: function (url, requestOptions) {
+    if (portalBridge.origin()) return portalBridge.fetch(url, requestOptions);
+    return xhrFetch(url, requestOptions);
+  }
+});
+const previews = createPreviewLoader({
+  getBytes: function (path) { return portal.getBytes(path); },
+  toUrl: previewFileUrl,
+  limit: 8
 });
 const session = createLibrarySession({
   portal: portal,
@@ -301,7 +317,7 @@ function updateConnection() {
   if (current.connectionError) {
     dot.classList.remove("is-linked");
     $("#connectionTitle").textContent = "Offline";
-    setConnectionPath(studio.serverUrls[0] || "");
+    setConnectionPath(connectionHosts(studio.serverUrls, config.portalHosts)[0] || "");
     $("#welcomeTitle").textContent = "Color server unavailable";
     setWelcomeCopy(current.connectionError);
     $("#retryConnectionButton").classList.remove("is-hidden");
@@ -368,20 +384,86 @@ function paint(snap) {
   if (ui.library === "swatches") renderSwatches();
 }
 
-async function boot() {
-  setBusy(true, "Connecting to color server…", "Loading managed client libraries");
+async function copyPluginFileToTemp(name) {
+  var pluginFolder = await fs.getPluginFolder();
+  var temp = await fs.getTemporaryFolder();
+  var source = await pluginFolder.getEntry(name);
   try {
+    if (source && typeof source.copyTo === "function") {
+      await source.copyTo(temp, { overwrite: true });
+      return temp.getEntry(name);
+    }
+  } catch (error) {}
+  var text = await source.read({ format: storage.formats.utf8 });
+  var dest = await temp.createFile(name, { overwrite: true });
+  await dest.write(text);
+  return dest;
+}
+
+async function launchNativePath(nativePath) {
+  if (!nativePath) return;
+  if (shell && typeof shell.openPath === "function") {
+    await shell.openPath(nativePath);
+    return;
+  }
+  if (shell && typeof shell.openExternal === "function") {
+    await shell.openExternal("file:///" + String(nativePath).replace(/\\/g, "/"));
+  }
+}
+
+async function startLanBridgeHelper() {
+  var names = config.lanBridge.files || [config.lanBridge.starter];
+  var copied = {};
+  for (var index = 0; index < names.length; index += 1) {
+    try { copied[names[index]] = await copyPluginFileToTemp(names[index]); } catch (error) {}
+  }
+  var starter = copied[config.lanBridge.starter] || copied["lan-bridge.cmd"] || copied["lan-bridge.vbs"];
+  await launchNativePath(starter && starter.nativePath);
+}
+
+async function rememberPreferredHost(host) {
+  if (!host) return;
+  studio.preferredHost = host;
+  try {
+    await settings.write({ serverUrls: studio.serverUrls, preferredHost: host });
+  } catch (error) {}
+}
+
+function scheduleAttachLocal() {
+  session.attachLocal().then(function (snap) {
+    if (!snap || !snap.rootReady) return;
+    paint(snap);
+  }).catch(function () {});
+}
+
+async function boot() {
+  setBusy(true, "Connecting to color server…", "Loading approved colors");
+  try {
+    await session.hydrate();
+    try {
+      var origin = await portalBridge.connect();
+      await rememberPreferredHost(origin);
+    } catch (error) {
+      await ensureLanBridge({
+        config: config,
+        fetchImpl: xhrFetch,
+        fetchWithTimeout: fetchWithTimeout,
+        start: startLanBridgeHelper
+      });
+    }
     var snap = await session.start();
+    if (portal.activeHost()) await rememberPreferredHost(portal.activeHost());
     approvedList.resetPage();
     paint(snap);
   } finally {
     setBusy(false);
   }
+  scheduleAttachLocal();
 }
 
 async function refreshLibrary() {
   if (!current.selectedClient) return boot();
-  setBusy(true, "Scanning approved colors…", "Checking " + (current.selectedClient.code || "library") + " approved colors");
+  setBusy(true, "Loading approved colors", " ");
   try {
     var snap = await session.refresh();
     approvedList.resetPage();
@@ -389,11 +471,12 @@ async function refreshLibrary() {
   } finally {
     setBusy(false);
   }
+  scheduleAttachLocal();
 }
 
 async function selectClient(clientId) {
   var client = current.clients.find(function (item) { return item.id === clientId; });
-  setBusy(true, "Loading " + (client ? client.name : "library") + "…", "Opening approved colors");
+  setBusy(true, "Loading approved colors", " ");
   try {
     closeDetails();
     var snap = await session.selectClient(clientId);
@@ -402,6 +485,7 @@ async function selectClient(clientId) {
   } finally {
     setBusy(false);
   }
+  scheduleAttachLocal();
 }
 
 async function markReviewed() {
@@ -416,19 +500,30 @@ function changeLabel(group) {
   return "";
 }
 
-function previewUrl(ref) {
-  if (!ref || !ref.versionId) return "";
-  var host = portal.activeHost();
-  if (!host) return "";
-  return host + "/api/plugin/versions/" + encodeURIComponent(ref.versionId) + "/preview";
+function previewId(ref) {
+  return ref && ref.versionId ? ref.versionId : "";
+}
+
+async function previewFileUrl(versionId, bytes) {
+  var folder = await fs.getTemporaryFolder();
+  var name = "pixofix-pv-" + String(versionId || "preview").replace(/[^a-z0-9-]/gi, "") + ".jpg";
+  var file = await folder.createFile(name, { overwrite: true });
+  await file.write(bytes, { format: storage.formats.binary });
+  if (typeof fs.getFsUrl === "function") {
+    try {
+      var localUrl = fs.getFsUrl(file);
+      if (localUrl) return localUrl;
+    } catch (error) {}
+  }
+  if (file.url) return file.url;
+  return bytesToDataUrl(bytes);
 }
 
 function managedCardMarkup(group) {
   var ref = group.preferredRef;
-  var preview = previewUrl(ref);
-  var thumbnail = preview
-    ? "<img src=\"" + escapeHtml(preview) + "\" alt=\"\" loading=\"lazy\" decoding=\"async\">"
-    : "";
+  var id = previewId(ref);
+  var src = previews.cached(id);
+  var thumbnail = src ? "<img src=\"" + escapeHtml(src) + "\" alt=\"\" decoding=\"async\" class=\"is-ready\">" : "";
   var label = changeLabel(group);
   var badge = label ? "<span class=\"change-badge " + (label === "MISSING" ? "is-missing" : "") + "\">" + label + "</span>" : "";
   var swatch = swatchColor(group.hexCode);
@@ -440,7 +535,7 @@ function managedCardMarkup(group) {
   var accessible = "Open " + group.displayName + ", " + summary + (group.colorCode ? ", " + group.colorCode : "");
   var savedMark = favorite ? "<span class=\"saved-chip\">Saved</span>" : "";
   return "<article class=\"color-card" + (favorite ? " is-saved" : "") + "\" data-id=\"" + escapeHtml(group.id) + "\" tabindex=\"0\" role=\"link\" aria-label=\"" + escapeHtml(accessible) + "\">" +
-    "<div class=\"thumb-wrap\">" + thumbnail + "<div class=\"thumb-fallback\"" + fallbackStyle + ">" + (swatch ? "" : escapeHtml(group.displayName.charAt(0) || "")) + "</div>" + badge + "</div>" +
+    "<div class=\"thumb-wrap" + (src ? " has-preview" : (id ? " is-loading" : "")) + "\"" + (id ? " data-preview-id=\"" + escapeHtml(id) + "\"" : "") + ">" + thumbnail + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\"" + fallbackStyle + ">" + (swatch ? "" : escapeHtml(group.displayName.charAt(0) || "")) + "</div>" + badge + "</div>" +
     "<div class=\"card-body\"><div class=\"color-title-row\">" + dot + "<h3 class=\"color-name\" title=\"" + escapeHtml(group.displayName) + "\">" + escapeHtml(group.displayName) + "</h3>" + OPEN_ICON + "</div>" +
     "<div class=\"color-meta-row\"><span class=\"color-meta\">" + escapeHtml(summary) + savedMark + "</span>" + code + "</div></div>" +
     "<button type=\"button\" class=\"favorite-button" + (favorite ? " is-favorite" : "") + "\"" + savedButtonStyle(favorite) + " aria-pressed=\"" + (favorite ? "true" : "false") + "\" aria-label=\"" + (favorite ? "Remove from saved" : "Save color") + "\" title=\"" + (favorite ? "Remove from saved" : "Save color") + "\">" + starIcon(favorite) + "</button></article>";
@@ -502,11 +597,48 @@ function render() {
   applyCards($("#colorGrid"), approvedCards, view.cards, function (id) {
     return managedCardMarkup(byId[id].group);
   });
+  fillPreviews($("#colorGrid"));
   approvedCards = view.cards.map(function (card) { return { id: card.id, revision: card.revision }; });
   renderEmptyState(view);
   $("#allCount").textContent = view.counts.all;
   $("#favoriteCount").textContent = view.counts.saved;
   $("#summaryBar").innerHTML = "<strong>" + view.matchedCount + "</strong> color" + (view.matchedCount === 1 ? "" : "s") + " · " + plural(view.fileCount, "file");
+}
+
+function fillPreviews(root) {
+  if (!root || !root.querySelectorAll) return;
+  var canFetch = Boolean(portal.activeHost() || portalBridge.origin());
+  var nodes = root.getAttribute && root.getAttribute("data-preview-id") ? [root] : [];
+  Array.prototype.forEach.call(root.querySelectorAll("[data-preview-id]"), function (node) { nodes.push(node); });
+  nodes.forEach(function (node) {
+    var id = node.getAttribute("data-preview-id");
+    if (!id) return;
+    function apply(url) {
+      if (!url || !node.parentNode) return;
+      var image = node.tagName === "IMG" ? node : node.querySelector("img");
+      if (!image) {
+        image = document.createElement("img");
+        image.alt = "";
+        image.setAttribute("decoding", "async");
+        node.insertBefore(image, node.firstChild);
+        bindBrokenImages(node);
+      }
+      node.classList.add("has-preview");
+      image.classList.remove("is-broken");
+      image.src = url;
+    }
+    var cached = previews.cached(id);
+    if (cached) {
+      node.classList.remove("is-loading");
+      apply(cached);
+    } else if (canFetch) {
+      node.classList.add("is-loading");
+      previews.load(id).then(function (url) {
+        node.classList.remove("is-loading");
+        apply(url);
+      });
+    }
+  });
 }
 
 function bindBrokenImages(root) {
@@ -519,7 +651,11 @@ function bindBrokenImages(root) {
     }
     if (image.complete) markReady();
     image.addEventListener("load", markReady);
-    image.addEventListener("error", function () { image.classList.add("is-broken"); });
+    image.addEventListener("error", function () {
+      image.classList.add("is-broken");
+      image.classList.remove("is-ready");
+      if (image.parentNode && image.parentNode.classList) image.parentNode.classList.remove("has-preview");
+    });
   });
 }
 
@@ -563,12 +699,13 @@ function formatDate(timestamp) {
 }
 
 function managedReferenceMarkup(ref) {
-  var previewSrc = previewUrl(ref);
+  var id = previewId(ref);
+  var src = previews.cached(id);
   var typeName = catalogTools.referenceDisplayName(ref);
   var approval = ref.approvedAt ? "Approved " + formatDate(ref.approvedAt) : "Approved version";
   var format = ref.extension.toUpperCase();
-  var preview = previewSrc
-    ? "<div class=\"reference-preview\"><img src=\"" + escapeHtml(previewSrc) + "\" alt=\"\" loading=\"lazy\" decoding=\"async\"><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>"
+  var preview = id
+    ? "<div class=\"reference-preview" + (src ? " has-preview" : " is-loading") + "\" data-preview-id=\"" + escapeHtml(id) + "\">" + (src ? "<img src=\"" + escapeHtml(src) + "\" alt=\"\" decoding=\"async\" class=\"is-ready\">" : "") + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>"
     : "<div class=\"reference-preview is-file\"><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>";
   return "<article class=\"reference-item\" tabindex=\"0\" role=\"button\" aria-label=\"Open " + escapeHtml(ref.baseName) + "\">" + preview +
     "<div class=\"reference-info\"><div class=\"reference-topline\"><span class=\"reference-type\">" + escapeHtml(typeName) + "</span><span class=\"file-format\">" + escapeHtml(format) + "</span></div>" +
@@ -601,6 +738,7 @@ function showManagedDetails(id) {
   $("#referenceList").innerHTML = html;
   $("#referenceCount").textContent = group.refs.length + group.missingRefs.length;
   bindBrokenImages($("#referenceList"));
+  fillPreviews($("#referenceList"));
   Array.prototype.forEach.call($("#referenceList").querySelectorAll(".reference-item"), function (item, index) {
     function open() { openReference(group.refs[index]); }
     item.addEventListener("click", open);
@@ -1161,6 +1299,7 @@ async function initialize() {
   bindEvents();
   var saved = await settings.read();
   studio.serverUrls = saved.serverUrls.slice();
+  studio.preferredHost = saved.preferredHost || "";
   await boot();
 }
 

@@ -1,7 +1,7 @@
 # Color Library workflow audit
 
 Audit date: 2026-09-29  
-Last updated: 2026-10-05  
+Last updated: 2026-10-07  
 Scope: web portal, PostgreSQL schema and migrations, server API, browser UI, managed file storage, automated tests, and Photoshop UXP panel.
 
 ## Outcome
@@ -31,7 +31,7 @@ Every lifecycle action is attributed to its actor in a shared request timeline. 
 | Authentication | Google OpenID Connect with authorization code, state, nonce, PKCE, signed ID-token verification, and server-side sessions |
 | Authorization | Pre-authorized email records, `ADMIN`/`CLIENT` roles, active-user checks, active-company checks, and client-scoped API enforcement |
 | Collaboration | Actor-attributed activity events plus per-user notifications created in the same database transaction as the business action |
-| Photoshop UXP | Read-only Approved catalog plus shared Explore Swatches (`GET /api/plugin/swatches`, no personal saves). Floor computers open Plugins → Pixofix Color Library after the one-time UPIA install in `UXP/README.md` and do not run the portal. The panel calls the hosts in `UXP/config.js`. A local approved file opens directly; otherwise `GET /api/plugin/versions/:id/file` downloads it. |
+| Photoshop UXP | Read-only Approved catalog plus shared Explore Swatches (`GET /api/plugin/swatches`, no personal saves). Floor computers open Plugins → Pixofix Color Library after the one-time UPIA install in `UXP/README.md` and do not run the portal. Packaged panel `0.5.11` is UXP (not CEP) for Photoshop 22.5+. On launch a spinner covers the panel until the live catalog is ready; each card then shows a spinner instead of a letter until its preview lands. It retries the last working host first, tries LAN before loopback unless that host was loopback, and uses 4s / 1s / 0.8s webview waits (JSON and preview fetches wait 8s; eight previews at a time). Client list and catalog fetch together when a selected client is already known; the client folder is scanned after the overlay hides. It loads `/plugin-bridge.html` in a hidden webview (`network.domains` and `webview.domains` are string `all`), then GET `/api/plugin` same-origin from that page. Approved card and detail pictures fetch `/api/plugin/versions/:id/preview` through that page, write a temp JPEG, and show that local file (not LAN `<img src>`). Fetch waits until a portal host is connected; a failed load is not cached. If the webview is unavailable it copies `lan-bridge.cmd`, `lan-bridge.ps1`, and `lan-bridge.vbs` to the temp folder and forwards `127.0.0.1:18787` to `192.168.0.112:8787`. A local approved file opens directly; otherwise `GET /api/plugin/versions/:id/file` downloads it. |
 
 ## Page and workflow coverage
 
@@ -98,7 +98,7 @@ Historical request and delivery records were backfilled into the activity stream
 
 ### Approved Colors and Explore Swatches
 
-The existing browsing experience remains intact: card/grid browsing, search, collections and shade filters, saves, downloads, reference detail, related colors, and preview handling. Approval remains the publication boundary for a Client Library. The Photoshop panel also exposes Explore as a Swatches library switch (`GET /api/plugin/swatches` / `…/:id/image`), separate from Approved colors and without personal saves.
+The existing browsing experience remains intact: card/grid browsing, search, saves, downloads, reference detail, and preview handling. Approved colors uses Core/Seasonal collection and does not show shade filters. Explore swatches uses shade filters and related colors. Approval remains the publication boundary for a Client Library. The Photoshop panel also exposes Explore as a Swatches library switch (`GET /api/plugin/swatches` / `…/:id/image`), separate from Approved colors and without personal saves.
 
 ## UI/UX refinement audit
 
@@ -121,7 +121,7 @@ The refinement pass followed familiar dashboard and workflow conventions while p
 - Session lookup requires an active user and, for Representatives, an active Client Company.
 - Same-origin validation protects state-changing browser requests.
 - Authentication endpoints are rate-limited.
-- Content Security Policy, frame denial, MIME sniffing protection, restrictive referrer/permissions policies, and optional HSTS are applied.
+- Content Security Policy, MIME sniffing protection, restrictive referrer/permissions policies, and optional HSTS are applied. Portal pages deny framing (`X-Frame-Options: DENY`, `frame-ancestors 'none'`). `/plugin-bridge.html` and `/plugin-bridge.js` allow framing (`frame-ancestors *`, no `X-Frame-Options`) so the UXP hidden webview can load them.
 - OAuth callback state is single-use and expires after ten minutes; PKCE and nonce protect the authorization exchange.
 - Uploaded file count, size, and extensions are constrained; managed paths are resolved and checked before file access.
 - Role and tenant checks are enforced in server routes rather than trusted to the UI.
@@ -146,7 +146,7 @@ Set production secrets and Google OAuth values in the deployment environment:
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
 - `GOOGLE_REDIRECT_URI`
-- The portal listens on `0.0.0.0` port `8787`. Floor computers open the panel from the Plugins menu after the UPIA install in `UXP/README.md` and do not run the portal. Limit inbound TCP `8787` to the studio network.
+- The portal listens on every interface at port `8787` (`HOST=0.0.0.0`, dual-stack). Floor computers open the panel from the Plugins menu after the UPIA install in `UXP/README.md` and do not run the portal. Packaged panel `0.5.11` keeps a spinner until the live catalog is ready, then shows a per-card spinner instead of a letter until each preview lands. It retries the last working host first (LAN before loopback unless that host was loopback; 4s / 1s / 0.8s webview waits; JSON and preview fetches wait 8s; eight previews at a time), fetches client list and catalog together when a selected client is already known, and scans the client folder after the overlay hides. It loads `/plugin-bridge.html` in a hidden webview (`network.domains` and `webview.domains` are string `all`, `minVersion` `22.5.0`). Approved card and detail pictures load through that bridge into a temp JPEG. Fetch waits until a portal host is connected; a failed load is not cached. If that is unavailable it copies `lan-bridge.cmd`, `lan-bridge.ps1`, and `lan-bridge.vbs` to the temp folder and forwards `127.0.0.1:18787` to `http://192.168.0.112:8787`. Plugin CORS on `/api/plugin` includes `Access-Control-Allow-Private-Network` and echoes `Origin`. Allow inbound TCP `8787` on the computer that runs the portal (Windows Firewall on a Public network needs an elevated rule). Limit that rule to the studio network.
 - `COOKIE_SECURE=true` when HTTPS terminates at the app, or configure `TRUST_PROXY=true` when HTTPS terminates at a trusted reverse proxy
 
 The Google OAuth client must allow the exact configured redirect URI. Authorized users must be created in the portal before their first Google sign-in. Google Workspace addresses are supported; authorization is based on the exact Google-verified email, not an `@gmail.com` suffix.
@@ -162,4 +162,4 @@ The Google OAuth client must allow the exact configured redirect URI. Authorized
 - Browser QA covered the redesigned request dashboard and composer, the Administrator and Representative profile views, Notifications, the request workroom, Approved Colors, Explore handoff, and the actor timeline.
 - Real Google sign-in still requires deployment-specific Google credentials and an allowed callback URL; the protocol validation and authorization logic are covered locally, but a production OAuth consent flow cannot be completed without those credentials.
 
-No Git metadata is available in this workspace, so this document describes the current filesystem snapshot rather than a commit diff.
+This document describes the current filesystem snapshot rather than a commit diff.

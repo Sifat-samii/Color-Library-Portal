@@ -3,6 +3,77 @@ function hostList(hosts) {
   return (list || []).filter(Boolean);
 }
 
+function binaryStringToBuffer(text) {
+  var buffer = new ArrayBuffer(text.length);
+  var view = new Uint8Array(buffer);
+  for (var index = 0; index < text.length; index += 1) view[index] = text.charCodeAt(index) & 255;
+  return buffer;
+}
+
+function xhrFetch(url, requestOptions) {
+  return new Promise(function (resolve, reject) {
+    if (typeof XMLHttpRequest === "undefined") {
+      if (typeof fetch === "function") {
+        Promise.resolve(fetch(url, requestOptions)).then(resolve, reject);
+        return;
+      }
+      reject(new Error("Failed to fetch"));
+      return;
+    }
+    var xhr = new XMLHttpRequest();
+    var accept = requestOptions && requestOptions.headers && requestOptions.headers.Accept;
+    var binary = Boolean(accept && accept !== "application/json");
+    try {
+      xhr.open("GET", url, true);
+    } catch (error) {
+      reject(error);
+      return;
+    }
+    if (binary) {
+      try { xhr.responseType = "arraybuffer"; } catch (error) {}
+    }
+    xhr.onload = function () {
+      var body = xhr.response;
+      var textBody = "";
+      try { textBody = typeof xhr.responseText === "string" ? xhr.responseText : ""; } catch (error) { textBody = ""; }
+      resolve({
+        ok: xhr.status >= 200 && xhr.status < 300,
+        status: xhr.status,
+        json: function () {
+          var text = typeof body === "string" ? body : textBody;
+          if (!text && body && typeof body.byteLength === "number" && typeof TextDecoder !== "undefined") {
+            text = new TextDecoder().decode(body);
+          }
+          try { return Promise.resolve(JSON.parse(text)); } catch (error) { return Promise.reject(error); }
+        },
+        arrayBuffer: function () {
+          if (body && typeof body.byteLength === "number") return Promise.resolve(body);
+          if (textBody) return Promise.resolve(binaryStringToBuffer(textBody));
+          return Promise.resolve(new ArrayBuffer(0));
+        }
+      });
+    };
+    xhr.onerror = function () { reject(new Error("Failed to fetch")); };
+    xhr.ontimeout = function () { reject(new Error("timeout")); };
+    try { xhr.send(null); } catch (error) { reject(error); }
+  });
+}
+
+function fetchWithTimeout(fetchImpl, url, requestOptions, ms) {
+  return new Promise(function (resolve, reject) {
+    var timer = setTimeout(function () {
+      reject(new Error("timeout"));
+    }, ms);
+    Promise.resolve(fetchImpl(url, requestOptions)).then(function (response) {
+      clearTimeout(timer);
+      resolve(response);
+    }, function (error) {
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
+}
+
 function createPortalClient(options) {
   var fetchImpl = options.fetchImpl;
   var preferred = "";
@@ -23,10 +94,7 @@ function createPortalClient(options) {
       try {
         var headers = { "Accept": accept };
         var requestOptions = { headers: headers };
-        if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
-          requestOptions.signal = AbortSignal.timeout(2500);
-        }
-        var response = await fetchImpl(host + path, requestOptions);
+        var response = await fetchWithTimeout(fetchImpl, host + path, requestOptions, 4000);
         if (!response.ok) {
           var payload = null;
           if (accept === "application/json" && response.json) {
@@ -46,7 +114,8 @@ function createPortalClient(options) {
       }
     }
     if (lastError && lastError.http) throw lastError;
-    throw new Error("Cannot reach the color server at " + hosts.join(" or "));
+    var detail = lastError && lastError.message ? " (" + lastError.message + ")" : "";
+    throw new Error("Cannot reach the color server at " + hosts.join(" or ") + detail);
   }
 
   return {
@@ -63,4 +132,8 @@ function createPortalClient(options) {
   };
 }
 
-module.exports = { createPortalClient: createPortalClient };
+module.exports = {
+  createPortalClient: createPortalClient,
+  fetchWithTimeout: fetchWithTimeout,
+  xhrFetch: xhrFetch
+};

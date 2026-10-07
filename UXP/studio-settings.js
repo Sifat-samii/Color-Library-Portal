@@ -4,6 +4,46 @@ function defaultServerUrls() {
   return pluginConfig.portalHosts.slice();
 }
 
+function connectionHosts(saved, portalHosts) {
+  var list = [];
+  function add(host) {
+    if (!host || list.indexOf(host) !== -1) return;
+    list.push(host);
+  }
+  (portalHosts || defaultServerUrls()).forEach(add);
+  (saved || []).forEach(add);
+  return list;
+}
+
+function isLoopbackHost(host) {
+  try {
+    var hostname = new URL(host).hostname;
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+  } catch (error) {
+    return false;
+  }
+}
+
+function orderedConnectHosts(hosts, preferred) {
+  var list = [];
+  function add(host) {
+    if (!host || list.indexOf(host) !== -1) return;
+    list.push(host);
+  }
+  add(preferred);
+  (hosts || []).forEach(add);
+  var remote = [];
+  var loopback = [];
+  list.forEach(function (host) {
+    if (isLoopbackHost(host)) loopback.push(host);
+    else remote.push(host);
+  });
+  if (preferred && isLoopbackHost(preferred)) {
+    return [preferred].concat(loopback.filter(function (host) { return host !== preferred; })).concat(remote);
+  }
+  return remote.concat(loopback);
+}
+
 function serverUrlsFromInput(text) {
   var value = String(text || "").trim().replace(/\/+$/, "");
   if (!value) return defaultServerUrls();
@@ -27,6 +67,11 @@ function createMemorySettings(initial) {
   };
 }
 
+function normalizePreferredHost(value) {
+  if (!value) return "";
+  try { return serverUrlsFromInput(String(value))[0]; } catch (error) { return ""; }
+}
+
 function normalizeRecord(parsed) {
   var serverUrls = defaultServerUrls();
   if (parsed && Array.isArray(parsed.serverUrls) && parsed.serverUrls.length) {
@@ -36,7 +81,10 @@ function normalizeRecord(parsed) {
       serverUrls = defaultServerUrls();
     }
   }
-  return { serverUrls: serverUrls };
+  return {
+    serverUrls: serverUrls,
+    preferredHost: normalizePreferredHost(parsed && parsed.preferredHost)
+  };
 }
 
 function createStudioSettings(options) {
@@ -48,15 +96,23 @@ function createStudioSettings(options) {
         var raw = await storage.getItem(storageKey);
         return normalizeRecord(raw ? JSON.parse(raw) : null);
       } catch (error) {
-        return { serverUrls: defaultServerUrls() };
+        return { serverUrls: defaultServerUrls(), preferredHost: "" };
       }
     },
     async write(next) {
+      var current = { preferredHost: "" };
+      try {
+        var raw = await storage.getItem(storageKey);
+        current = normalizeRecord(raw ? JSON.parse(raw) : null);
+      } catch (error) {}
       var serverUrls = next && Array.isArray(next.serverUrls) && next.serverUrls.length
         ? next.serverUrls.map(function (item) { return serverUrlsFromInput(item)[0]; })
         : defaultServerUrls();
-      await storage.setItem(storageKey, JSON.stringify({ serverUrls: serverUrls }));
-      return { serverUrls: serverUrls };
+      var preferredHost = next && Object.prototype.hasOwnProperty.call(next, "preferredHost")
+        ? normalizePreferredHost(next.preferredHost)
+        : current.preferredHost;
+      await storage.setItem(storageKey, JSON.stringify({ serverUrls: serverUrls, preferredHost: preferredHost }));
+      return { serverUrls: serverUrls, preferredHost: preferredHost };
     }
   };
 }
@@ -64,6 +120,9 @@ function createStudioSettings(options) {
 module.exports = {
   createMemorySettings: createMemorySettings,
   createStudioSettings: createStudioSettings,
+  connectionHosts: connectionHosts,
+  orderedConnectHosts: orderedConnectHosts,
+  isLoopbackHost: isLoopbackHost,
   defaultServerUrls: defaultServerUrls,
   serverUrlsFromInput: serverUrlsFromInput
 };

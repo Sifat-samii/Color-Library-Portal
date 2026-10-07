@@ -96,18 +96,25 @@ const localFiles = [{
   assert.equal(snap.serverOnline, true);
   assert.equal(snap.selectedClient.id, "client-1");
   assert.equal(snap.rootReady, true);
-  assert.equal(snap.localFolder, true);
   assert.equal(snap.catalog.length, 1);
   assert.equal(snap.catalog[0].id, "color-1");
   assert.equal(snap.catalog[0].refs.length, 1);
   assert.equal(snap.files.length, 1);
+  assert.equal(snap.localFolder, false);
+  assert.equal(disk.opened.length, 0);
+  assert.equal(snap.catalog[0].refs.some(function (ref) { return ref.remote && ref.versionId === "v1"; }), true);
+  snap = await session.attachLocal();
   assert.equal(disk.opened[0], "D:\\Library\\CBI");
+  assert.equal(snap.localFolder, true);
+  assert.equal(snap.catalog[0].refs[0].remote, undefined);
   assert.equal(storage.data[NAMESPACE + ":selected-client"], "client-1");
 
   storage.data[NAMESPACE + ":favorites:client-1"] = JSON.stringify({ CEIL: true });
   snap = await session.refresh();
   assert.equal(snap.favorites["color-1"], true);
   assert.equal(snap.favorites.CEIL, true);
+  snap = await session.attachLocal();
+  assert.equal(snap.localFolder, true);
 
   snap = await session.toggleFavorite("color-1");
   assert.equal(snap.favorites["color-1"], undefined);
@@ -129,6 +136,20 @@ const localFiles = [{
     clock: function () { return CLOCK; },
     namespace: NAMESPACE
   });
+  const hydrated = createLibrarySession({
+    portal: portal({}),
+    storage: offlineStorage,
+    files: filesFor(localFiles),
+    clock: function () { return CLOCK; },
+    namespace: NAMESPACE
+  });
+  snap = await hydrated.hydrate();
+  assert.equal(snap.rootReady, true);
+  assert.equal(snap.serverOnline, false);
+  assert.equal(snap.localFolder, false);
+  assert.equal(snap.catalog[0].id, "color-1");
+  assert.equal(hydrated.snapshot().selectedClient.id, "client-1");
+
   snap = await offline.start();
   assert.equal(snap.serverOnline, false);
   assert.equal(snap.cacheSavedAt, CLOCK - 500);

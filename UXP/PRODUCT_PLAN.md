@@ -1,6 +1,6 @@
 # Pixofix Color Library roadmap
 
-Last updated: 2026-10-06
+Last updated: 2026-10-07
 
 ## Implemented in this prototype
 
@@ -21,15 +21,15 @@ Last updated: 2026-10-06
 
 ## Recommended next production milestone
 
-Last updated: 2026-09-30
+Last updated: 2026-10-07
 
-Google OpenID Connect is already the production sign-in path; password login remains a local-development fallback only. Web inspection already uses `displayImage` / `/api/display` (native JPEG/PNG/GIF/WebP at full resolution; TIFF/PSD/PSB cached once as `previews/<id>.full.png`). Card thumbnails still use the 720 px JPEG `cachedPreview` path, with a small SVG fallback when Sharp cannot rasterize a format.
+Google OpenID Connect is already the production sign-in path; password login remains a local-development fallback only. Web inspection already uses `displayImage` / `/api/display` (native JPEG/PNG/GIF/WebP at full resolution; TIFF/PSD/PSB cached once as `previews/<id>.full.png`). Card thumbnails still use the 720 px JPEG `cachedPreview` path. When Sharp cannot rasterize a format, that path caches a 720 px JPEG placeholder so the Photoshop panel and web cards still receive an image.
 
 Remaining production hardening:
 
 - Put the portal behind HTTPS and a private network/VPN (`COOKIE_SECURE` / `TRUST_PROXY` as documented in the root README).
 - Add password reset, account lockout, and optional two-factor authentication for any remaining password fallback accounts.
-- Improve thumbnail rasterization for formats that still hit the SVG fallback.
+- Improve thumbnail rasterization for formats that still use the JPEG placeholder.
 - Add database/storage backup jobs and an administrator restore workflow.
 - Add retry controls and notifications for failed synchronization jobs.
 - Store the exact approved color/version IDs in Photoshop document metadata or job records.

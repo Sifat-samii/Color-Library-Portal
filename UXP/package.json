@@ -1,9 +1,9 @@
 {
   "name": "pixofix-color-library-uxp",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.11",
   "description": "Pixofix Color Library — read-only multi-client Photoshop panel",
   "scripts": {
-    "test": "node tests/catalog.test.js && node tests/portal-client.test.js && node tests/studio-settings.test.js && node tests/folder-scan.test.js && node tests/library-list.test.js && node tests/library-session.test.js"
+    "test": "node tests/catalog.test.js && node tests/portal-client.test.js && node tests/studio-settings.test.js && node tests/lan-bridge.test.js && node tests/webview-bridge.test.js && node tests/preview-data.test.js && node tests/folder-scan.test.js && node tests/library-list.test.js && node tests/library-session.test.js"
   }
 }

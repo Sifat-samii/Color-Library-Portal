@@ -43,8 +43,12 @@ npm run previews:warm
 npm audit --omit=dev
 ```
 
-Actual first-open time still depends on PostgreSQL availability, disk speed, Photoshop/UXP startup, and the size and format of newly uploaded production files. Cached steady-state paths are now optimized and measured; unsupported PSD/PSB preview decoding uses a small fallback while the original remains available for Photoshop.
+Actual first-open time still depends on PostgreSQL availability, disk speed, Photoshop/UXP startup, and the size and format of newly uploaded production files. Cached steady-state paths are now optimized and measured. When Sharp cannot decode PSD or unsupported TIFF, `cachedPreview` caches a 720 px JPEG placeholder (warn once per version id) so web cards and the Photoshop panel still receive an image; the original remains available to open in Photoshop.
 
 ## Follow-up (2026-09-25)
 
 Large inspection views (color details stage and request review) now use `displayImage` / `/api/display` (and request `…/display` routes): browser-native formats are served at full resolution from the original file; TIFF/PSD/PSB are cached once as `previews/<id>.full.png` with no resize. Library cards and small thumbnails remain on the 720 px JPEG `cachedPreview` path measured above. `npm run previews:warm` still warms only the JPEG thumbnails.
+
+## Follow-up (2026-10-07)
+
+`cachedPreview` now writes that 720 px JPEG placeholder when Sharp cannot rasterize the original. `GET /api/previews/:versionId` and `GET /api/plugin/versions/:id/preview` therefore return an image instead of an SVG or 404 JSON on those decode failures. Improving actual rasterization of those formats remains a follow-up.

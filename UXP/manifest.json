@@ -2,7 +2,7 @@
   "manifestVersion": 5,
   "id": "com.pixofix.color-library",
   "name": "Pixofix Color Library",
-  "version": "0.5.0",
+  "version": "0.5.11",
   "main": "index.html",
   "icons": [
     {
@@ -14,20 +14,22 @@
   ],
   "host": {
     "app": "PS",
-    "minVersion": "24.0.0"
+    "minVersion": "22.5.0"
   },
   "requiredPermissions": {
     "clipboard": "readAndWrite",
     "localFileSystem": "fullAccess",
     "network": {
-      "domains": [
-        "http://127.0.0.1",
-        "http://localhost",
-        "http://tudb01",
-        "http://192.168.0.112",
-        "http://pixofix-library",
-        "https://pixofix-library"
-      ]
+      "domains": "all"
+    },
+    "webview": {
+      "allow": "yes",
+      "domains": "all",
+      "enableMessageBridge": "localAndRemote"
+    },
+    "launchProcess": {
+      "schemes": ["file"],
+      "extensions": [".cmd", ".vbs", ".ps1", ".bat"]
     }
   },
   "entrypoints": [

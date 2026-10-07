@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { createPortalClient } = require("../portal-client.js");
+const { createPortalClient, fetchWithTimeout, xhrFetch } = require("../portal-client.js");
 
 function fakeFetch(routes) {
   const calls = [];
@@ -24,6 +24,11 @@ function fakeFetch(routes) {
 }
 
 (async function main() {
+  assert.equal(typeof xhrFetch, "function");
+  assert.equal(typeof fetchWithTimeout, "function");
+  const source = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "portal-client.js"), "utf8");
+  assert.doesNotMatch(source, /responseType\s*=\s*[^;]*text/);
+  assert.doesNotMatch(source, /xhr\.timeout\s*=/);
   const down = fakeFetch({});
   const client = createPortalClient({
     hosts: ["http://127.0.0.1:8787", "http://localhost:8787"],
@@ -31,10 +36,11 @@ function fakeFetch(routes) {
   });
   await assert.rejects(
     function () { return client.getJson("/api/plugin/clients"); },
-    /127\.0\.0\.1:8787 or http:\/\/localhost:8787/
+    /127\.0\.0\.1:8787 or http:\/\/localhost:8787 \(Failed to fetch\)/
   );
   assert.equal(down.calls.length, 2);
   assert.deepEqual(down.calls[0].options.headers, { "Accept": "application/json" });
+  assert.equal(Object.prototype.hasOwnProperty.call(down.calls[0].options, "signal"), false);
   assert.equal(Object.prototype.hasOwnProperty.call(down.calls[0].options.headers, "X-Plugin-Key"), false);
 
   const failover = fakeFetch({

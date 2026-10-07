@@ -35,7 +35,7 @@
       <section id="workspace" class="workspace is-hidden">
         <div class="library-controls">
           <div class="search-row">
-            <div class="search-control"><sp-textfield id="searchInput" type="search" placeholder="Search colors"></sp-textfield><button id="clearSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
+            <div class="search-control"><input id="searchInput" type="search" placeholder="Search colors" autocomplete="off"><button id="clearSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
             <div id="sortDropdown" class="sort-control">
               <button id="sortSelect" class="sort-select" type="button" aria-label="Sort colors: A–Z" aria-haspopup="listbox" aria-expanded="false" aria-controls="sortMenu">
                 <span id="sortSelectLabel" class="sort-select-label">A–Z</span>
@@ -60,7 +60,7 @@
       <section id="swatchWorkspace" class="workspace is-hidden" aria-busy="false">
         <div class="library-controls">
           <div class="search-row">
-            <div class="search-control"><sp-textfield id="swatchSearch" type="search" placeholder="Search swatches"></sp-textfield><button id="clearSwatchSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
+            <div class="search-control"><input id="swatchSearch" type="search" placeholder="Search swatches" autocomplete="off"><button id="clearSwatchSearchButton" class="clear-search is-hidden" type="button" aria-label="Clear search" title="Clear search">×</button></div>
           </div>
           <div id="shadeFilters" class="shade-filters" role="group" aria-label="Shades">
             <button class="shade-chip is-selected" type="button" data-shade="" aria-pressed="true">All</button>
@@ -117,7 +117,8 @@
         <button id="openSwatchButton" class="open-button" type="button">Open</button>
       </aside>
     </div>
-    <div id="busyOverlay" class="busy-overlay is-hidden" aria-live="polite"><div class="spinner"></div><strong id="busyTitle">Scanning approved colors…</strong><span id="busyDetail">Checking references and updates</span></div>
+    <webview id="portalWebview" class="portal-webview"></webview>
+    <div id="busyOverlay" class="busy-overlay" aria-live="polite"><div class="spinner"></div><strong id="busyTitle">Connecting to color server…</strong><span id="busyDetail">Loading approved colors</span></div>
     <script src="main.js"></script>
   </body>
 </html>

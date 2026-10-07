@@ -72,11 +72,11 @@ function createLibrarySession(options) {
     };
   }
 
-  async function scan() {
+  async function scan(useDisk) {
     if (!state.selectedClient || !state.portalCatalog) return;
     try {
       state.favorites = await readJson(clientKey("favorites", state.selectedClient.id), {});
-      var found = state.rootFolder ? await files.scan(state.rootFolder) : [];
+      var found = useDisk && state.rootFolder ? await files.scan(state.rootFolder) : [];
       state.baseline = await readJson(clientKey("baseline", state.selectedClient.id), null);
       state.catalog = catalogTools.buildManagedCatalog(found, state.baseline, state.portalCatalog);
       var migrated = false;
@@ -97,23 +97,18 @@ function createLibrarySession(options) {
     }
   }
 
-  async function openClient(clientId, offline) {
+  async function openClient(clientId, offline, warmedCatalog) {
     var client = state.clients.find(function (item) { return item.id === clientId; });
     if (!client) return snapshot();
     state.connectionError = null;
     state.notice = null;
     state.selectedClient = client;
+    state.rootFolder = null;
     await storage.set(storageKey("selected-client"), client.id);
-    try {
-      state.rootFolder = client.localFolderPath ? await files.openFolder(client.localFolderPath) : null;
-    } catch (error) {
-      state.rootFolder = null;
-    }
     var cached = await readJson(storageKey("catalog-cache:" + client.id), null);
     var cachedCatalog = cached && cached.catalog && Array.isArray(cached.catalog.colors) ? cached : null;
     if (offline) {
       if (!cachedCatalog) {
-        state.rootFolder = null;
         state.serverOnline = false;
         state.connectionError = client.code + ": No offline catalog has been saved for this client yet";
         return snapshot();
@@ -121,6 +116,11 @@ function createLibrarySession(options) {
       state.portalCatalog = cachedCatalog.catalog;
       state.cacheSavedAt = cachedCatalog.savedAt;
       state.serverOnline = false;
+    } else if (warmedCatalog && Array.isArray(warmedCatalog.colors)) {
+      state.portalCatalog = warmedCatalog;
+      state.serverOnline = true;
+      state.cacheSavedAt = clock();
+      await writeJson(storageKey("catalog-cache:" + client.id), { savedAt: state.cacheSavedAt, catalog: state.portalCatalog });
     } else {
       try {
         state.portalCatalog = await portal.getJson("/api/plugin/clients/" + encodeURIComponent(client.id) + "/catalog");
@@ -129,7 +129,6 @@ function createLibrarySession(options) {
         await writeJson(storageKey("catalog-cache:" + client.id), { savedAt: state.cacheSavedAt, catalog: state.portalCatalog });
       } catch (error) {
         if (!cachedCatalog) {
-          state.rootFolder = null;
           state.serverOnline = false;
           state.connectionError = client.code + ": " + error.message;
           return snapshot();
@@ -139,23 +138,63 @@ function createLibrarySession(options) {
         state.serverOnline = false;
       }
     }
-    await scan();
+    await scan(false);
+    return snapshot();
+  }
+
+  async function attachLocal() {
+    if (!state.selectedClient || !state.selectedClient.localFolderPath) return snapshot();
+    try {
+      state.rootFolder = await files.openFolder(state.selectedClient.localFolderPath);
+    } catch (error) {
+      state.rootFolder = null;
+      return snapshot();
+    }
+    await scan(true);
+    return snapshot();
+  }
+
+  async function hydrateFromCache() {
+    var cached = await readJson(storageKey("clients-cache"), null);
+    if (!cached || !Array.isArray(cached.clients) || !cached.clients.length) return null;
+    state.clients = cached.clients;
+    state.serverOnline = false;
+    state.connectionError = null;
+    var savedId = await storage.get(storageKey("selected-client"));
+    var selected = state.clients.find(function (client) { return client.id === savedId; }) || state.clients[0];
+    if (!selected) return null;
+    state.selectedClient = selected;
+    var catalogCache = await readJson(storageKey("catalog-cache:" + selected.id), null);
+    if (!catalogCache || !catalogCache.catalog || !Array.isArray(catalogCache.catalog.colors)) return snapshot();
+    state.portalCatalog = catalogCache.catalog;
+    state.cacheSavedAt = catalogCache.savedAt;
+    state.rootFolder = null;
+    state.favorites = await readJson(clientKey("favorites", selected.id), {});
+    state.catalog = catalogTools.buildManagedCatalog([], null, state.portalCatalog);
+    state.files = [];
+    state.catalog.forEach(function (group) {
+      (group.refs || []).forEach(function (ref) { state.files.push(ref); });
+    });
     return snapshot();
   }
 
   async function loadFromPortal() {
     state.connectionError = null;
     state.notice = null;
+    var savedId = await storage.get(storageKey("selected-client"));
     try {
+      var catalogPromise = savedId
+        ? portal.getJson("/api/plugin/clients/" + encodeURIComponent(savedId) + "/catalog").then(function (catalog) { return catalog; }, function () { return null; })
+        : Promise.resolve(null);
       var payload = await portal.getJson("/api/plugin/clients");
+      var warmed = await catalogPromise;
       var clients = payload.clients || [];
       if (!clients.length) throw new Error("No active client libraries are configured yet");
       state.clients = clients;
       state.serverOnline = true;
       await writeJson(storageKey("clients-cache"), { savedAt: clock(), clients: clients });
-      var savedId = await storage.get(storageKey("selected-client"));
       var selected = clients.find(function (client) { return client.id === savedId; }) || clients[0];
-      return openClient(selected.id, false);
+      return openClient(selected.id, false, selected && selected.id === savedId ? warmed : null);
     } catch (error) {
       state.serverOnline = false;
       var cached = await readJson(storageKey("clients-cache"), null);
@@ -194,12 +233,14 @@ function createLibrarySession(options) {
       state.cacheSavedAt = cachedCatalog.savedAt;
       state.serverOnline = false;
     }
-    await scan();
+    await scan(false);
     return snapshot();
   }
 
   return {
+    hydrate: function () { return enqueue(hydrateFromCache); },
     start: function () { return enqueue(loadFromPortal); },
+    attachLocal: function () { return enqueue(attachLocal); },
     selectClient: function (clientId) { return enqueue(function () { return openClient(clientId, false); }); },
     refresh: function () { return enqueue(reloadCatalog); },
     markReviewed: function () {

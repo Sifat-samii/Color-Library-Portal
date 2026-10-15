@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-15T21:02:18.616Z",
+  "scope": "Read-only original and staged PSD SHA-256 verification against the human-audit identities",
+  "files": [
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_01.psd",
+      "expectedSha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343",
+      "original": {
+        "bytes": 76511761,
+        "sha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 76511761,
+        "sha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_02.psd",
+      "expectedSha256": "c5d1d0a1b291c339a36e521c360474c9237cee137f7a8e8d85bb5ac6e46fd6bc",
+      "original": {
+        "bytes": 66011699,
+        "sha256": "c5d1d0a1b291c339a36e521c360474c9237cee137f7a8e8d85bb5ac6e46fd6bc",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 66011699,
+        "sha256": "c5d1d0a1b291c339a36e521c360474c9237cee137f7a8e8d85bb5ac6e46fd6bc",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_03.psd",
+      "expectedSha256": "421ec324ffc9a9f0be3af63f2774c0f09ad571fec961373cd7e4074078e7d30e",
+      "original": {
+        "bytes": 69592695,
+        "sha256": "421ec324ffc9a9f0be3af63f2774c0f09ad571fec961373cd7e4074078e7d30e",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 69592695,
+        "sha256": "421ec324ffc9a9f0be3af63f2774c0f09ad571fec961373cd7e4074078e7d30e",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_04.psd",
+      "expectedSha256": "bf11eff9ea62c9f61600dd665b5dd532c541962ce9dda11283541b4020d34a49",
+      "original": {
+        "bytes": 70107646,
+        "sha256": "bf11eff9ea62c9f61600dd665b5dd532c541962ce9dda11283541b4020d34a49",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 70107646,
+        "sha256": "bf11eff9ea62c9f61600dd665b5dd532c541962ce9dda11283541b4020d34a49",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_05.psd",
+      "expectedSha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6",
+      "original": {
+        "bytes": 69765077,
+        "sha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 69765077,
+        "sha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_06.psd",
+      "expectedSha256": "2c832afc71546efc2dd5775cdbf61d268d4279747bc6a50e88b994f011d74724",
+      "original": {
+        "bytes": 98873225,
+        "sha256": "2c832afc71546efc2dd5775cdbf61d268d4279747bc6a50e88b994f011d74724",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 98873225,
+        "sha256": "2c832afc71546efc2dd5775cdbf61d268d4279747bc6a50e88b994f011d74724",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_07.psd",
+      "expectedSha256": "8974efd5af7bbee7858c5dfaadbf53dfd262c37b73125ff394abb22993aad542",
+      "original": {
+        "bytes": 119507662,
+        "sha256": "8974efd5af7bbee7858c5dfaadbf53dfd262c37b73125ff394abb22993aad542",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 119507662,
+        "sha256": "8974efd5af7bbee7858c5dfaadbf53dfd262c37b73125ff394abb22993aad542",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_08.psd",
+      "expectedSha256": "b554319138b42392b9286651a106dfff9387c06005e81a6f8331063212f72bf7",
+      "original": {
+        "bytes": 119837091,
+        "sha256": "b554319138b42392b9286651a106dfff9387c06005e81a6f8331063212f72bf7",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 119837091,
+        "sha256": "b554319138b42392b9286651a106dfff9387c06005e81a6f8331063212f72bf7",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_01.psd",
+      "expectedSha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8",
+      "original": {
+        "bytes": 111188007,
+        "sha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 111188007,
+        "sha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_02.psd",
+      "expectedSha256": "f29eabf85d04a00b3b525be5f0a9f904f75cd8435c032091a42de19ea593731e",
+      "original": {
+        "bytes": 109761949,
+        "sha256": "f29eabf85d04a00b3b525be5f0a9f904f75cd8435c032091a42de19ea593731e",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 109761949,
+        "sha256": "f29eabf85d04a00b3b525be5f0a9f904f75cd8435c032091a42de19ea593731e",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_03.psd",
+      "expectedSha256": "b7425776859964aa380ffbefc7a6b958c997bbc67aacbd91b9a90fc2448c6576",
+      "original": {
+        "bytes": 109198305,
+        "sha256": "b7425776859964aa380ffbefc7a6b958c997bbc67aacbd91b9a90fc2448c6576",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 109198305,
+        "sha256": "b7425776859964aa380ffbefc7a6b958c997bbc67aacbd91b9a90fc2448c6576",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_04.psd",
+      "expectedSha256": "2658c96c57138deb82a943912052f870a25a4283bd2f1c4b21a4ac6233cf3ff7",
+      "original": {
+        "bytes": 137540901,
+        "sha256": "2658c96c57138deb82a943912052f870a25a4283bd2f1c4b21a4ac6233cf3ff7",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 137540901,
+        "sha256": "2658c96c57138deb82a943912052f870a25a4283bd2f1c4b21a4ac6233cf3ff7",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_05.psd",
+      "expectedSha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6",
+      "original": {
+        "bytes": 181465935,
+        "sha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 181465935,
+        "sha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_06.psd",
+      "expectedSha256": "1ff69c3d601e6519d32773cac3485eb2beaac273f8ebf73c0fd041bb554945c5",
+      "original": {
+        "bytes": 1144388569,
+        "sha256": "1ff69c3d601e6519d32773cac3485eb2beaac273f8ebf73c0fd041bb554945c5",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 1144388569,
+        "sha256": "1ff69c3d601e6519d32773cac3485eb2beaac273f8ebf73c0fd041bb554945c5",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_07.psd",
+      "expectedSha256": "61fe1749ce93fbff56eeaf843847729904c8e933abc62ac008178dec60f3983b",
+      "original": {
+        "bytes": 177841515,
+        "sha256": "61fe1749ce93fbff56eeaf843847729904c8e933abc62ac008178dec60f3983b",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 177841515,
+        "sha256": "61fe1749ce93fbff56eeaf843847729904c8e933abc62ac008178dec60f3983b",
+        "unchanged": true
+      }
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_08.psd",
+      "expectedSha256": "d24778423d9a709344b074f9b9a333b20d8ec8ece8d20df4e37a149a2326c287",
+      "original": {
+        "bytes": 178577166,
+        "sha256": "d24778423d9a709344b074f9b9a333b20d8ec8ece8d20df4e37a149a2326c287",
+        "unchanged": true
+      },
+      "staged": {
+        "bytes": 178577166,
+        "sha256": "d24778423d9a709344b074f9b9a333b20d8ec8ece8d20df4e37a149a2326c287",
+        "unchanged": true
+      }
+    }
+  ],
+  "finishedAt": "2026-10-15T21:03:00.178Z",
+  "originalsVerified": 16,
+  "stagedVerified": 16,
+  "anyMismatch": false
+}

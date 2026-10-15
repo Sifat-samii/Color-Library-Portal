@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, "..");
 const source = path.join(root, "UXP");
 const ccxName = "com.pixofix.color-library_PS.ccx";
 const ccx = path.join(source, ccxName);
-const skip = new Set([ccxName, "CSXS", "plugin-host.js", "node-http.js", "tests"]);
+const skip = new Set([ccxName, "CSXS", "plugin-host.js", "node-http.js", "tests", "recolor", "recolor-harness"]);
 const stage = fs.mkdtempSync(path.join(os.tmpdir(), "pixofix-ccx-"));
 
 function copyTree(from, to) {

@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Pixofix Recolor Lab</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <h1>Recolor Lab</h1>
+  <p class="notice">Development harness · Matte materials · Production qualification pending</p>
+  <section><h2>Source</h2><p id="sourceLabel"></p>
+    <button id="inspectSource">Inspect source layers</button>
+    <div id="sourceReview" hidden>
+      <p id="reviewSourceLabel"></p>
+      <p>Keep essential base work and disable only identified recoloring or guides. A group role covers its children unless overridden. Leave mixed or unknown work unresolved.</p>
+      <div id="sourceLayers"></div>
+      <label>New recoloring location<select id="sourceInsertion"></select></label>
+      <label>Reviewer name or initials<input id="sourceReviewer" type="text" placeholder="Retoucher reviewing this source"></label>
+      <button id="captureReviewed">Confirm roles and capture reviewed source</button>
+      <p>This records internal source preparation, without changing client approval.</p>
+    </div>
+    <button id="capture">Capture visible state (unreviewed experiment)</button>
+    <button id="saveSourceCheckpoint">Save reviewed source recovery checkpoint</button>
+    <button id="restoreSourceCheckpoint">Restore reviewed source checkpoint</button>
+    <button id="cancelSourceIO">Cancel source verification</button>
+  </section>
+  <section><h2>Material mask</h2><select id="maskSource"><option>Capture a source first</option></select><button id="mask">Use this mask</button></section>
+  <section><h2>Reference</h2><p>Open the manually approved reference in Photoshop. Select representative fabric, then sample it here.</p>
+    <button id="reference">Sample active reference selection</button><select id="target"><option value="">No reference sampled</option></select>
+  </section>
+  <section><h2>Photoshop preview</h2>
+    <select id="method"><option value="A">A · Color fill + Curves</option><option value="B">B · Hue/Saturation + Selective Color</option><option value="C">C · Gradient Map + Tone</option></select>
+    <div class="row"><button id="preview">Preview method</button><button id="fit">Compare and fit A/B/C</button></div>
+    <button id="cancelFit">Cancel fitting</button>
+    <label>Color intensity<input data-parameter="intensity" type="range" min="0" max="100" value="100"><span>100</span></label>
+    <label>Brightness<input data-parameter="lightness" type="range" min="-60" max="60" value="0"><span>0</span></label>
+    <label>Contrast<input data-parameter="contrast" type="range" min="-40" max="40" value="0"><span>0</span></label>
+    <label>Shadows<input data-parameter="shadows" type="range" min="-25" max="25" value="0"><span>0</span></label>
+    <label>Highlights<input data-parameter="highlights" type="range" min="-25" max="25" value="0"><span>0</span></label>
+    <button id="compare">Show original</button><button id="newPreview">New preview revision</button>
+  </section>
+  <section><h2>Editable result</h2><button id="apply">Apply native adjustments</button><button id="save">Save experimental PSD/PSB</button></section>
+  <p id="status" role="status" aria-live="polite">Capture a source to begin. The existing Color Library is unchanged.</p>
+  <details><summary>Measurement details</summary><pre id="quality">Not evaluated</pre></details>
+  <script src="main.js"></script>
+</body></html>

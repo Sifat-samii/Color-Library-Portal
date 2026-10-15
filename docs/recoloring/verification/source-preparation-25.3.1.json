@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-16",
+  "host": {
+    "uiLocale": "en_US",
+    "version": "25.3.1",
+    "name": "Photoshop"
+  },
+  "productionQualified": false,
+  "build": {
+    "testedBundleSha256": "9789ff6e7cb30521bd39a8f7e8f562450736e79683d42f4e586c79c16674726b",
+    "generatedAt": "2026-10-15T20:22:51.697Z",
+    "entry": "UXP/recolor/host-tests.js"
+  },
+  "cases": [
+    {
+      "name": "Reviewed source preparation preserves base retouch and places recoloring below finishing layers",
+      "status": "PASS",
+      "milliseconds": 1066,
+      "details": {
+        "sourceUnchanged": true,
+        "originalBranchPreserved": true,
+        "humanPayloadPreserved": true,
+        "finishingLabelUnchanged": true,
+        "insertion": "ROOT_ADJACENT_BELOW_FINISHING",
+        "reviewStatus": "ACCEPTED",
+        "savedMasterValidated": true
+      }
+    },
+    {
+      "name": "Pending, unresolved and stale source reviews are rejected before document creation",
+      "status": "PASS",
+      "milliseconds": 206,
+      "details": {
+        "pendingRejected": true,
+        "unresolvedRejected": true,
+        "staleRejected": true,
+        "designerWorkPreserved": true
+      }
+    },
+    {
+      "name": "Duplicate layer names use reviewed structural locations and retain independent visibility",
+      "status": "PASS",
+      "milliseconds": 620,
+      "details": {
+        "firstBranchDisabled": true,
+        "secondBranchPreserved": true,
+        "anchorUsesReviewedLocation": true
+      }
+    },
+    {
+      "name": "Different hidden human recipes cannot influence independent source-driven fitting",
+      "status": "PASS",
+      "milliseconds": 4477,
+      "details": {
+        "legacyHues": [
+          90,
+          -120
+        ],
+        "independentRecipesIdentical": true,
+        "independentRendersIdentical": true,
+        "humanGoldInputs": "NOT_PROVIDED_TO_FITTER"
+      }
+    }
+  ],
+  "cleanupErrors": [],
+  "scope": "Synthetic source-review, root-placement and hidden-recipe independence; not CBI source qualification"
+}

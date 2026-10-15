@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-16",
+  "host": "Photoshop 25.3.1 / Windows",
+  "productionQualified": false,
+  "reproduction": {
+    "document": {
+      "width": 1024,
+      "height": 768,
+      "depth": 8,
+      "profile": "Adobe RGB (1998)"
+    },
+    "target": {
+      "width": 640,
+      "height": 480
+    },
+    "passed": false,
+    "error": "Photoshop Error. Code: -1",
+    "stack": "Error: Photoshop Error. Code: -1"
+  },
+  "syntheticAfterFix": {
+    "passed": true,
+    "details": {
+      "fullMaximum": 65535,
+      "reducedMaximum": 255,
+      "width": 640,
+      "height": 480,
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1024,
+        "bottom": 768
+      },
+      "fullLab": [
+        43.59566057554914,
+        -15.339530247800104,
+        -41.24140654322319
+      ],
+      "reducedLab": [
+        43.59584900328144,
+        -15.338093977105006,
+        -41.243443448657914
+      ],
+      "sourceUnchanged": true
+    }
+  },
+  "originalFailureAfterFix": {
+    "passed": true,
+    "cleanupErrors": [],
+    "sourceUnchanged": true,
+    "reduced": {
+      "width": 416,
+      "height": 640,
+      "maximum": 255,
+      "bounds": {
+        "left": 0,
+        "top": 0,
+        "right": 1300,
+        "bottom": 2000
+      }
+    },
+    "full": {
+      "width": 1300,
+      "height": 2000,
+      "maximum": 65535
+    },
+    "source": "Recolor Sample 1\\Input\\WW115_01.psd",
+    "sourceSha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343",
+    "sourceFileUnchanged": true
+  },
+  "nativeSuite": {
+    "passed": 18,
+    "failed": 0,
+    "cleanupErrors": [],
+    "testedBundleSha256": "6fd188a926f85555cc001255cfc6e85a8b6984432d7145c35f9ad5f07beef7dd"
+  },
+  "evidence": {
+    "red": "storage/recolor-dev/eight-bit-arbitrary-red-1792090122931/report.json",
+    "green": "storage/recolor-dev/eight-bit-arbitrary-green-1792090161776/report.json",
+    "original": "storage/recolor-dev/eight-bit-original-green-1792090192565/report.json"
+  }
+}

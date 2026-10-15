@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-15T21:11:35.409Z",
+  "date": "2026-10-16",
+  "gitBaseline": "df687e6ef9fa97c18c069d506bcf90d88ef85f7f",
+  "localTag": "checkpoint/recoloring-2026-10-16",
+  "productionQualified": false,
+  "scope": "Code and metadata only; original images, generated PSB/PSD and local logs are not included",
+  "verification": {
+    "npmTest": "PASS",
+    "nativePassed": 25,
+    "nativeFailed": 0,
+    "nativeBundleSha256": "2bedce10bec9f6ee974dd8a1829776e9b728372cd428566f6169a701d5ab2467",
+    "initialDocumentsPreserved": true,
+    "unexpectedNewDocumentIds": [],
+    "originalsUnchanged": 16,
+    "stagedUnchanged": 16
+  },
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 109,
+      "sha256": "90de9f9125fa81a3367c76bd65183029a31fc14b5c624e8225a17370f01449d3",
+      "repositoryTextSha256": "90de9f9125fa81a3367c76bd65183029a31fc14b5c624e8225a17370f01449d3"
+    },
+    {
+      "path": "README.md",
+      "bytes": 30970,
+      "sha256": "0a315c3de41accc2c250239dafcb1f2e2f216980bc846721e56c5099b1385e89",
+      "repositoryTextSha256": "0a315c3de41accc2c250239dafcb1f2e2f216980bc846721e56c5099b1385e89"
+    },
+    {
+      "path": "UXP/README.md",
+      "bytes": 10298,
+      "sha256": "3b9f021e2582fc933e36a8f987613657f9efd8f76a0fcdda7319bd8b8b357435",
+      "repositoryTextSha256": "3b9f021e2582fc933e36a8f987613657f9efd8f76a0fcdda7319bd8b8b357435"
+    },
+    {
+      "path": "UXP/package.json",
+      "bytes": 585,
+      "sha256": "c2a42b9a5013bbc5d52ed3e7022bed57e777628e4c246b5d3a021da3a5a49fd2",
+      "repositoryTextSha256": "c2a42b9a5013bbc5d52ed3e7022bed57e777628e4c246b5d3a021da3a5a49fd2"
+    },
+    {
+      "path": "UXP/tests/recolor-recovery.test.js",
+      "bytes": 4930,
+      "sha256": "74c1360eac8dbe359f8fa0552dc03a7a71631e67c32de31b5903827c671c4084",
+      "repositoryTextSha256": "74c1360eac8dbe359f8fa0552dc03a7a71631e67c32de31b5903827c671c4084"
+    },
+    {
+      "path": "UXP/tests/recolor.test.js",
+      "bytes": 12045,
+      "sha256": "a645d33ec2f56ca48d612aa5dc24f3b6ac1328d9f402afe7ceda3e01da185d75",
+      "repositoryTextSha256": "a645d33ec2f56ca48d612aa5dc24f3b6ac1328d9f402afe7ceda3e01da185d75"
+    },
+    {
+      "path": "UXP/recolor-harness/index.html",
+      "bytes": 3391,
+      "sha256": "43f4645142b80f72c03dcb523404b73e5d0c1553cc25b3df8b7f9222658775f5",
+      "repositoryTextSha256": "43f4645142b80f72c03dcb523404b73e5d0c1553cc25b3df8b7f9222658775f5"
+    },
+    {
+      "path": "UXP/recolor-harness/styles.css",
+      "bytes": 1087,
+      "sha256": "60d58fe1a62fd5e1b0f66677e2ff6916209d8b281538f9972a570055c2e4033c",
+      "repositoryTextSha256": "60d58fe1a62fd5e1b0f66677e2ff6916209d8b281538f9972a570055c2e4033c"
+    },
+    {
+      "path": "UXP/recolor/benchmark.js",
+      "bytes": 11350,
+      "sha256": "6764e30b4c24fad8cea2eb1515c41ff96638314fdb5c94bdad63b4ed2d73227c",
+      "repositoryTextSha256": "6764e30b4c24fad8cea2eb1515c41ff96638314fdb5c94bdad63b4ed2d73227c"
+    },
+    {
+      "path": "UXP/recolor/color.js",
+      "bytes": 5499,
+      "sha256": "8124e1c62eee52369da13a33ce90207411626a336273e87ca055995e1f07b82c",
+      "repositoryTextSha256": "8124e1c62eee52369da13a33ce90207411626a336273e87ca055995e1f07b82c"
+    },
+    {
+      "path": "UXP/recolor/document-audit.js",
+      "bytes": 4006,
+      "sha256": "9ff499185a9dfef447a1721ee03fd1a05f664ad5804d284fdcdc3e3f31ea586c",
+      "repositoryTextSha256": "9ff499185a9dfef447a1721ee03fd1a05f664ad5804d284fdcdc3e3f31ea586c"
+    },
+    {
+      "path": "UXP/recolor/file-identity.js",
+      "bytes": 2689,
+      "sha256": "52b1b6574e301a6c7d722524cc46ec76b8c763918d4e9f7e63887bfa9abf05a7",
+      "repositoryTextSha256": "52b1b6574e301a6c7d722524cc46ec76b8c763918d4e9f7e63887bfa9abf05a7"
+    },
+    {
+      "path": "UXP/recolor/fitting.js",
+      "bytes": 3406,
+      "sha256": "a8ff5005863b0450f1e48a1d286fe7af9c6160ed91ac741977d0e0035dec29d9",
+      "repositoryTextSha256": "a8ff5005863b0450f1e48a1d286fe7af9c6160ed91ac741977d0e0035dec29d9"
+    },
+    {
+      "path": "UXP/recolor/harness-panel.js",
+      "bytes": 18593,
+      "sha256": "91e90a30edd64aa270cadd210adaae88fe65a12e528eea86de110accbe78eb7a",
+      "repositoryTextSha256": "91e90a30edd64aa270cadd210adaae88fe65a12e528eea86de110accbe78eb7a"
+    },
+    {
+      "path": "UXP/recolor/host-tests.js",
+      "bytes": 50797,
+      "sha256": "af9ab839d846deafa70ed87394ef0799ec37744c4c7eed8a1496b9427b145479",
+      "repositoryTextSha256": "af9ab839d846deafa70ed87394ef0799ec37744c4c7eed8a1496b9427b145479"
+    },
+    {
+      "path": "UXP/recolor/native-descriptors.js",
+      "bytes": 5127,
+      "sha256": "894260a675baf5811597ec0e707ae6a0fc1b355b32e218f39e3db2c11f1710c4",
+      "repositoryTextSha256": "894260a675baf5811597ec0e707ae6a0fc1b355b32e218f39e3db2c11f1710c4"
+    },
+    {
+      "path": "UXP/recolor/photoshop-adapter.js",
+      "bytes": 31177,
+      "sha256": "0e22ffe399a4b2fe6c9eddf7fcce356166726be0a942f822e41c49953da7306a",
+      "repositoryTextSha256": "0e22ffe399a4b2fe6c9eddf7fcce356166726be0a942f822e41c49953da7306a"
+    },
+    {
+      "path": "UXP/recolor/quality.js",
+      "bytes": 10285,
+      "sha256": "e2471d117f46cf150dbeb9917a1e332e61f5d7c9c3dac9f6a3b4ac4e7b9a4899",
+      "repositoryTextSha256": "e2471d117f46cf150dbeb9917a1e332e61f5d7c9c3dac9f6a3b4ac4e7b9a4899"
+    },
+    {
+      "path": "UXP/recolor/recipes.js",
+      "bytes": 3437,
+      "sha256": "94c161c12165887e1d38590260f2648fcd92045deebff4409321b6879aa863ba",
+      "repositoryTextSha256": "94c161c12165887e1d38590260f2648fcd92045deebff4409321b6879aa863ba"
+    },
+    {
+      "path": "UXP/recolor/source-checkpoint.js",
+      "bytes": 2033,
+      "sha256": "e90db83085e1916bd17bba02ddd589220bd43da070f0df581b15518c712f318b",
+      "repositoryTextSha256": "e90db83085e1916bd17bba02ddd589220bd43da070f0df581b15518c712f318b"
+    },
+    {
+      "path": "UXP/recolor/source-preparation.js",
+      "bytes": 4141,
+      "sha256": "0bb47ea9746d681c7130aa138d570eaca03df5de259bfa6d771804d4d085b15e",
+      "repositoryTextSha256": "0bb47ea9746d681c7130aa138d570eaca03df5de259bfa6d771804d4d085b15e"
+    },
+    {
+      "path": "UXP/recolor/vendor/README.md",
+      "bytes": 607,
+      "sha256": "587c4cab59f73ea6a640e97ef1d66d8835282f9120c75e784586cc6db619f2b1",
+      "repositoryTextSha256": "587c4cab59f73ea6a640e97ef1d66d8835282f9120c75e784586cc6db619f2b1"
+    },
+    {
+      "path": "UXP/recolor/vendor/js-sha256-LICENSE.txt",
+      "bytes": 1076,
+      "sha256": "0fea2e0cffe72ee17adc25c42e55daf5c87c6e9cd5b3362ee4213890bda0ee7c",
+      "repositoryTextSha256": "0fea2e0cffe72ee17adc25c42e55daf5c87c6e9cd5b3362ee4213890bda0ee7c"
+    },
+    {
+      "path": "UXP/recolor/vendor/sha256.js",
+      "bytes": 18769,
+      "sha256": "2db6c8e554fbee14672368a0d7551a8ddd841ee96c91526eb7987a0179cfc717",
+      "repositoryTextSha256": "2db6c8e554fbee14672368a0d7551a8ddd841ee96c91526eb7987a0179cfc717"
+    },
+    {
+      "path": "docs/recoloring/CAPABILITY_MATRIX.md",
+      "bytes": 7320,
+      "sha256": "681d0acbadd12247531b663f2ba66895f79fbc5c1af1b6093a20897b902ddec3",
+      "repositoryTextSha256": "681d0acbadd12247531b663f2ba66895f79fbc5c1af1b6093a20897b902ddec3"
+    },
+    {
+      "path": "docs/recoloring/CBI_DATASET_AUDIT.md",
+      "bytes": 10459,
+      "sha256": "5fe8775491e625f24c9b626e19cc194886e0072db14cb6c208892c4361fc1253",
+      "repositoryTextSha256": "5fe8775491e625f24c9b626e19cc194886e0072db14cb6c208892c4361fc1253"
+    },
+    {
+      "path": "docs/recoloring/CHECKPOINT_2026-10-16.md",
+      "bytes": 2478,
+      "sha256": "51d656bdce6cff377f281c5bdc8073982b864256e95711d5b9ae0e202474a3b2",
+      "repositoryTextSha256": "51d656bdce6cff377f281c5bdc8073982b864256e95711d5b9ae0e202474a3b2"
+    },
+    {
+      "path": "docs/recoloring/FEASIBILITY_RESULTS.md",
+      "bytes": 6926,
+      "sha256": "9d024c769da68d5f1e6c044d824816663fb6916f8789a66dde661177683b5aa2",
+      "repositoryTextSha256": "9d024c769da68d5f1e6c044d824816663fb6916f8789a66dde661177683b5aa2"
+    },
+    {
+      "path": "docs/recoloring/HUMAN_TECHNIQUE_AUDIT.md",
+      "bytes": 15176,
+      "sha256": "936eb3ecb8d0014afb7c5f9fa4ed02b226c674b75bc6c6d8e3c84be4ced2e5c2",
+      "repositoryTextSha256": "936eb3ecb8d0014afb7c5f9fa4ed02b226c674b75bc6c6d8e3c84be4ced2e5c2"
+    },
+    {
+      "path": "docs/recoloring/HUMAN_WORKFLOW_RESEARCH.md",
+      "bytes": 10842,
+      "sha256": "ebb957aa77ec8050e59c27df70abaf786abe472208285a9e74495776b0028651",
+      "repositoryTextSha256": "ebb957aa77ec8050e59c27df70abaf786abe472208285a9e74495776b0028651"
+    },
+    {
+      "path": "docs/recoloring/IMPLEMENTATION_AUDIT_2026-10-16.md",
+      "bytes": 13043,
+      "sha256": "073f66a43e0a67e9b165d2f1933eccc6f58261df8e7de7190226edd188bb1e29",
+      "repositoryTextSha256": "073f66a43e0a67e9b165d2f1933eccc6f58261df8e7de7190226edd188bb1e29"
+    },
+    {
+      "path": "docs/recoloring/MASK_PERFORMANCE.md",
+      "bytes": 2352,
+      "sha256": "361cef0f840f417d6081e0ea91c7482be7bcd7f60fce3f42150b35b7f58db0c7",
+      "repositoryTextSha256": "361cef0f840f417d6081e0ea91c7482be7bcd7f60fce3f42150b35b7f58db0c7"
+    },
+    {
+      "path": "docs/recoloring/NATIVE_ENGINE_PROGRESS.md",
+      "bytes": 5433,
+      "sha256": "db014e4c6ae28217994be88ef9f69d61c68a03aa8af77dbfd840a4224f8455d9",
+      "repositoryTextSha256": "db014e4c6ae28217994be88ef9f69d61c68a03aa8af77dbfd840a4224f8455d9"
+    },
+    {
+      "path": "docs/recoloring/OPENING_RESEARCH.md",
+      "bytes": 6802,
+      "sha256": "6680bb3de90b935ebb207f5b1826b20ccce15bc098bc85b4dedb86c4a983b160",
+      "repositoryTextSha256": "6680bb3de90b935ebb207f5b1826b20ccce15bc098bc85b4dedb86c4a983b160"
+    },
+    {
+      "path": "docs/recoloring/PHOTOSHOP_RESEARCH.md",
+      "bytes": 12732,
+      "sha256": "ddd919ae2813e3323d64293f26d305f51cecea503087edf26d669b0fca0c9fc2",
+      "repositoryTextSha256": "ddd919ae2813e3323d64293f26d305f51cecea503087edf26d669b0fca0c9fc2"
+    },
+    {
+      "path": "docs/recoloring/README.md",
+      "bytes": 17558,
+      "sha256": "b922153394a6b68dee9d5e1c1f7cf787f25c6fa582db13aab3d94305bfa7a967",
+      "repositoryTextSha256": "b922153394a6b68dee9d5e1c1f7cf787f25c6fa582db13aab3d94305bfa7a967"
+    },
+    {
+      "path": "docs/recoloring/SOURCE_AND_ENGINE_PLAN.md",
+      "bytes": 14193,
+      "sha256": "59c31cfd1d2b726b1fc4f35db8e73fa8f00bcff61d105ffc2bb76802ccca0c79",
+      "repositoryTextSha256": "59c31cfd1d2b726b1fc4f35db8e73fa8f00bcff61d105ffc2bb76802ccca0c79"
+    },
+    {
+      "path": "docs/recoloring/SOURCE_PREPARATION.md",
+      "bytes": 6994,
+      "sha256": "efdf2fd438317900104bca80d041019f080e5b42031a259d39fded9191f7242d",
+      "repositoryTextSha256": "efdf2fd438317900104bca80d041019f080e5b42031a259d39fded9191f7242d"
+    },
+    {
+      "path": "docs/recoloring/SOURCE_RECOVERY.md",
+      "bytes": 5719,
+      "sha256": "38af9732c69b28eb5316a5fcdefc39babea69f89ad49a9cebcf40ae29494ca53",
+      "repositoryTextSha256": "38af9732c69b28eb5316a5fcdefc39babea69f89ad49a9cebcf40ae29494ca53"
+    },
+    {
+      "path": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+      "bytes": 23401,
+      "sha256": "e67d41162d7c1ace813c96e368ac0f173ea2e409dd6e5970e6571e4d94128918",
+      "repositoryTextSha256": "e67d41162d7c1ace813c96e368ac0f173ea2e409dd6e5970e6571e4d94128918"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-20-case-baseline.json",
+      "bytes": 151921,
+      "sha256": "0be8537bf9a3173b0938d38f60905eb4acf32fc27f3e2f4c3adc538633bf4744",
+      "repositoryTextSha256": "0be8537bf9a3173b0938d38f60905eb4acf32fc27f3e2f4c3adc538633bf4744"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-clipping-calibration.json",
+      "bytes": 10989,
+      "sha256": "a02d85f8610c0fb87e727e1c1b75d8c5afd8e5a88bbf3ea9a19ebe97d4620a4d",
+      "repositoryTextSha256": "a02d85f8610c0fb87e727e1c1b75d8c5afd8e5a88bbf3ea9a19ebe97d4620a4d"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-corrected-masters.json",
+      "bytes": 16356,
+      "sha256": "ddcbb7bfd54e1eeba422a4480e9d7a5fee2eff593f07d23e5c74d5a73c8b92ca",
+      "repositoryTextSha256": "ddcbb7bfd54e1eeba422a4480e9d7a5fee2eff593f07d23e5c74d5a73c8b92ca"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-dataset-summary.json",
+      "bytes": 1328,
+      "sha256": "5029c927b46c88374dfaff6d88079a41d715be4579fb8a5e2f35c4793b6dcb4e",
+      "repositoryTextSha256": "5029c927b46c88374dfaff6d88079a41d715be4579fb8a5e2f35c4793b6dcb4e"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-human-techniques.json",
+      "bytes": 3715414,
+      "sha256": "c0805b101610690d6f987fb48527c12c309dd5c2be5913018e2a2c4da953a918",
+      "repositoryTextSha256": "c0805b101610690d6f987fb48527c12c309dd5c2be5913018e2a2c4da953a918"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-source-integrity.json",
+      "bytes": 2954,
+      "sha256": "68ad48abad54030393f3b233e074859740f99bd0d86e08cb2d6eabc9c6815513",
+      "repositoryTextSha256": "68ad48abad54030393f3b233e074859740f99bd0d86e08cb2d6eabc9c6815513"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-source-policy.json",
+      "bytes": 64329,
+      "sha256": "81745cbc888a1d94cd81902791226f2f9eaa4bc9d2eb7c737b7a40d4a385c5a9",
+      "repositoryTextSha256": "81745cbc888a1d94cd81902791226f2f9eaa4bc9d2eb7c737b7a40d4a385c5a9"
+    },
+    {
+      "path": "docs/recoloring/verification/cbi-three-case-pilot.json",
+      "bytes": 22058,
+      "sha256": "78599f5865f72666909edd44a21f02d62097af9a86fa2325ff5a2ef1c82ad75f",
+      "repositoryTextSha256": "78599f5865f72666909edd44a21f02d62097af9a86fa2325ff5a2ef1c82ad75f"
+    },
+    {
+      "path": "docs/recoloring/verification/checkpoint-source-integrity-2026-10-16.json",
+      "bytes": 8266,
+      "sha256": "ebc55bf9789007b508a6d28fdba2a565e171c55023e3f30a2f5ed64ec3934c03",
+      "repositoryTextSha256": "ebc55bf9789007b508a6d28fdba2a565e171c55023e3f30a2f5ed64ec3934c03"
+    },
+    {
+      "path": "docs/recoloring/verification/human-audit-engine-identity.json",
+      "bytes": 315,
+      "sha256": "38b578a55e454824ed628c50be06922776d6630a9a89ca3470341581cf72d09d",
+      "repositoryTextSha256": "38b578a55e454824ed628c50be06922776d6630a9a89ca3470341581cf72d09d"
+    },
+    {
+      "path": "docs/recoloring/verification/native-depth-read-25.3.1.json",
+      "bytes": 2010,
+      "sha256": "97f51db0978c400cc566b7af49c7e53532ecdd6c2ac30ac100698ff05c4bb6e5",
+      "repositoryTextSha256": "97f51db0978c400cc566b7af49c7e53532ecdd6c2ac30ac100698ff05c4bb6e5"
+    },
+    {
+      "path": "docs/recoloring/verification/photoshop-25.3.1.json",
+      "bytes": 19968,
+      "sha256": "160ad38fed9b050142cd940cca6e4bda31cb56c48e5cebbaf7873bd7c8c2d378",
+      "repositoryTextSha256": "160ad38fed9b050142cd940cca6e4bda31cb56c48e5cebbaf7873bd7c8c2d378"
+    },
+    {
+      "path": "docs/recoloring/verification/source-preparation-25.3.1.json",
+      "bytes": 2062,
+      "sha256": "49bc0b65d343a5ad6d6405d1611fef9498482f288d262b03a92d600854416f9e",
+      "repositoryTextSha256": "49bc0b65d343a5ad6d6405d1611fef9498482f288d262b03a92d600854416f9e"
+    },
+    {
+      "path": "docs/recoloring/verification/source-recovery-25.3.1.json",
+      "bytes": 1695,
+      "sha256": "34ed1ee01a21c081b7bb5d9c770c264bd0653aadb8bcb01b5ca71c400c167de5",
+      "repositoryTextSha256": "34ed1ee01a21c081b7bb5d9c770c264bd0653aadb8bcb01b5ca71c400c167de5"
+    },
+    {
+      "path": "package.json",
+      "bytes": 3001,
+      "sha256": "04d1f58a51b6bcc015c591b3a85d32eb4414b0d93bc99bf1df12cec81904e0f6",
+      "repositoryTextSha256": "04d1f58a51b6bcc015c591b3a85d32eb4414b0d93bc99bf1df12cec81904e0f6"
+    },
+    {
+      "path": "scripts/build-recolor-harness.js",
+      "bytes": 7025,
+      "sha256": "a798535e95290ad0778714ec0213282c0b35fb5d83950c78f72ca434a020f85e",
+      "repositoryTextSha256": "a798535e95290ad0778714ec0213282c0b35fb5d83950c78f72ca434a020f85e"
+    },
+    {
+      "path": "scripts/package-plugin.js",
+      "bytes": 1548,
+      "sha256": "ce26afaa278c450cba1109c62c79fbeeddd56c4df9e0a316540cb371bb81a96a",
+      "repositoryTextSha256": "ce26afaa278c450cba1109c62c79fbeeddd56c4df9e0a316540cb371bb81a96a"
+    },
+    {
+      "path": "scripts/recolor-dataset.js",
+      "bytes": 8730,
+      "sha256": "0ceeb9f19adfa94b80e0af20c89b8774a9f3e5d73dd567675d43149c91a68cb8",
+      "repositoryTextSha256": "0ceeb9f19adfa94b80e0af20c89b8774a9f3e5d73dd567675d43149c91a68cb8"
+    },
+    {
+      "path": "scripts/recolor-metadata.js",
+      "bytes": 3359,
+      "sha256": "959b7b0eaf66fee31846524a252a5c619ed94f75e7633cf83e02bbf68cc67c76",
+      "repositoryTextSha256": "959b7b0eaf66fee31846524a252a5c619ed94f75e7633cf83e02bbf68cc67c76"
+    },
+    {
+      "path": "scripts/recolor-review.js",
+      "bytes": 8543,
+      "sha256": "8b1b492bc17ddccd59350149b353b4c71fecc931af45ec77f203c3fa5032e423",
+      "repositoryTextSha256": "8b1b492bc17ddccd59350149b353b4c71fecc931af45ec77f203c3fa5032e423"
+    },
+    {
+      "path": "scripts/recolor-run-status.js",
+      "bytes": 2307,
+      "sha256": "79c90d18565469d4dd10d58e6a3a99c0cab9a864d12ad0a3078323d9bf0f7717",
+      "repositoryTextSha256": "79c90d18565469d4dd10d58e6a3a99c0cab9a864d12ad0a3078323d9bf0f7717"
+    },
+    {
+      "path": "scripts/run-recolor-benchmark.ps1",
+      "bytes": 867,
+      "sha256": "1ba1b2a1032d979bc984bc4a00f840f00393ebc281b59291070882d0f55d63c6",
+      "repositoryTextSha256": "1ba1b2a1032d979bc984bc4a00f840f00393ebc281b59291070882d0f55d63c6"
+    },
+    {
+      "path": "scripts/test-recolor-photoshop.ps1",
+      "bytes": 1272,
+      "sha256": "3b92dade57036e7437f489fe7762765a7c89f31a49ae39c2c3d4b05b80ae140d",
+      "repositoryTextSha256": "3b92dade57036e7437f489fe7762765a7c89f31a49ae39c2c3d4b05b80ae140d"
+    },
+    {
+      "path": "tests/recolor-dataset.test.js",
+      "bytes": 4138,
+      "sha256": "2dbae1b8779987d16b8bb27a4932164b9d2ec936e1708bcc158ae2c697b846f5",
+      "repositoryTextSha256": "2dbae1b8779987d16b8bb27a4932164b9d2ec936e1708bcc158ae2c697b846f5"
+    },
+    {
+      "path": "tests/recolor-review.test.js",
+      "bytes": 1248,
+      "sha256": "e9dc5ef40a20287a37da402298a0640b35db6f89d905e0701b1a76e6c08a151c",
+      "repositoryTextSha256": "e9dc5ef40a20287a37da402298a0640b35db6f89d905e0701b1a76e6c08a151c"
+    },
+    {
+      "path": "tests/recolor-run-status.test.js",
+      "bytes": 2184,
+      "sha256": "54f6eb39007e05f4000ce58787b504840ac328f60dca691f1e397ac900f3a368",
+      "repositoryTextSha256": "54f6eb39007e05f4000ce58787b504840ac328f60dca691f1e397ac900f3a368"
+    }
+  ],
+  "fileDigestPolicy": {
+    "sha256": "Exact workspace bytes at verification time",
+    "repositoryTextSha256": "UTF-8 text with CRLF normalized to LF, for Git checkout line-ending portability",
+    "nativeBundleSha256": "Exact module bundle executed by Photoshop"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "inspectedAt": "2026-10-15T13:04:10.572Z",
+  "datasetRoot": "Z:\\Sifat_Project_Coordinator\\Color library test\\Recolor Data\\CBI",
+  "inventorySha256": "f5a541a0c5d869769dcb8c0112a671b723772f3ed05c99211e5023c39b42cc31",
+  "samples": [
+    {
+      "sample": 1,
+      "sourceCount": 8,
+      "targets": [
+        "BLACK",
+        "CEIL",
+        "Caribbean Blue",
+        "NAVY",
+        "PEWTER",
+        "ROYAL",
+        "Teal Blue",
+        "WINE"
+      ],
+      "outputPsdExpected": false
+    },
+    {
+      "sample": 2,
+      "sourceCount": 8,
+      "targets": [
+        "Black",
+        "Carribean Blue",
+        "Ciel",
+        "Desert Taupe",
+        "Eggplant",
+        "Heather Ash",
+        "Hunter",
+        "Navy",
+        "Olive",
+        "Pewter",
+        "Pink pearl",
+        "Royal",
+        "White Gardenia",
+        "Wine"
+      ],
+      "outputPsdExpected": true
+    }
+  ],
+  "counts": {
+    "sources": 16,
+    "goldJpgs": 176,
+    "goldPsds": 112,
+    "approvedCrops": 143,
+    "approvedFull": 144,
+    "imageAssets": 591,
+    "pairs": 176,
+    "includedPairs": 168,
+    "excludedHeatherAshPairs": 8,
+    "blockingFindings": 0
+  },
+  "profiles": {
+    "Adobe RGB (1998)": 591
+  },
+  "pairedGeometry": [
+    "1300x2000"
+  ],
+  "metadataOnly": true,
+  "productionQualified": false
+}

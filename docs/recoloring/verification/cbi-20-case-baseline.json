@@ -1,0 +1,4535 @@
+{
+  "schemaVersion": 1,
+  "host": {
+    "uiLocale": "en_US",
+    "version": "25.3.1",
+    "name": "Photoshop"
+  },
+  "startedAt": "2026-10-15T13:48:19.065Z",
+  "finishedAt": "2026-10-15T13:58:23.610Z",
+  "build": {
+    "testedBundleSha256": "7c1199397034d194a92b125bd8e75a3f4ec6081704c376f532dc25e21ff63c39",
+    "entry": "UXP/recolor/benchmark.js",
+    "jobSha256": "8276d335c7037b20efd3fd9e9176c400fd96db92d00ad276640ab988b55ae6e1"
+  },
+  "executionStatus": "COMPLETED_FOR_REVIEW",
+  "productionQualified": false,
+  "referencePreparation": "PROVISIONAL_INTERNAL_ROI_NOT_CLIENT_APPROVAL",
+  "registrationStatus": "PAIRED_VIEWS_REQUIRE_ALIGNMENT_AND_REGION_REVIEW",
+  "reviewStatus": "SENIOR_RETOUCHER_AND_TIMING_REVIEW_PENDING",
+  "cleanupErrors": [],
+  "cases": [
+    {
+      "id": "sample-1/BLACK/01",
+      "target": "BLACK",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 17413,
+      "artifactDirectory": "case-01",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_01.psd",
+          "bytes": 76511761,
+          "sha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\BLACK\\WW115_BLK_01.jpg",
+          "bytes": 974052,
+          "sha256": "55874ea0a57cbf80a5b0221335b9f0de83ff00e372d2cb2cf87ace733d14c118"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\BLACK.jpg",
+          "bytes": 1217137,
+          "sha256": "3925e15f11c5d04d8e90e935d61b0c341f48d7d0f67607ca2ec612ce1e7052e1"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        21.30133104154065,
+        0,
+        0
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.2945263823364683,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.17126923845129,
+            1.7115033641666166,
+            -43.79093116775373
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\BLACK.jpg",
+            "name": "BLACK",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              21.30133104154065,
+              0,
+              0
+            ],
+            "lightness": {
+              "shadow": 15.502459535812761,
+              "median": 21.30133104154065,
+              "highlight": 23.801338692352076
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1883937,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 13219,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0139847143104588,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 5598,
+          "medianDeltaE00": 3.9432327953155215,
+          "p95DeltaE00": 11.77759120047141
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 13219,
+        "diffuseLab": [
+          15.993312423541745,
+          0,
+          0
+        ],
+        "lightness": {
+          "shadow": 10.483432718116841,
+          "median": 15.993312423541745,
+          "highlight": 23.175077350971407
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lgj0k-3",
+          "documentId": 773,
+          "groupId": 255,
+          "originalSource": {
+            "id": 86,
+            "name": "WW115_01.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_01.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 92,
+            "layerIds": [
+              116,
+              155,
+              104,
+              163,
+              102,
+              200,
+              107
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.17126923845129,
+              1.7115033641666166,
+              -43.79093116775373
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\BLACK.jpg",
+              "name": "BLACK",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                21.30133104154065,
+                0,
+                0
+              ],
+              "lightness": {
+                "shadow": 15.502459535812761,
+                "median": 21.30133104154065,
+                "highlight": 23.801338692352076
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.2945263823364683,
+          "score": 0.2945263823364683,
+          "detailRatio": 1.0334432894166334,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 22.320981573039468,
+          "score": 22.320981573039468,
+          "detailRatio": 1.0313712221640463,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 10.088103399028753,
+          "score": 10.088103399028753,
+          "detailRatio": 1.1124369695390317,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/WINE/02",
+      "target": "WINE",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 16875,
+      "artifactDirectory": "case-02",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_02.psd",
+          "bytes": 66011699,
+          "sha256": "c5d1d0a1b291c339a36e521c360474c9237cee137f7a8e8d85bb5ac6e46fd6bc"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_02.jpg",
+          "bytes": 954534,
+          "sha256": "13eb52ef5bf37403d1dce7aa1a0b3219929641b5052a57f8ca36ed6f816022eb"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\WINE.jpg",
+          "bytes": 1241804,
+          "sha256": "520abb96da8f7a05a01c5e303aa4a3027933c95f1c1a519e82d5244d5ba05466"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        23.471702548398838,
+        28.803080655189273,
+        -1.4376143817507847
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.4777287582118965,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.01859099366551,
+            1.7579000554134723,
+            -43.81877478667836
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\WINE.jpg",
+            "name": "WINE",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              23.471702548398838,
+              28.803080655189273,
+              -1.4376143817507847
+            ],
+            "lightness": {
+              "shadow": 19.162948346706372,
+              "median": 23.471702548398838,
+              "highlight": 25.236058419852377
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": -3,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 2153700,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 8043,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0041501314980203,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 3145,
+          "medianDeltaE00": 2.92568138420091,
+          "p95DeltaE00": 6.699677989952001
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 8043,
+        "diffuseLab": [
+          18.666618706262433,
+          28.939815829996245,
+          -0.4613948315246641
+        ],
+        "lightness": {
+          "shadow": 11.668174182942543,
+          "median": 18.666618706262433,
+          "highlight": 27.42853310576659
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lgxcf-6",
+          "documentId": 853,
+          "groupId": 255,
+          "originalSource": {
+            "id": 815,
+            "name": "WW115_02.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_02.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 821,
+            "layerIds": [
+              204,
+              196,
+              195,
+              156,
+              153,
+              220,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.01859099366551,
+              1.7579000554134723,
+              -43.81877478667836
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\WINE.jpg",
+              "name": "WINE",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                23.471702548398838,
+                28.803080655189273,
+                -1.4376143817507847
+              ],
+              "lightness": {
+                "shadow": 19.162948346706372,
+                "median": 23.471702548398838,
+                "highlight": 25.236058419852377
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": -3,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 1.3789538665340615,
+          "score": 1.3789538665340615,
+          "detailRatio": 1.023330768719521,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 8.190644696175392,
+          "score": 8.190644696175392,
+          "detailRatio": 1.0250215710424662,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 10.161679129191192,
+          "score": 18.47047172490007,
+          "detailRatio": 1.0605536334777859,
+          "clipping": 0.16617585191417752
+        }
+      ]
+    },
+    {
+      "id": "sample-1/CEIL/03",
+      "target": "Ceil Blue",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 15610,
+      "artifactDirectory": "case-03",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_03.psd",
+          "bytes": 69592695,
+          "sha256": "421ec324ffc9a9f0be3af63f2774c0f09ad571fec961373cd7e4074078e7d30e"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\CEIL\\WW115_CIEL_03.jpg",
+          "bytes": 1117304,
+          "sha256": "fccd5bfde40a9e577bb439d8011a0e282c460adf7e8bd3a6943d6c215b76c579"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\CEIL.jpg",
+          "bytes": 1486857,
+          "sha256": "6a7d0f952c6ffb460a7b4f4c9f93a7294c91dccff41e6e2c16ef87b64df22a8c"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        69.79905228293651,
+        -3.527238372864283,
+        -27.24889544856939
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 1.753360194255633,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            32.61424954509617,
+            1.8903118511936767,
+            -43.88692083569572
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\CEIL.jpg",
+            "name": "Ceil Blue",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              69.79905228293651,
+              -3.527238372864283,
+              -27.24889544856939
+            ],
+            "lightness": {
+              "shadow": 62.78584209236506,
+              "median": 69.79905228293651,
+              "highlight": 73.0373868850931
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 6,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 2093837,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 9097,
+        "addedClippingFraction": 0.011322413982631637,
+        "normalizedDetailRatio": 0.9295304784965602,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 3682,
+          "medianDeltaE00": 10.381067808860632,
+          "p95DeltaE00": 11.093124603064942
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 9097,
+        "diffuseLab": [
+          59.43292019502927,
+          -3.349828881499539,
+          -27.950651853683084
+        ],
+        "lightness": {
+          "shadow": 49.940764052535286,
+          "median": 59.43292019502927,
+          "highlight": 65.91487683120583
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lhalj-9",
+          "documentId": 939,
+          "groupId": 219,
+          "originalSource": {
+            "id": 901,
+            "name": "WW115_03.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_03.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 907,
+            "layerIds": [
+              182,
+              174,
+              173,
+              134,
+              131,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              32.61424954509617,
+              1.8903118511936767,
+              -43.88692083569572
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\CEIL.jpg",
+              "name": "Ceil Blue",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                69.79905228293651,
+                -3.527238372864283,
+                -27.24889544856939
+              ],
+              "lightness": {
+                "shadow": 62.78584209236506,
+                "median": 69.79905228293651,
+                "highlight": 73.0373868850931
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 6,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 2.704100969362076,
+          "score": 2.727868051952688,
+          "detailRatio": 0.8733465407082134,
+          "clipping": 0.00047534165181224003
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 2.8384843752675417,
+          "score": 2.8384843752675417,
+          "detailRatio": 0.873795143506729,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 12.25800372454233,
+          "score": 12.25800372454233,
+          "detailRatio": 1.012153053079854,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/NAVY/04",
+      "target": "NAVY",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 15744,
+      "artifactDirectory": "case-04",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_04.psd",
+          "bytes": 70107646,
+          "sha256": "bf11eff9ea62c9f61600dd665b5dd532c541962ce9dda11283541b4020d34a49"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\NAVY\\WW115_NVY_04.jpg",
+          "bytes": 996886,
+          "sha256": "79db0f4fd16c0e032fc52cb49ccf02a9d2777eae81e6f304f1e21932084409d0"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\NAVY.jpg",
+          "bytes": 1284071,
+          "sha256": "f9c59a08f46e111f08edec515fe45fce53d81f26ad503bdc7f7f7cc2fb668d40"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        21.21197653680359,
+        3.104048731714326,
+        -21.545070322257942
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.3132650426545897,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.45623367288691,
+            1.6215725772436296,
+            -43.7377096506356
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\NAVY.jpg",
+            "name": "NAVY",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              21.21197653680359,
+              3.104048731714326,
+              -21.545070322257942
+            ],
+            "lightness": {
+              "shadow": 15.912975868440174,
+              "median": 21.21197653680359,
+              "highlight": 23.915438203319518
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 2029241,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 10847,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0067456929536882,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 4147,
+          "medianDeltaE00": 4.220043736424752,
+          "p95DeltaE00": 9.930727831845308
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 10847,
+        "diffuseLab": [
+          15.736835939706747,
+          3.475523101266531,
+          -21.815286977316205
+        ],
+        "lightness": {
+          "shadow": 9.816177630306267,
+          "median": 15.736835939706747,
+          "highlight": 26.685706767119406
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lhnao-c",
+          "documentId": 1024,
+          "groupId": 210,
+          "originalSource": {
+            "id": 986,
+            "name": "WW115_04.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_04.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 992,
+            "layerIds": [
+              174,
+              166,
+              165,
+              126,
+              123,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.45623367288691,
+              1.6215725772436296,
+              -43.7377096506356
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\NAVY.jpg",
+              "name": "NAVY",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                21.21197653680359,
+                3.104048731714326,
+                -21.545070322257942
+              ],
+              "lightness": {
+                "shadow": 15.912975868440174,
+                "median": 21.21197653680359,
+                "highlight": 23.915438203319518
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.3132650426545897,
+          "score": 0.3132650426545897,
+          "detailRatio": 1.015393940457656,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 6.819188919496978,
+          "score": 6.819188919496978,
+          "detailRatio": 1.0174041206388356,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 10.064422897275538,
+          "score": 10.064422897275538,
+          "detailRatio": 1.0106668338645044,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/PEWTER/05",
+      "target": "PEWTER",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 16200,
+      "artifactDirectory": "case-05",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_05.psd",
+          "bytes": 69765077,
+          "sha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\PEWTER\\WW115_PWT_05.jpg",
+          "bytes": 936777,
+          "sha256": "065d3a04030854e704617d157bd23c9fb456876bfbde113fcbb5deac53902119"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\PEWTER.jpg",
+          "bytes": 1242078,
+          "sha256": "fe23183e93ca1d18f7747c8421211bde2cfce26a6815225d3164d98abd7214f7"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        34.353159014990595,
+        2.094273197640023,
+        -4.964057068519844
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.42532670474654455,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.93776884448738,
+            1.4722068368195895,
+            -43.65004447784685
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\PEWTER.jpg",
+            "name": "PEWTER",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              34.353159014990595,
+              2.094273197640023,
+              -4.964057068519844
+            ],
+            "lightness": {
+              "shadow": 28.54323889709108,
+              "median": 34.35261070282666,
+              "highlight": 36.88893293141765
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1893297,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 13463,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 0.9962987899713724,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 4729,
+          "medianDeltaE00": 4.195353477906228,
+          "p95DeltaE00": 6.171621622150621
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 13463,
+        "diffuseLab": [
+          28.42303610944454,
+          2.2032019125194924,
+          -5.185673444068007
+        ],
+        "lightness": {
+          "shadow": 24.090580554950336,
+          "median": 28.42303610944454,
+          "highlight": 34.36404038946276
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lhzzd-f",
+          "documentId": 1109,
+          "groupId": 207,
+          "originalSource": {
+            "id": 1071,
+            "name": "WW115_05.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_05.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1077,
+            "layerIds": [
+              165,
+              157,
+              156,
+              117,
+              114,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.93776884448738,
+              1.4722068368195895,
+              -43.65004447784685
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\PEWTER.jpg",
+              "name": "PEWTER",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                34.353159014990595,
+                2.094273197640023,
+                -4.964057068519844
+              ],
+              "lightness": {
+                "shadow": 28.54323889709108,
+                "median": 34.35261070282666,
+                "highlight": 36.88893293141765
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.42532670474654455,
+          "score": 0.42532670474654455,
+          "detailRatio": 0.9946900275796472,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 13.492862844936475,
+          "score": 13.492862844936475,
+          "detailRatio": 0.997050203560795,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 10.16878257137951,
+          "score": 10.16878257137951,
+          "detailRatio": 1.0462939950058068,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/ROYAL/06",
+      "target": "ROYAL",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 21667,
+      "artifactDirectory": "case-06",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_06.psd",
+          "bytes": 98873225,
+          "sha256": "2c832afc71546efc2dd5775cdbf61d268d4279747bc6a50e88b994f011d74724"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\ROYAL\\WW115_ROYAL_06.jpg",
+          "bytes": 1262920,
+          "sha256": "d01872529ca5346a862311cc9ee8dcf6cf3f53437bb9243d5bf879937a8b5f5b"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\ROYAL.jpg",
+          "bytes": 1402486,
+          "sha256": "54950ce15993d679bbf1a958e967c097d49c198312cbcdbc4a10da5d62a23b1e"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        38.115964063541725,
+        -0.30384798565530335,
+        -42.72891942671973
+      ],
+      "winner": {
+        "method": "B",
+        "evaluations": 16,
+        "anchorDeltaE00": 1.2987053897842604,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "B",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            60.34413003594181,
+            -3.0343451151697565,
+            -28.39469083045052
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\ROYAL.jpg",
+            "name": "ROYAL",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              38.115964063541725,
+              -0.30384798565530335,
+              -42.72891942671973
+            ],
+            "lightness": {
+              "shadow": 32.56936027081626,
+              "median": 38.115964063541725,
+              "highlight": 40.536929505057415
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": -0.4609217838760742,
+            "saturation": 26.512694286781738,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 945049,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 31842,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0404822075744045,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 12414,
+          "medianDeltaE00": 4.382505740584909,
+          "p95DeltaE00": 8.61575940556904
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 31842,
+        "diffuseLab": [
+          33.81276378728404,
+          1.9042449688301821,
+          -43.6262771672365
+        ],
+        "lightness": {
+          "shadow": 25.502533498766454,
+          "median": 33.81276378728404,
+          "highlight": 38.92049904504024
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lid98-i",
+          "documentId": 1192,
+          "groupId": 269,
+          "originalSource": {
+            "id": 1156,
+            "name": "WW115_06.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_06.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1160,
+            "layerIds": [
+              189,
+              181,
+              232,
+              141,
+              138,
+              234,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "B",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              60.34413003594181,
+              -3.0343451151697565,
+              -28.39469083045052
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\ROYAL.jpg",
+              "name": "ROYAL",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                38.115964063541725,
+                -0.30384798565530335,
+                -42.72891942671973
+              ],
+              "lightness": {
+                "shadow": 32.56936027081626,
+                "median": 38.115964063541725,
+                "highlight": 40.536929505057415
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": -0.4609217838760742,
+              "saturation": 26.512694286781738,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 1.3128543116869864,
+          "score": 1.3377564817332332,
+          "detailRatio": 1.0359285481070981,
+          "clipping": 0.0004980434009249378
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 1.2987053897842604,
+          "score": 1.2987053897842604,
+          "detailRatio": 1.0373482353129062,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 4.468769455286414,
+          "score": 4.468769455286414,
+          "detailRatio": 1.01927395267772,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/Caribbean Blue/07",
+      "target": "Caribbean Blue",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 23089,
+      "artifactDirectory": "case-07",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_07.psd",
+          "bytes": 119507662,
+          "sha256": "8974efd5af7bbee7858c5dfaadbf53dfd262c37b73125ff394abb22993aad542"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\Caribbean Blue\\WW115_CAR_07.jpg",
+          "bytes": 1677438,
+          "sha256": "79e18a60994c772c55fad172cadf90b0c4f521f63031df5757c67cae5ae7e373"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\Carribean Blue.jpg",
+          "bytes": 1290205,
+          "sha256": "e0e51612610c3317ee6528a94ebea8a7c61d764dce7e38be6ae64c113a2875d3"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        37.14152415073572,
+        -17.559218609781603,
+        -15.119293063561013
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.25345729654400306,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            65.14436383971672,
+            -3.074354155419401,
+            -27.996253392762505
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\Carribean Blue.jpg",
+            "name": "Caribbean Blue",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              37.14152415073572,
+              -17.559218609781603,
+              -15.119293063561013
+            ],
+            "lightness": {
+              "shadow": 30.625707727202503,
+              "median": 37.14152415073572,
+              "highlight": 39.8283540567483
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": -3,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 789659,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 33833,
+        "addedClippingFraction": 0.0042561995684686545,
+        "normalizedDetailRatio": 1.049572654780943,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 12675,
+          "medianDeltaE00": 2.8406658268738143,
+          "p95DeltaE00": 10.740539649726724
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 33833,
+        "diffuseLab": [
+          30.022363496711684,
+          -17.687791159480383,
+          -15.54076033570242
+        ],
+        "lightness": {
+          "shadow": 15.971525281904668,
+          "median": 30.022363496711684,
+          "highlight": 43.04736739127655
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9liuo4-l",
+          "documentId": 1272,
+          "groupId": 209,
+          "originalSource": {
+            "id": 1236,
+            "name": "WW115_07.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_07.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1240,
+            "layerIds": [
+              174,
+              166,
+              165,
+              124,
+              121,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              65.14436383971672,
+              -3.074354155419401,
+              -27.996253392762505
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\Carribean Blue.jpg",
+              "name": "Caribbean Blue",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                37.14152415073572,
+                -17.559218609781603,
+                -15.119293063561013
+              ],
+              "lightness": {
+                "shadow": 30.625707727202503,
+                "median": 37.14152415073572,
+                "highlight": 39.8283540567483
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": -3,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 1.8660128202031396,
+          "score": 2.0015495784251587,
+          "detailRatio": 1.0319182036918402,
+          "clipping": 0.0027107351644403803
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 5.001506418989611,
+          "score": 5.729812372809135,
+          "detailRatio": 1.0317118808811419,
+          "clipping": 0.014566119076390476
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 7.873313156985954,
+          "score": 7.873313156985954,
+          "detailRatio": 1.007758982306478,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-1/Teal Blue/08",
+      "target": "Teal Blue",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 22411,
+      "artifactDirectory": "case-08",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_08.psd",
+          "bytes": 119837091,
+          "sha256": "b554319138b42392b9286651a106dfff9387c06005e81a6f8331063212f72bf7"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\Teal Blue\\WW115_TLB_08.jpg",
+          "bytes": 1595728,
+          "sha256": "a91fc611a2228d7f1d18f893d7328aa48c9e46a36b1bef1e2f077f023c802f71"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\Teal Blue.jpg",
+          "bytes": 2442436,
+          "sha256": "ffc513a46cc5b82bc55561cfa80bd46024746174ed476da67a115acb17587fea"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        53.2991192004408,
+        -57.89875114556855,
+        -12.47376250730079
+      ],
+      "winner": {
+        "method": "C",
+        "evaluations": 16,
+        "anchorDeltaE00": 6.882068128926113,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "C",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            63.48505291458058,
+            -3.0658915063827563,
+            -28.127410872288028
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\Teal Blue.jpg",
+            "name": "Teal Blue",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              53.2991192004408,
+              -57.89875114556855,
+              -12.47376250730079
+            ],
+            "lightness": {
+              "shadow": 43.04879454069058,
+              "median": 53.2991192004408,
+              "highlight": 58.082307142673
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 4,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1002005,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 30528,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0078577204604213,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 11862,
+          "medianDeltaE00": 12.539765462015918,
+          "p95DeltaE00": 17.897654818677896
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 30528,
+        "diffuseLab": [
+          47.21783660706893,
+          -51.962552308445765,
+          -9.029603542062837
+        ],
+        "lightness": {
+          "shadow": 30.758352001476133,
+          "median": 47.21783660706893,
+          "highlight": 57.21000310183159
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9ljd1o-o",
+          "documentId": 1352,
+          "groupId": 197,
+          "originalSource": {
+            "id": 1316,
+            "name": "WW115_08.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_08.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1320,
+            "layerIds": [
+              167,
+              159,
+              158,
+              114,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "C",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              63.48505291458058,
+              -3.0658915063827563,
+              -28.127410872288028
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\Teal Blue.jpg",
+              "name": "Teal Blue",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                53.2991192004408,
+                -57.89875114556855,
+                -12.47376250730079
+              ],
+              "lightness": {
+                "shadow": 43.04879454069058,
+                "median": 53.2991192004408,
+                "highlight": 58.082307142673
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 4,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 7.049970223737289,
+          "score": 16.61379724192046,
+          "detailRatio": 1.0008472765269592,
+          "clipping": 0.1912765403636634
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 9.805973875785234,
+          "score": 29.721937137600577,
+          "detailRatio": 0.9998042356452111,
+          "clipping": 0.39831926523630684
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 6.218431663138834,
+          "score": 12.614148020555263,
+          "detailRatio": 0.9744497211210589,
+          "clipping": 0.12791432714832857
+        }
+      ]
+    },
+    {
+      "id": "sample-1/WINE/01",
+      "target": "WINE",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 16587,
+      "artifactDirectory": "case-09",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_01.psd",
+          "bytes": 76511761,
+          "sha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_01.jpg",
+          "bytes": 1018346,
+          "sha256": "304e6b8c5748a50b76b63892d9a2e6018164e5e9a8490004a1c6c82b760c2ed2"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\WINE.jpg",
+          "bytes": 1241804,
+          "sha256": "520abb96da8f7a05a01c5e303aa4a3027933c95f1c1a519e82d5244d5ba05466"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        23.471702548398838,
+        28.803080655189273,
+        -1.4376143817507847
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.627092639680567,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.17126923845129,
+            1.7115033641666166,
+            -43.79093116775373
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\WINE.jpg",
+            "name": "WINE",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              23.471702548398838,
+              28.803080655189273,
+              -1.4376143817507847
+            ],
+            "lightness": {
+              "shadow": 19.162948346706372,
+              "median": 23.471702548398838,
+              "highlight": 25.236058419852377
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": -3,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1883937,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 13219,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0149520853483427,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 5598,
+          "medianDeltaE00": 2.2517878342090705,
+          "p95DeltaE00": 10.852991940719264
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 13219,
+        "diffuseLab": [
+          20.06985951022844,
+          28.892545191479268,
+          -0.5981548847717733
+        ],
+        "lightness": {
+          "shadow": 12.590861509761108,
+          "median": 20.06985951022844,
+          "highlight": 29.67641147681462
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9ljul6-r",
+          "documentId": 1421,
+          "groupId": 255,
+          "originalSource": {
+            "id": 86,
+            "name": "WW115_01.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_01.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 92,
+            "layerIds": [
+              116,
+              155,
+              104,
+              163,
+              102,
+              200,
+              107
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.17126923845129,
+              1.7115033641666166,
+              -43.79093116775373
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\WINE.jpg",
+              "name": "WINE",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                23.471702548398838,
+                28.803080655189273,
+                -1.4376143817507847
+              ],
+              "lightness": {
+                "shadow": 19.162948346706372,
+                "median": 23.471702548398838,
+                "highlight": 25.236058419852377
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": -3,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 1.2167114632728926,
+          "score": 1.2167114632728926,
+          "detailRatio": 1.0274052631755168,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 8.105371360450608,
+          "score": 8.109557212271454,
+          "detailRatio": 1.029587866550534,
+          "clipping": 0.00008371703641691084
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 10.10648698809745,
+          "score": 18.83817388638125,
+          "detailRatio": 1.0932204830084862,
+          "clipping": 0.17463373796567602
+        }
+      ]
+    },
+    {
+      "id": "sample-1/WINE/05",
+      "target": "WINE",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 16274,
+      "artifactDirectory": "case-10",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 1\\Input\\WW115_05.psd",
+          "bytes": 69765077,
+          "sha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6"
+        },
+        "gold": {
+          "relative": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_05.jpg",
+          "bytes": 951821,
+          "sha256": "5350798a5a3210a7713dc052e62261eed8c7380d79cddf6e0b8a4e77ee13fc6f"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\WINE.jpg",
+          "bytes": 1241804,
+          "sha256": "520abb96da8f7a05a01c5e303aa4a3027933c95f1c1a519e82d5244d5ba05466"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        23.471702548398838,
+        28.803080655189273,
+        -1.4376143817507847
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.40061011618624637,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            33.93776884448738,
+            1.4722068368195895,
+            -43.65004447784685
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\WINE.jpg",
+            "name": "WINE",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              23.471702548398838,
+              28.803080655189273,
+              -1.4376143817507847
+            ],
+            "lightness": {
+              "shadow": 19.162948346706372,
+              "median": 23.471702548398838,
+              "highlight": 25.236058419852377
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": -3,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1893297,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 13463,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0039238402084991,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 4729,
+          "medianDeltaE00": 2.8281747000339568,
+          "p95DeltaE00": 4.465836222993326
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 13463,
+        "diffuseLab": [
+          19.13607812163839,
+          28.939815829996245,
+          -0.4613948315246641
+        ],
+        "lightness": {
+          "shadow": 14.452811642434845,
+          "median": 19.13607812163839,
+          "highlight": 25.152007006828853
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lk876-u",
+          "documentId": 1501,
+          "groupId": 207,
+          "originalSource": {
+            "id": 1463,
+            "name": "WW115_05.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 1\\Input\\WW115_05.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1469,
+            "layerIds": [
+              165,
+              157,
+              156,
+              117,
+              114,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              33.93776884448738,
+              1.4722068368195895,
+              -43.65004447784685
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\WINE.jpg",
+              "name": "WINE",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                23.471702548398838,
+                28.803080655189273,
+                -1.4376143817507847
+              ],
+              "lightness": {
+                "shadow": 19.162948346706372,
+                "median": 23.471702548398838,
+                "highlight": 25.236058419852377
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": -3,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 1.4625552918828657,
+          "score": 1.4625552918828657,
+          "detailRatio": 1.036300302597836,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 8.40574672817971,
+          "score": 8.414269697582249,
+          "detailRatio": 1.0399521794581652,
+          "clipping": 0.0001704593880507969
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 9.83948279708321,
+          "score": 10.88354654889434,
+          "detailRatio": 1.0389378271191652,
+          "clipping": 0.02088127503622262
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Black/01",
+      "target": "Black",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 18037,
+      "artifactDirectory": "case-11",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_01.psd",
+          "bytes": 111188007,
+          "sha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Black\\JPG\\HH00074_BLKN_01.jpg",
+          "bytes": 998334,
+          "sha256": "0bb99cdb850791b2cf0b6c2c88edeabed132a2ba9236badd04f2b812c91d83f3"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\BLACK.jpg",
+          "bytes": 1217137,
+          "sha256": "3925e15f11c5d04d8e90e935d61b0c341f48d7d0f67607ca2ec612ce1e7052e1"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        21.30133104154065,
+        0,
+        0
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 4,
+        "anchorDeltaE00": 0.035775817338071544,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            77.00200435534877,
+            6.429004074713307,
+            15.990547901028718
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\BLACK.jpg",
+            "name": "Black",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              21.30133104154065,
+              0,
+              0
+            ],
+            "lightness": {
+              "shadow": 15.502459535812761,
+              "median": 21.30133104154065,
+              "highlight": 23.801338692352076
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1760861,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 15844,
+        "addedClippingFraction": 0.00006311537490532694,
+        "normalizedDetailRatio": 0.9770470161448107,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 6454,
+          "medianDeltaE00": 3.3711363385821507,
+          "p95DeltaE00": 9.903743681934477
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 15844,
+        "diffuseLab": [
+          20.161308428280094,
+          0,
+          0
+        ],
+        "lightness": {
+          "shadow": 15.46073415355194,
+          "median": 20.161308428280094,
+          "highlight": 23.67100520712198
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lklda-x",
+          "documentId": 1589,
+          "groupId": 482,
+          "originalSource": {
+            "id": 1549,
+            "name": "HH00074_01.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_01.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1554,
+            "layerIds": [
+              397,
+              332,
+              245,
+              339,
+              335,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              77.00200435534877,
+              6.429004074713307,
+              15.990547901028718
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\BLACK.jpg",
+              "name": "Black",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                21.30133104154065,
+                0,
+                0
+              ],
+              "lightness": {
+                "shadow": 15.502459535812761,
+                "median": 21.30133104154065,
+                "highlight": 23.801338692352076
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.035775817338071544,
+          "score": 0.035775817338071544,
+          "detailRatio": 0.9693149368031275,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 22.38376319086337,
+          "score": 22.39092394990383,
+          "detailRatio": 0.9665146123535582,
+          "clipping": 0.00014321518080916577
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 12.968278253513875,
+          "score": 12.968278253513875,
+          "detailRatio": 1.0280807416678226,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/White Gardenia/02",
+      "target": "White Gardenia",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 20384,
+      "artifactDirectory": "case-12",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_02.psd",
+          "bytes": 109761949,
+          "sha256": "f29eabf85d04a00b3b525be5f0a9f904f75cd8435c032091a42de19ea593731e"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\White Gardenia\\JPG\\HH00074_WTGD_02.jpg",
+          "bytes": 867205,
+          "sha256": "cdd72cb1428b3015dc9082d41b5526c44248dd4e0e118f48fcbafa1af2e3eea1"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\White Gardenia.jpg",
+          "bytes": 1376299,
+          "sha256": "2a26dbd32f3beb646106627f21a1650cb4f4752bf8f85b45b4f168d794f77f51"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        91.42237514604592,
+        0.33433302859620095,
+        5.128287875326554
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.29506717014457007,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            79.44265479834304,
+            5.60749324562948,
+            14.608989750945
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\White Gardenia.jpg",
+            "name": "White Gardenia",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              91.42237514604592,
+              0.33433302859620095,
+              5.128287875326554
+            ],
+            "lightness": {
+              "shadow": 86.53695301272093,
+              "median": 91.42214436293861,
+              "highlight": 93.10676671060088
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 2144606,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 8324,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0381506885011431,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 3115,
+          "medianDeltaE00": 1.508103615263762,
+          "p95DeltaE00": 3.778786215042729
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 8324,
+        "diffuseLab": [
+          89.03534742065145,
+          0.7343328439973762,
+          5.215005406332551
+        ],
+        "lightness": {
+          "shadow": 83.80290578609382,
+          "median": 89.03534742065145,
+          "highlight": 91.2735983424474
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9ll042-10",
+          "documentId": 1663,
+          "groupId": 381,
+          "originalSource": {
+            "id": 1624,
+            "name": "HH00074_02.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_02.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1628,
+            "layerIds": [
+              109,
+              247,
+              107,
+              256,
+              131,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              79.44265479834304,
+              5.60749324562948,
+              14.608989750945
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\White Gardenia.jpg",
+              "name": "White Gardenia",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                91.42237514604592,
+                0.33433302859620095,
+                5.128287875326554
+              ],
+              "lightness": {
+                "shadow": 86.53695301272093,
+                "median": 91.42214436293861,
+                "highlight": 93.10676671060088
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.29506717014457007,
+          "score": 0.29506717014457007,
+          "detailRatio": 1.0672544874129657,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 6.232107186811205,
+          "score": 6.232107186811205,
+          "detailRatio": 1.0605229313375886,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 4.218855278227881,
+          "score": 4.218855278227881,
+          "detailRatio": 1.490708062340851,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Desert Taupe/03",
+      "target": "Desert Taupe",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 17849,
+      "artifactDirectory": "case-13",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_03.psd",
+          "bytes": 109198305,
+          "sha256": "b7425776859964aa380ffbefc7a6b958c997bbc67aacbd91b9a90fc2448c6576"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Desert Taupe\\JPG\\HH00074_DTTP_03.jpg",
+          "bytes": 1020789,
+          "sha256": "ba2791f40a8339742a5b9901a4b2b86e95982b79eac556849c675aad27a5ad79"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\Desert Taupe.jpg",
+          "bytes": 1331942,
+          "sha256": "3d7beea41447b7890f02067a1c0a23e80fa547ee109dc0fabc5862facfaae765"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.38,
+        "top": 0.45,
+        "right": 0.6,
+        "bottom": 0.6
+      },
+      "referenceDiffuseLab": [
+        78.222546073709,
+        5.965833206133309,
+        14.45376131685775
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 4,
+        "anchorDeltaE00": 0.17931876787173687,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            78.85249967341213,
+            5.837523569930308,
+            15.231620777020694
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\Desert Taupe.jpg",
+            "name": "Desert Taupe",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              78.222546073709,
+              5.965833206133309,
+              14.45376131685775
+            ],
+            "lightness": {
+              "shadow": 74.42804398071162,
+              "median": 78.222546073709,
+              "highlight": 82.20811880602945
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1886330,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 13246,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.004251750624943,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 5020,
+          "medianDeltaE00": 1.2354034182170057,
+          "p95DeltaE00": 2.326373528387862
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 13246,
+        "diffuseLab": [
+          78.9358406352504,
+          6.011982634413327,
+          15.862254005825749
+        ],
+        "lightness": {
+          "shadow": 72.40573761934402,
+          "median": 78.8717316005835,
+          "highlight": 84.15588401372821
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9llgds-13",
+          "documentId": 1748,
+          "groupId": 339,
+          "originalSource": {
+            "id": 1708,
+            "name": "HH00074_03.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_03.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1713,
+            "layerIds": [
+              213,
+              219,
+              203,
+              114,
+              202,
+              116,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              78.85249967341213,
+              5.837523569930308,
+              15.231620777020694
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\Desert Taupe.jpg",
+              "name": "Desert Taupe",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                78.222546073709,
+                5.965833206133309,
+                14.45376131685775
+              ],
+              "lightness": {
+                "shadow": 74.42804398071162,
+                "median": 78.222546073709,
+                "highlight": 82.20811880602945
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.17931876787173687,
+          "score": 0.17931876787173687,
+          "detailRatio": 1.0047524673657253,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 0.37766473583764404,
+          "score": 0.37766473583764404,
+          "detailRatio": 0.9996524265423814,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 12.071362964791772,
+          "score": 12.071362964791772,
+          "detailRatio": 1.0794599536126324,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Eggplant/04",
+      "target": "Eggplant",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 24141,
+      "artifactDirectory": "case-14",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_04.psd",
+          "bytes": 137540901,
+          "sha256": "2658c96c57138deb82a943912052f870a25a4283bd2f1c4b21a4ac6233cf3ff7"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Eggplant\\JPG\\HH00074_EGGPL_04.jpg",
+          "bytes": 798735,
+          "sha256": "831bc000fc230e3cbce8e8eb253531de727565396eb1bd55f687fd9fd06d2685"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\EGGPLANT.jpg",
+          "bytes": 1334215,
+          "sha256": "24b66a5cf77c088fa86d2f634f2bd2c33688de5c685ff428105c8d235c8d4ca7"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        29.624534134112274,
+        27.274321025632556,
+        -16.819913461736277
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.26198755823679676,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            79.67362470585284,
+            5.773766311461537,
+            15.12391716306205
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\EGGPLANT.jpg",
+            "name": "Eggplant",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              29.624534134112274,
+              27.274321025632556,
+              -16.819913461736277
+            ],
+            "lightness": {
+              "shadow": 24.90180099816665,
+              "median": 29.625538152857324,
+              "highlight": 32.63258034724221
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1933743,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 12423,
+        "addedClippingFraction": 0.03533768010947436,
+        "normalizedDetailRatio": 0.9602322767234885,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 4793,
+          "medianDeltaE00": 6.600928276197576,
+          "p95DeltaE00": 17.44361604902565
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 12423,
+        "diffuseLab": [
+          23.943585485885528,
+          27.91939205462465,
+          -17.197555596037617
+        ],
+        "lightness": {
+          "shadow": 16.83926287422821,
+          "median": 23.943585485885528,
+          "highlight": 27.63311071049747
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lluvw-16",
+          "documentId": 1822,
+          "groupId": 458,
+          "originalSource": {
+            "id": 1782,
+            "name": "HH00074_04.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_04.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1787,
+            "layerIds": [
+              299,
+              310,
+              198,
+              341,
+              200,
+              194,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              79.67362470585284,
+              5.773766311461537,
+              15.12391716306205
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\EGGPLANT.jpg",
+              "name": "Eggplant",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                29.624534134112274,
+                27.274321025632556,
+                -16.819913461736277
+              ],
+              "lightness": {
+                "shadow": 24.90180099816665,
+                "median": 29.625538152857324,
+                "highlight": 32.63258034724221
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.26198755823679676,
+          "score": 2.100922244349669,
+          "detailRatio": 0.9690938100469225,
+          "clipping": 0.03677869372225745
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 2.951067433950343,
+          "score": 2.955596829728946,
+          "detailRatio": 0.9743711704370737,
+          "clipping": 0.00009058791557206268
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 17.10290939997743,
+          "score": 17.10290939997743,
+          "detailRatio": 1.0202507844640258,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Hunter/05",
+      "target": "Hunter Green",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 29813,
+      "artifactDirectory": "case-15",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_05.psd",
+          "bytes": 181465935,
+          "sha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Hunter\\JPG\\HH00074_HUNTR_05.jpg",
+          "bytes": 857410,
+          "sha256": "e509c268703efd44af6da168c477fee17f083e981d52db39535c80b200fe1cf2"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\HUNTER GREEN.jpg",
+          "bytes": 1822382,
+          "sha256": "18c125da52cb9666d8a3ac443fc2f821f3970b4af9c93a447986ea04667281b5"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        36.24509084665751,
+        -52.074354177346656,
+        3.8560819451878725
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 3.3402382598745834,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            78.29566180694114,
+            5.859670722996868,
+            14.135029091176055
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\HUNTER GREEN.jpg",
+            "name": "Hunter Green",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              36.24509084665751,
+              -52.074354177346656,
+              3.8560819451878725
+            ],
+            "lightness": {
+              "shadow": 28.95871610924719,
+              "median": 36.24509084665751,
+              "highlight": 39.94201789809042
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 4,
+            "chromaB": 4,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1757026,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 15214,
+        "addedClippingFraction": 0.05619823846457211,
+        "normalizedDetailRatio": 0.9585437955616435,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 6593,
+          "medianDeltaE00": 9.251051925682026,
+          "p95DeltaE00": 18.984371809389415
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 15214,
+        "diffuseLab": [
+          27.988566931279124,
+          -43.96263393010952,
+          3.1396236236843844
+        ],
+        "lightness": {
+          "shadow": 21.927240235679285,
+          "median": 27.988566931279124,
+          "highlight": 33.24272632784495
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lmeg5-19",
+          "documentId": 1907,
+          "groupId": 411,
+          "originalSource": {
+            "id": 1868,
+            "name": "HH00074_05.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_05.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1872,
+            "layerIds": [
+              254,
+              301,
+              300,
+              234,
+              236,
+              146,
+              152,
+              149,
+              271
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              78.29566180694114,
+              5.859670722996868,
+              14.135029091176055
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\HUNTER GREEN.jpg",
+              "name": "Hunter Green",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                36.24509084665751,
+                -52.074354177346656,
+                3.8560819451878725
+              ],
+              "lightness": {
+                "shadow": 28.95871610924719,
+                "median": 36.24509084665751,
+                "highlight": 39.94201789809042
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 4,
+              "chromaB": 4,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 4.241094664479189,
+          "score": 11.954573334718923,
+          "detailRatio": 0.9606464512847643,
+          "clipping": 0.15426957340479466
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 7.0643552647612005,
+          "score": 44.1651012631678,
+          "detailRatio": 0.9564238972312396,
+          "clipping": 0.7420149199681321
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 17.727637019580907,
+          "score": 17.745743777022785,
+          "detailRatio": 1.0146238333096256,
+          "clipping": 0.00036213514883754616
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Navy/06",
+      "target": "Navy",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 186669,
+      "artifactDirectory": "case-16",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_06.psd",
+          "bytes": 1144388569,
+          "sha256": "1ff69c3d601e6519d32773cac3485eb2beaac273f8ebf73c0fd041bb554945c5"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Navy\\JPG\\HH00074_NAVN_06.jpg",
+          "bytes": 721841,
+          "sha256": "54e72a51f2c2f590e1769453cd95da888abb82a0ef84fa5b6e458b497a1b832f"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\NAVY.jpg",
+          "bytes": 1284071,
+          "sha256": "f9c59a08f46e111f08edec515fe45fce53d81f26ad503bdc7f7f7cc2fb668d40"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        21.21197653680359,
+        3.104048731714326,
+        -21.545070322257942
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.19438762148752542,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            79.85088411098191,
+            5.5794763384233725,
+            14.643628602287052
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\NAVY.jpg",
+            "name": "Navy",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              21.21197653680359,
+              3.104048731714326,
+              -21.545070322257942
+            ],
+            "lightness": {
+              "shadow": 15.912975868440174,
+              "median": 21.21197653680359,
+              "highlight": 23.915438203319518
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 409809,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 41044,
+        "addedClippingFraction": 0.04490303089367508,
+        "normalizedDetailRatio": 0.94458491183265,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 16078,
+          "medianDeltaE00": 4.2974374229061265,
+          "p95DeltaE00": 14.584441132113293
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 41044,
+        "diffuseLab": [
+          18.37623629007245,
+          3.4492725480055606,
+          -22.017903669699347
+        ],
+        "lightness": {
+          "shadow": 12.61821186619624,
+          "median": 18.37623629007245,
+          "highlight": 21.889375724921422
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psb",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9ln6t2-1c",
+          "documentId": 1991,
+          "groupId": 390,
+          "originalSource": {
+            "id": 1952,
+            "name": "HH00074_06.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_06.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 1956,
+            "layerIds": [
+              109,
+              247,
+              107,
+              256,
+              131,
+              352
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              79.85088411098191,
+              5.5794763384233725,
+              14.643628602287052
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\NAVY.jpg",
+              "name": "Navy",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                21.21197653680359,
+                3.104048731714326,
+                -21.545070322257942
+              ],
+              "lightness": {
+                "shadow": 15.912975868440174,
+                "median": 21.21197653680359,
+                "highlight": 23.915438203319518
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.19438762148752542,
+          "score": 2.2201102198506324,
+          "detailRatio": 0.9412148946534652,
+          "clipping": 0.040514451967262145
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 3.439593953852849,
+          "score": 3.7740421143879663,
+          "detailRatio": 0.9490426044256252,
+          "clipping": 0.006688963210702341
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 15.372228452134799,
+          "score": 15.372228452134799,
+          "detailRatio": 1.0128026857292518,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Olive/07",
+      "target": "Olive",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 27304,
+      "artifactDirectory": "case-17",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_07.psd",
+          "bytes": 177841515,
+          "sha256": "61fe1749ce93fbff56eeaf843847729904c8e933abc62ac008178dec60f3983b"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Olive\\JPG\\HH00074_OLVN_07.jpg",
+          "bytes": 1545796,
+          "sha256": "cd1ce4e32fab40167e0c1cb6536ef88bad6891b8d233dbb32d32ac98312fc9eb"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\Olive.jpg",
+          "bytes": 1436558,
+          "sha256": "04b0ed3345f6d2aedffe53ac581e14277f953c725712b2b71486e5c64bf0821d"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        57.05920277741137,
+        -6.160793702330247,
+        14.980524526038375
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 4,
+        "anchorDeltaE00": 0.0006253467659708821,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            80.520373934391,
+            5.650336748227958,
+            14.968561137875724
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\Olive.jpg",
+            "name": "Olive",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              57.05920277741137,
+              -6.160793702330247,
+              14.980524526038375
+            ],
+            "lightness": {
+              "shadow": 48.97174674700479,
+              "median": 57.05920277741137,
+              "highlight": 60.73348237829846
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 674792,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 36027,
+        "addedClippingFraction": 0.000027756960057734476,
+        "normalizedDetailRatio": 0.985506891425567,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 13658,
+          "medianDeltaE00": 2.8603668662635098,
+          "p95DeltaE00": 6.503310365985961
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 36027,
+        "diffuseLab": [
+          54.2096182507436,
+          -5.614225995582256,
+          15.305489785986982
+        ],
+        "lightness": {
+          "shadow": 42.663185748006796,
+          "median": 54.2096182507436,
+          "highlight": 62.81919546851486
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lr2x1-1f",
+          "documentId": 2081,
+          "groupId": 421,
+          "originalSource": {
+            "id": 2036,
+            "name": "HH00074_07.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_07.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 2046,
+            "layerIds": [
+              273,
+              255,
+              168,
+              167,
+              170,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              80.520373934391,
+              5.650336748227958,
+              14.968561137875724
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\Olive.jpg",
+              "name": "Olive",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                57.05920277741137,
+                -6.160793702330247,
+                14.980524526038375
+              ],
+              "lightness": {
+                "shadow": 48.97174674700479,
+                "median": 57.05920277741137,
+                "highlight": 60.73348237829846
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.0006253467659708821,
+          "score": 0.0006253467659708821,
+          "detailRatio": 0.9870083185924353,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 4.09444670345687,
+          "score": 4.09444670345687,
+          "detailRatio": 0.9825728226482557,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 16.15779645284139,
+          "score": 16.15779645284139,
+          "detailRatio": 1.0052252714490748,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Pink pearl/08",
+      "target": "Pink pearl",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 32749,
+      "artifactDirectory": "case-18",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_08.psd",
+          "bytes": 178577166,
+          "sha256": "d24778423d9a709344b074f9b9a333b20d8ec8ece8d20df4e37a149a2326c287"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Pink pearl\\JPG\\HH00074_PIPR_08.jpg",
+          "bytes": 1320943,
+          "sha256": "b50e83fbf2dda31094032043724775d874663a8670db20e642e65d6493a41954"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\Pink pearl.jpg",
+          "bytes": 1370699,
+          "sha256": "09598a127ac0cee4349663f992b3d104f331f923a3dde140e9c22718acaa93ba"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        80.54536830598572,
+        9.20026507470828,
+        -2.239391867080043
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.508623573801063,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            80.40997822548668,
+            5.651359356196095,
+            14.95199558932494
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\Pink pearl.jpg",
+            "name": "Pink pearl",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              80.54536830598572,
+              9.20026507470828,
+              -2.239391867080043
+            ],
+            "lightness": {
+              "shadow": 74.75711303893115,
+              "median": 80.54536830598572,
+              "highlight": 83.25129162803132
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 326834,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 42741,
+        "addedClippingFraction": 0,
+        "normalizedDetailRatio": 1.0031378208057529,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 16558,
+          "medianDeltaE00": 1.5937512334010155,
+          "p95DeltaE00": 4.408374426498303
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 42741,
+        "diffuseLab": [
+          78.41947302291187,
+          9.428537731326125,
+          -2.77741697567071
+        ],
+        "lightness": {
+          "shadow": 70.12254562938332,
+          "median": 78.41947302291187,
+          "highlight": 81.72758431994608
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lrob1-1i",
+          "documentId": 2168,
+          "groupId": 382,
+          "originalSource": {
+            "id": 2123,
+            "name": "HH00074_08.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_08.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 2133,
+            "layerIds": [
+              207,
+              210,
+              105,
+              230,
+              108,
+              212,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              80.40997822548668,
+              5.651359356196095,
+              14.95199558932494
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\Pink pearl.jpg",
+              "name": "Pink pearl",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                80.54536830598572,
+                9.20026507470828,
+                -2.239391867080043
+              ],
+              "lightness": {
+                "shadow": 74.75711303893115,
+                "median": 80.54536830598572,
+                "highlight": 83.25129162803132
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.508623573801063,
+          "score": 0.508623573801063,
+          "detailRatio": 1.005618201542729,
+          "clipping": 0
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 7.993881327651957,
+          "score": 7.993881327651957,
+          "detailRatio": 1.0128187625916185,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 12.30253252974901,
+          "score": 44.91563705392998,
+          "detailRatio": 0.9767466615733983,
+          "clipping": 0.6522620904836194
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Wine/01",
+      "target": "Wine",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 21608,
+      "artifactDirectory": "case-19",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_01.psd",
+          "bytes": 111188007,
+          "sha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Wine\\JPG\\HH00074_WINE_01.jpg",
+          "bytes": 1001572,
+          "sha256": "84c127a07400b20fcb1c7cc5c50f6ee4196ed087a9d4671e27e502e53ce953ed"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\WINE.jpg",
+          "bytes": 1241804,
+          "sha256": "520abb96da8f7a05a01c5e303aa4a3027933c95f1c1a519e82d5244d5ba05466"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        23.471702548398838,
+        28.803080655189273,
+        -1.4376143817507847
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.9672707263940272,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            77.00200435534877,
+            6.429004074713307,
+            15.990547901028718
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\WINE.jpg",
+            "name": "Wine",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              23.471702548398838,
+              28.803080655189273,
+              -1.4376143817507847
+            ],
+            "lightness": {
+              "shadow": 19.162948346706372,
+              "median": 23.471702548398838,
+              "highlight": 25.236058419852377
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1760861,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 15844,
+        "addedClippingFraction": 0.012938651855592022,
+        "normalizedDetailRatio": 0.9802858865453036,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 6454,
+          "medianDeltaE00": 3.2497801995444178,
+          "p95DeltaE00": 10.957546049749174
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 15844,
+        "diffuseLab": [
+          22.122707855002645,
+          27.102426820448805,
+          -1.3319439567286873
+        ],
+        "lightness": {
+          "shadow": 17.870672387133048,
+          "median": 22.122707855002645,
+          "highlight": 25.375815078115956
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lsdhp-1l",
+          "documentId": 2257,
+          "groupId": 482,
+          "originalSource": {
+            "id": 2217,
+            "name": "HH00074_01.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_01.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 2222,
+            "layerIds": [
+              397,
+              332,
+              245,
+              339,
+              335,
+              1
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              77.00200435534877,
+              6.429004074713307,
+              15.990547901028718
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\WINE.jpg",
+              "name": "Wine",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                23.471702548398838,
+                28.803080655189273,
+                -1.4376143817507847
+              ],
+              "lightness": {
+                "shadow": 19.162948346706372,
+                "median": 23.471702548398838,
+                "highlight": 25.236058419852377
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.9672707263940272,
+          "score": 1.1534504614459427,
+          "detailRatio": 0.9725816179832537,
+          "clipping": 0.00372359470103831
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 4.197260058268689,
+          "score": 4.197260058268689,
+          "detailRatio": 0.975545572689708,
+          "clipping": 0
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 13.892673086685484,
+          "score": 13.892673086685484,
+          "detailRatio": 1.0259313107954386,
+          "clipping": 0
+        }
+      ]
+    },
+    {
+      "id": "sample-2/Wine/05",
+      "target": "Wine",
+      "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+      "milliseconds": 30488,
+      "artifactDirectory": "case-20",
+      "inputProvenance": {
+        "selection": "docs/recoloring/benchmark/cbi-20-case-plan.json",
+        "source": {
+          "relative": "Recolor Sample 2\\Input\\HH00074_05.psd",
+          "bytes": 181465935,
+          "sha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6"
+        },
+        "gold": {
+          "relative": "Recolor Sample 2\\Output\\Wine\\JPG\\HH00074_WINE_05.jpg",
+          "bytes": 765361,
+          "sha256": "ecf9bc3213444716eb9f79540f815c8fc2a114070a7002343e0c0cb927baf1a2"
+        },
+        "reference": {
+          "relative": "Approved Color\\CROP\\WINE.jpg",
+          "bytes": 1241804,
+          "sha256": "520abb96da8f7a05a01c5e303aa4a3027933c95f1c1a519e82d5244d5ba05466"
+        },
+        "regionPreparation": "VISUALLY_SELECTED_DIFFUSE_TORSO_REQUIRES_RETOUCHER_REVIEW",
+        "material": "MATTE_PROVISIONAL_VISUAL_INSPECTION"
+      },
+      "referenceRegion": {
+        "left": 0.4,
+        "top": 0.3,
+        "right": 0.65,
+        "bottom": 0.5
+      },
+      "referenceDiffuseLab": [
+        23.471702548398838,
+        28.803080655189273,
+        -1.4376143817507847
+      ],
+      "winner": {
+        "method": "A",
+        "evaluations": 16,
+        "anchorDeltaE00": 0.6703062118410555,
+        "evaluationVersion": "diffuse-channel-clipping-1",
+        "recipe": {
+          "schemaVersion": 1,
+          "engineVersion": "native-experimental-1",
+          "method": "A",
+          "status": "EXPERIMENTAL",
+          "sourceAnchor": [
+            78.29566180694114,
+            5.859670722996868,
+            14.135029091176055
+          ],
+          "target": {
+            "id": "Approved Color\\CROP\\WINE.jpg",
+            "name": "Wine",
+            "material": "MATTE",
+            "revision": 1,
+            "measurementSpace": "CIELAB D50 2deg",
+            "diffuseLab": [
+              23.471702548398838,
+              28.803080655189273,
+              -1.4376143817507847
+            ],
+            "lightness": {
+              "shadow": 19.162948346706372,
+              "median": 23.471702548398838,
+              "highlight": 25.236058419852377
+            },
+            "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+          },
+          "parameters": {
+            "lightness": 0,
+            "chromaA": 0,
+            "chromaB": 0,
+            "hue": 0,
+            "saturation": 0,
+            "contrast": 0,
+            "intensity": 100,
+            "shadows": 0,
+            "highlights": 0
+          }
+        }
+      },
+      "fullResolutionIntegrity": {
+        "protectedPixelsChanged": 0,
+        "protectedPixelsCompared": 1757026,
+        "protectedCheckAvailable": true,
+        "requiresFullResolutionCheck": false,
+        "resampledProtectedDifferences": null,
+        "interiorSamples": 15214,
+        "addedClippingFraction": 0.04259234915209675,
+        "normalizedDetailRatio": 0.9320228369052338,
+        "critical": false,
+        "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+      },
+      "goldComparison": {
+        "available": false,
+        "reason": "Paired-view alignment and region comparability require validation",
+        "measurementSpace": "CIELAB D50 2deg",
+        "diagnostic": {
+          "sampleCount": 6593,
+          "medianDeltaE00": 4.000324553270802,
+          "p95DeltaE00": 16.732652235604895
+        },
+        "note": "Diagnostic statistics from an unvalidated alignment cannot satisfy release thresholds"
+      },
+      "humanDiffuse": {
+        "available": true,
+        "measurementSpace": "CIELAB D50 2deg",
+        "sampleCount": 15214,
+        "diffuseLab": [
+          22.122707855002645,
+          27.102426820448805,
+          -1.3319439567286873
+        ],
+        "lightness": {
+          "shadow": 17.870672387133048,
+          "median": 22.122707855002645,
+          "highlight": 27.210452734036657
+        },
+        "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+      },
+      "master": {
+        "file": "experimental-master.psd",
+        "manifest": {
+          "schemaVersion": 1,
+          "sessionId": "mv9lsux6-1o",
+          "documentId": 2337,
+          "groupId": 411,
+          "originalSource": {
+            "id": 2298,
+            "name": "HH00074_05.psd",
+            "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\dataset-cache\\Recolor Sample 2\\Input\\HH00074_05.psd",
+            "width": 1300,
+            "height": 2000,
+            "mode": "RGBColorMode",
+            "depth": "bitDepth8",
+            "profile": "Adobe RGB (1998)",
+            "historyId": 2302,
+            "layerIds": [
+              254,
+              301,
+              300,
+              234,
+              236,
+              146,
+              152,
+              149,
+              271
+            ]
+          },
+          "normalization": {
+            "interpretedInputProfile": "Adobe RGB (1998)",
+            "explicitlyAssignedUntaggedProfile": null,
+            "workingProfile": "Adobe RGB (1998)",
+            "workingDepth": 16,
+            "intent": "RELATIVE_COLORIMETRIC",
+            "blackPointCompensation": true
+          },
+          "recipe": {
+            "schemaVersion": 1,
+            "engineVersion": "native-experimental-1",
+            "method": "A",
+            "status": "EXPERIMENTAL",
+            "sourceAnchor": [
+              78.29566180694114,
+              5.859670722996868,
+              14.135029091176055
+            ],
+            "target": {
+              "id": "Approved Color\\CROP\\WINE.jpg",
+              "name": "Wine",
+              "material": "MATTE",
+              "revision": 1,
+              "measurementSpace": "CIELAB D50 2deg",
+              "diffuseLab": [
+                23.471702548398838,
+                28.803080655189273,
+                -1.4376143817507847
+              ],
+              "lightness": {
+                "shadow": 19.162948346706372,
+                "median": 23.471702548398838,
+                "highlight": 25.236058419852377
+              },
+              "preparationStatus": "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW"
+            },
+            "parameters": {
+              "lightness": 0,
+              "chromaA": 0,
+              "chromaB": 0,
+              "hue": 0,
+              "saturation": 0,
+              "contrast": 0,
+              "intensity": 100,
+              "shadows": 0,
+              "highlights": 0
+            }
+          },
+          "status": "EXPERIMENTAL_DESIGNER_REVIEW_REQUIRED"
+        },
+        "editedOpacity": 50.19607843137255,
+        "reopenedValidation": "PIXELS_PROFILE_MASK_STRUCTURE_AND_RENDERED_GROUP_CONTROL_VERIFIED"
+      },
+      "candidateSeeds": [
+        {
+          "method": "A",
+          "anchorDeltaE00": 0.6703062118410555,
+          "score": 2.2781862726797604,
+          "detailRatio": 0.9349782688945866,
+          "clipping": 0.0321576012167741
+        },
+        {
+          "method": "B",
+          "anchorDeltaE00": 3.2660347451527083,
+          "score": 3.845450983292782,
+          "detailRatio": 0.9399190183039776,
+          "clipping": 0.011588324762801477
+        },
+        {
+          "method": "C",
+          "anchorDeltaE00": 14.882119250942244,
+          "score": 14.882119250942244,
+          "detailRatio": 1.0230324368871115,
+          "clipping": 0
+        }
+      ]
+    }
+  ]
+}

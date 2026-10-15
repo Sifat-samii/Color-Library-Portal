@@ -54,6 +54,8 @@ until the portal becomes available and Refresh succeeds.
 
 ## Development check
 
+The separate [Recolor Lab development harness](../docs/recoloring/README.md) exercises native adjustment-based recoloring. Build it with `npm run recolor:lab` from the repository root and load its generated manifest through UXP Developer Tool. It is excluded from the production package and has not completed production qualification.
+
 From the project root, run:
 
 ```powershell

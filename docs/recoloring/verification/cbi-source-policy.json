@@ -1,0 +1,3077 @@
+{
+  "schemaVersion": 1,
+  "decisionDate": "2026-10-15",
+  "sourcePolicy": "UNDERLYING_ORIGINAL_PRODUCT_WITH_ESSENTIAL_BASE_RETOUCH",
+  "oldSavedAppearanceRuns": "HISTORICAL_TECHNICAL_ONLY_NOT_ORIGINAL_SOURCE_QUALIFICATION",
+  "sourceRoleReview": "PENDING_AMBIGUITIES",
+  "allCbiAssets": "DEVELOPMENT_ONLY",
+  "documents": [
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_01.psd",
+      "sha256": "a9da73160a425f1d1531739b64e8332455e997d8a9d380cb98218337a30ef343",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 166,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 171,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 177,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 185,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 208,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 192,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 116,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 116,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 155,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 104,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 163,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 102,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 200,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 107,
+          "path": [
+            "Layer 0"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 155,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 163,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 102,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 200,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_02.psd",
+      "sha256": "c5d1d0a1b291c339a36e521c360474c9237cee137f7a8e8d85bb5ac6e46fd6bc",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 194,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 189,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 183,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 176,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 170,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 163,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 204,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 204,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": true
+        },
+        {
+          "id": 196,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 195,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 156,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 153,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 220,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 196,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 156,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 153,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 220,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_03.psd",
+      "sha256": "421ec324ffc9a9f0be3af63f2774c0f09ad571fec961373cd7e4074078e7d30e",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 172,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 167,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 161,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 154,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 148,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 141,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 182,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 182,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": true
+        },
+        {
+          "id": 174,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 173,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 134,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 174,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 134,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_04.psd",
+      "sha256": "bf11eff9ea62c9f61600dd665b5dd532c541962ce9dda11283541b4020d34a49",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 164,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 159,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 153,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 146,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 140,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 133,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 174,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 174,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 166,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 165,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 126,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 123,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 166,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 126,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 123,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_05.psd",
+      "sha256": "b68603065d68acac58f8dccb9b5bf1f8fb187c006c111a0ddf8c1e221e75e4a6",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 155,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 150,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 144,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 137,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 131,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 124,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 165,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 165,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 157,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 156,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 117,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 114,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 157,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 117,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 114,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_06.psd",
+      "sha256": "2c832afc71546efc2dd5775cdbf61d268d4279747bc6a50e88b994f011d74724",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 231,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 226,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 219,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 212,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 206,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 199,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 189,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 189,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 181,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 232,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 141,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 138,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 234,
+          "path": [
+            "Texture"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 181,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 141,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 138,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 234,
+          "path": [
+            "Texture"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_07.psd",
+      "sha256": "8974efd5af7bbee7858c5dfaadbf53dfd262c37b73125ff394abb22993aad542",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 164,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 159,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 152,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 145,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 139,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 132,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 174,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 174,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 166,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 165,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 124,
+          "path": [
+            "AD"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 121,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 166,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 124,
+          "path": [
+            "AD"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 121,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 1\\Input\\WW115_08.psd",
+      "sha256": "b554319138b42392b9286651a106dfff9387c06005e81a6f8331063212f72bf7",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 157,
+          "path": [
+            "CC",
+            "BLACK"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 152,
+          "path": [
+            "CC",
+            "NAVY"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 145,
+          "path": [
+            "CC",
+            "CEIL"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 138,
+          "path": [
+            "CC",
+            "PEWTER"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 132,
+          "path": [
+            "CC",
+            "WINE "
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 125,
+          "path": [
+            "CC",
+            "ROYAL"
+          ],
+          "siblingIndex": 5
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 167,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 167,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 159,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 158,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 114,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 159,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 114,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_01.psd",
+      "sha256": "a895931b8a2da75a5d95e56bb80f3d02726e23992fe5d0cf736abd472fbc29a8",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 327,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 323,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 319,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 368,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 348,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 380,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 354,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 288,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 283,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 277,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 271,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 361,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 256,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 251,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 397,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 339,
+          "path": [
+            "Hue/Saturation 3"
+          ],
+          "role": "COMMON_RECOLOR_PREPARATION_MIXED_TONE_REQUIRES_REVIEW",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": -3
+                }
+              ]
+            }
+          ],
+          "review": {
+            "status": "FLAGGED_FOR_RETOUCHER_REVIEW",
+            "requestedBy": "OWNER",
+            "date": "2026-10-16",
+            "tonalRole": "UNRESOLVED",
+            "humanPayloadMustRemainUnchanged": true
+          }
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 397,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 332,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 245,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 339,
+          "path": [
+            "Hue/Saturation 3"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 335,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 332,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 339,
+          "path": [
+            "Hue/Saturation 3"
+          ],
+          "role": "COMMON_RECOLOR_PREPARATION_MIXED_TONE_REQUIRES_REVIEW",
+          "review": {
+            "status": "FLAGGED_FOR_RETOUCHER_REVIEW",
+            "requestedBy": "OWNER",
+            "date": "2026-10-16",
+            "tonalRole": "UNRESOLVED",
+            "humanPayloadMustRemainUnchanged": true
+          }
+        },
+        {
+          "id": 335,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER",
+      "scoredBenchmarkEligible": false,
+      "exclusionReason": "MIXED_CHROMATIC_TONAL_SOURCE_ROLE_UNRESOLVED"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_02.psd",
+      "sha256": "f29eabf85d04a00b3b525be5f0a9f904f75cd8435c032091a42de19ea593731e",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 195,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 199,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 203,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 297,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 292,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 343,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 285,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 185,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 177,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 171,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 167,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 279,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 151,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 145,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 109,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 256,
+          "path": [
+            "BASS"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 109,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 247,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 107,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 256,
+          "path": [
+            "BASS"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 247,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_03.psd",
+      "sha256": "b7425776859964aa380ffbefc7a6b958c997bbc67aacbd91b9a90fc2448c6576",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 198,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 194,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 190,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 186,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 255,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 300,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 248,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 159,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 154,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 148,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 142,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 242,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 127,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 122,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 219,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 202,
+          "path": [
+            "BASS"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 213,
+          "path": [
+            "Desert Taupe"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 219,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 1,
+          "visible": false
+        },
+        {
+          "id": 203,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 114,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 202,
+          "path": [
+            "BASS"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 116,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 213,
+          "path": [
+            "Desert Taupe"
+          ],
+          "role": "SHARED_BASE_ADJUSTMENT_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 203,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 116,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_04.psd",
+      "sha256": "2658c96c57138deb82a943912052f870a25a4283bd2f1c4b21a4ac6233cf3ff7",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 282,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 278,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 274,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 353,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 326,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 420,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 401,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 347,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 243,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 238,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 232,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 226,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 340,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 211,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 13
+        },
+        {
+          "id": 206,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 14
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 299,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 200,
+          "path": [
+            "Hue/Saturation 1"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 299,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 310,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 198,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 341,
+          "path": [
+            "Brightness/Contrast 4"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 200,
+          "path": [
+            "Hue/Saturation 1"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 194,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 310,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 341,
+          "path": [
+            "Brightness/Contrast 4"
+          ],
+          "role": "SHARED_BASE_ADJUSTMENT_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 194,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_05.psd",
+      "sha256": "25d2b32c724992ed52fa66cf50713a9a390b560669d03e8d5952b5d5023645f6",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 233,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 229,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 225,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 307,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 299,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 373,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 292,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 194,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 189,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 183,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 177,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 286,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 162,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 157,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 254,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 152,
+          "path": [
+            "Hue/Saturation 1"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 254,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 301,
+          "path": [
+            "Brightness/Contrast 4"
+          ],
+          "siblingIndex": 1,
+          "visible": false
+        },
+        {
+          "id": 300,
+          "path": [
+            "Logo"
+          ],
+          "siblingIndex": 2,
+          "visible": false
+        },
+        {
+          "id": 234,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 236,
+          "path": [
+            "Logo"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 146,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 152,
+          "path": [
+            "Hue/Saturation 1"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        },
+        {
+          "id": 149,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 7,
+          "visible": true
+        },
+        {
+          "id": 271,
+          "path": [
+            "Layer 0"
+          ],
+          "siblingIndex": 8,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 301,
+          "path": [
+            "Brightness/Contrast 4"
+          ],
+          "role": "SHARED_BASE_ADJUSTMENT_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 300,
+          "path": [
+            "Logo"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 234,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 236,
+          "path": [
+            "Logo"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 149,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_06.psd",
+      "sha256": "1ff69c3d601e6519d32773cac3485eb2beaac273f8ebf73c0fd041bb554945c5",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 195,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 199,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 203,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 297,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 292,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 343,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 285,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 185,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 177,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 171,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 167,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 279,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 151,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 145,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 109,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 256,
+          "path": [
+            "BASS"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 109,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 247,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 107,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 256,
+          "path": [
+            "BASS"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 352,
+          "path": [
+            "Layer 0"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 247,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 131,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_07.psd",
+      "sha256": "61fe1749ce93fbff56eeaf843847729904c8e933abc62ac008178dec60f3983b",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 253,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 249,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 245,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 307,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 301,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 383,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 294,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 214,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 209,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 203,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 196,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 288,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 181,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 176,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 273,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 167,
+          "path": [
+            "BASS"
+          ],
+          "role": "COMMON_RECOLOR_PREPARATION_MIXED_TONE_REQUIRES_REVIEW",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": -43,
+                  "saturation": -50,
+                  "lightness": -4
+                }
+              ]
+            }
+          ],
+          "review": {
+            "status": "FLAGGED_FOR_RETOUCHER_REVIEW",
+            "requestedBy": "OWNER",
+            "date": "2026-10-16",
+            "tonalRole": "UNRESOLVED",
+            "humanPayloadMustRemainUnchanged": true
+          }
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 273,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 255,
+          "path": [
+            "Layer 1"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 168,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 167,
+          "path": [
+            "BASS"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 170,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 255,
+          "path": [
+            "Layer 1"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 167,
+          "path": [
+            "BASS"
+          ],
+          "role": "COMMON_RECOLOR_PREPARATION_MIXED_TONE_REQUIRES_REVIEW",
+          "review": {
+            "status": "FLAGGED_FOR_RETOUCHER_REVIEW",
+            "requestedBy": "OWNER",
+            "date": "2026-10-16",
+            "tonalRole": "UNRESOLVED",
+            "humanPayloadMustRemainUnchanged": true
+          }
+        },
+        {
+          "id": 170,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER",
+      "scoredBenchmarkEligible": false,
+      "exclusionReason": "MIXED_CHROMATIC_TONAL_SOURCE_ROLE_UNRESOLVED"
+    },
+    {
+      "source": "Recolor Sample 2\\Input\\HH00074_08.psd",
+      "sha256": "d24778423d9a709344b074f9b9a333b20d8ec8ece8d20df4e37a149a2326c287",
+      "status": "CANDIDATE_REQUIRES_BASE_ROLE_REVIEW",
+      "disableTargetBranches": [
+        {
+          "id": 191,
+          "path": [
+            "CC",
+            "Black"
+          ],
+          "siblingIndex": 0
+        },
+        {
+          "id": 187,
+          "path": [
+            "CC",
+            "Navy"
+          ],
+          "siblingIndex": 1
+        },
+        {
+          "id": 183,
+          "path": [
+            "CC",
+            "Pewter"
+          ],
+          "siblingIndex": 2
+        },
+        {
+          "id": 280,
+          "path": [
+            "CC",
+            "Royal"
+          ],
+          "siblingIndex": 3
+        },
+        {
+          "id": 274,
+          "path": [
+            "CC",
+            "Olive"
+          ],
+          "siblingIndex": 4
+        },
+        {
+          "id": 344,
+          "path": [
+            "CC",
+            "Desert Taupe"
+          ],
+          "siblingIndex": 5
+        },
+        {
+          "id": 267,
+          "path": [
+            "CC",
+            "Wine"
+          ],
+          "siblingIndex": 6
+        },
+        {
+          "id": 152,
+          "path": [
+            "CC",
+            "Carribean Blue"
+          ],
+          "siblingIndex": 7
+        },
+        {
+          "id": 147,
+          "path": [
+            "CC",
+            "Ciel"
+          ],
+          "siblingIndex": 8
+        },
+        {
+          "id": 141,
+          "path": [
+            "CC",
+            "Pink pearl"
+          ],
+          "siblingIndex": 9
+        },
+        {
+          "id": 135,
+          "path": [
+            "CC",
+            "Heather Ash"
+          ],
+          "siblingIndex": 10
+        },
+        {
+          "id": 261,
+          "path": [
+            "CC",
+            "White Gardenia"
+          ],
+          "siblingIndex": 11
+        },
+        {
+          "id": 120,
+          "path": [
+            "CC",
+            "Hunter"
+          ],
+          "siblingIndex": 12
+        },
+        {
+          "id": 115,
+          "path": [
+            "CC",
+            "Eggplant"
+          ],
+          "siblingIndex": 13
+        }
+      ],
+      "disableReferenceGuides": [
+        {
+          "id": 207,
+          "path": [
+            "REF"
+          ]
+        }
+      ],
+      "sharedChromaticPreparation": [
+        {
+          "id": 230,
+          "path": [
+            "Hue/Saturation 3"
+          ],
+          "role": "COMMON_RECOLOR_CHROMATIC_PREPARATION",
+          "adjustment": [
+            {
+              "_obj": "hueSaturation",
+              "presetKind": {
+                "_enum": "presetKindType",
+                "_value": "presetKindCustom"
+              },
+              "colorize": false,
+              "adjustment": [
+                {
+                  "_obj": "hueSatAdjustmentV2",
+                  "hue": 0,
+                  "saturation": -100,
+                  "lightness": 0
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "retainOthersWithSavedVisibility": true,
+      "existingRootOrder": [
+        {
+          "id": 207,
+          "path": [
+            "REF"
+          ],
+          "siblingIndex": 0,
+          "visible": false
+        },
+        {
+          "id": 210,
+          "path": [
+            "RT"
+          ],
+          "siblingIndex": 1,
+          "visible": true
+        },
+        {
+          "id": 105,
+          "path": [
+            "CC"
+          ],
+          "siblingIndex": 2,
+          "visible": true
+        },
+        {
+          "id": 230,
+          "path": [
+            "Hue/Saturation 3"
+          ],
+          "siblingIndex": 3,
+          "visible": true
+        },
+        {
+          "id": 108,
+          "path": [
+            "BG"
+          ],
+          "siblingIndex": 4,
+          "visible": true
+        },
+        {
+          "id": 212,
+          "path": [
+            "Levels 8"
+          ],
+          "siblingIndex": 5,
+          "visible": true
+        },
+        {
+          "id": 1,
+          "path": [
+            "Background"
+          ],
+          "siblingIndex": 6,
+          "visible": true
+        }
+      ],
+      "ambiguityReview": [
+        {
+          "id": 210,
+          "path": [
+            "RT"
+          ],
+          "role": "BASE_PHOTO_OR_RASTER_RETOUCH_CANDIDATE_PURPOSE_NOT_PROVEN"
+        },
+        {
+          "id": 108,
+          "path": [
+            "BG"
+          ],
+          "role": "BASE_ENVIRONMENT_OR_LIGHTING_CANDIDATE_RETAIN_PENDING_REVIEW"
+        },
+        {
+          "id": 212,
+          "path": [
+            "Levels 8"
+          ],
+          "role": "SHARED_BASE_ADJUSTMENT_CANDIDATE_RETAIN_PENDING_REVIEW"
+        }
+      ],
+      "materialInsertionPoint": "REQUIRES_REVIEW_KEEP_EXISTING_LAYER_ORDER"
+    }
+  ],
+  "reviewUpdate": {
+    "date": "2026-10-16",
+    "decision": "OWNER_REQUEST_KEEP_MIXED_TONE_LAYERS_FLAGGED_FOR_RETOUCHER_REVIEW",
+    "automaticRoleResolutionAuthorized": false
+  }
+}

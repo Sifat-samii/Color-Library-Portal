@@ -1,0 +1,2 @@
+# Preserve the exact pinned upstream hashing source on Windows checkouts.
+UXP/recolor/vendor/sha256.js -text

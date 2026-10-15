@@ -1,0 +1,769 @@
+{
+  "schemaVersion": 1,
+  "root": "Z:\\Sifat_Project_Coordinator\\Color library test\\Recolor Data\\CBI",
+  "client": "CBI",
+  "status": "PROSPECTIVE_CASE_SELECTION_NOT_RESULTS",
+  "selectedBeforeRendering": true,
+  "productionQualified": false,
+  "approvalProvenance": "Manually approved references supplied by dataset owner",
+  "selection": "10 cases per product; all eight view codes; repeated Wine views for consistency; no Heather Ash",
+  "cases": [
+    {
+      "id": "sample-1/BLACK/01",
+      "sample": 1,
+      "canonicalTarget": "BLACK",
+      "originalTarget": "BLACK",
+      "flaggedAlias": false,
+      "viewCode": "01",
+      "view": "Front",
+      "source": "Recolor Sample 1\\Input\\WW115_01.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\BLACK\\WW115_BLK_01.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\BLACK.jpg",
+        "full": "Approved Color\\FULL\\BLACK_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 76511761,
+        "modifiedAt": "2026-08-06T20:56:09.230Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/WINE/02",
+      "sample": 1,
+      "canonicalTarget": "WINE",
+      "originalTarget": "WINE",
+      "flaggedAlias": false,
+      "viewCode": "02",
+      "view": "Full body",
+      "source": "Recolor Sample 1\\Input\\WW115_02.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_02.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\WINE.jpg",
+        "full": "Approved Color\\FULL\\WINE _FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 66011699,
+        "modifiedAt": "2026-08-06T20:10:25.569Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/CEIL/03",
+      "sample": 1,
+      "canonicalTarget": "Ceil Blue",
+      "originalTarget": "CEIL",
+      "flaggedAlias": true,
+      "viewCode": "03",
+      "view": "Right",
+      "source": "Recolor Sample 1\\Input\\WW115_03.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\CEIL\\WW115_CIEL_03.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\CEIL.jpg",
+        "full": "Approved Color\\FULL\\CEIL_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 1 copy"
+        ],
+        "bytes": 69592695,
+        "modifiedAt": "2026-08-06T20:18:44.632Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/NAVY/04",
+      "sample": 1,
+      "canonicalTarget": "NAVY",
+      "originalTarget": "NAVY",
+      "flaggedAlias": false,
+      "viewCode": "04",
+      "view": "Left",
+      "source": "Recolor Sample 1\\Input\\WW115_04.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\NAVY\\WW115_NVY_04.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\NAVY.jpg",
+        "full": "Approved Color\\FULL\\NAVY_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 70107646,
+        "modifiedAt": "2026-08-06T20:27:05.090Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/PEWTER/05",
+      "sample": 1,
+      "canonicalTarget": "PEWTER",
+      "originalTarget": "PEWTER",
+      "flaggedAlias": false,
+      "viewCode": "05",
+      "view": "Back",
+      "source": "Recolor Sample 1\\Input\\WW115_05.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\PEWTER\\WW115_PWT_05.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\PEWTER.jpg",
+        "full": "Approved Color\\FULL\\PEWTER_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 69765077,
+        "modifiedAt": "2026-08-06T20:40:58.883Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/ROYAL/06",
+      "sample": 1,
+      "canonicalTarget": "ROYAL",
+      "originalTarget": "ROYAL",
+      "flaggedAlias": false,
+      "viewCode": "06",
+      "view": "Detailed view 1",
+      "source": "Recolor Sample 1\\Input\\WW115_06.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\ROYAL\\WW115_ROYAL_06.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\ROYAL.jpg",
+        "full": "Approved Color\\FULL\\ROYAL_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1"
+        ],
+        "bytes": 98873225,
+        "modifiedAt": "2026-08-06T20:55:19.761Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/Caribbean Blue/07",
+      "sample": 1,
+      "canonicalTarget": "Caribbean Blue",
+      "originalTarget": "Caribbean Blue",
+      "flaggedAlias": false,
+      "viewCode": "07",
+      "view": "Detailed view 2",
+      "source": "Recolor Sample 1\\Input\\WW115_07.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\Caribbean Blue\\WW115_CAR_07.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\Carribean Blue.jpg",
+        "full": "Approved Color\\FULL\\Carribean Blue_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1"
+        ],
+        "bytes": 119507662,
+        "modifiedAt": "2026-08-06T20:52:41.422Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/Teal Blue/08",
+      "sample": 1,
+      "canonicalTarget": "Teal Blue",
+      "originalTarget": "Teal Blue",
+      "flaggedAlias": false,
+      "viewCode": "08",
+      "view": "Detailed view 3",
+      "source": "Recolor Sample 1\\Input\\WW115_08.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\Teal Blue\\WW115_TLB_08.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\Teal Blue.jpg",
+        "full": "Approved Color\\FULL\\CK605_CK002__CIEL_F_1178_Teal.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1"
+        ],
+        "bytes": 119837091,
+        "modifiedAt": "2026-08-06T20:53:58.063Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/WINE/01",
+      "sample": 1,
+      "canonicalTarget": "WINE",
+      "originalTarget": "WINE",
+      "flaggedAlias": false,
+      "viewCode": "01",
+      "view": "Front",
+      "source": "Recolor Sample 1\\Input\\WW115_01.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_01.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\WINE.jpg",
+        "full": "Approved Color\\FULL\\WINE _FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 76511761,
+        "modifiedAt": "2026-08-06T20:56:09.230Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-1/WINE/05",
+      "sample": 1,
+      "canonicalTarget": "WINE",
+      "originalTarget": "WINE",
+      "flaggedAlias": false,
+      "viewCode": "05",
+      "view": "Back",
+      "source": "Recolor Sample 1\\Input\\WW115_05.psd",
+      "goldJpg": "Recolor Sample 1\\Output\\WINE\\WW115_WIN_05.jpg",
+      "goldPsd": null,
+      "reference": {
+        "crop": "Approved Color\\CROP\\WINE.jpg",
+        "full": "Approved Color\\FULL\\WINE _FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 69765077,
+        "modifiedAt": "2026-08-06T20:40:58.883Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Black/01",
+      "sample": 2,
+      "canonicalTarget": "Black",
+      "originalTarget": "Black",
+      "flaggedAlias": false,
+      "viewCode": "01",
+      "view": "Front",
+      "source": "Recolor Sample 2\\Input\\HH00074_01.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Black\\JPG\\HH00074_BLKN_01.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Black\\PSD\\HH00074_BLKN_01.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\BLACK.jpg",
+        "full": "Approved Color\\FULL\\BLACK_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 111188007,
+        "modifiedAt": "2026-08-12T19:57:02.698Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/White Gardenia/02",
+      "sample": 2,
+      "canonicalTarget": "White Gardenia",
+      "originalTarget": "White Gardenia",
+      "flaggedAlias": false,
+      "viewCode": "02",
+      "view": "Full body",
+      "source": "Recolor Sample 2\\Input\\HH00074_02.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\White Gardenia\\JPG\\HH00074_WTGD_02.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\White Gardenia\\PSD\\HH00074_WTGD_02.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\White Gardenia.jpg",
+        "full": "Approved Color\\FULL\\White Gardenia_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1"
+        ],
+        "bytes": 109761949,
+        "modifiedAt": "2026-08-12T19:54:57.396Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Desert Taupe/03",
+      "sample": 2,
+      "canonicalTarget": "Desert Taupe",
+      "originalTarget": "Desert Taupe",
+      "flaggedAlias": false,
+      "viewCode": "03",
+      "view": "Right",
+      "source": "Recolor Sample 2\\Input\\HH00074_03.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Desert Taupe\\JPG\\HH00074_DTTP_03.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Desert Taupe\\PSD\\HH00074_DTTP_03.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\Desert Taupe.jpg",
+        "full": "Approved Color\\FULL\\Desert Taupe.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 109198305,
+        "modifiedAt": "2026-08-12T19:52:23.536Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Eggplant/04",
+      "sample": 2,
+      "canonicalTarget": "Eggplant",
+      "originalTarget": "Eggplant",
+      "flaggedAlias": false,
+      "viewCode": "04",
+      "view": "Left",
+      "source": "Recolor Sample 2\\Input\\HH00074_04.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Eggplant\\JPG\\HH00074_EGGPL_04.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Eggplant\\PSD\\HH00074_EGGPL_04.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\EGGPLANT.jpg",
+        "full": "Approved Color\\FULL\\EGGPLANT_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1 copy",
+          "Path 1"
+        ],
+        "bytes": 137540901,
+        "modifiedAt": "2026-08-12T19:56:53.047Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Hunter/05",
+      "sample": 2,
+      "canonicalTarget": "Hunter Green",
+      "originalTarget": "Hunter",
+      "flaggedAlias": true,
+      "viewCode": "05",
+      "view": "Back",
+      "source": "Recolor Sample 2\\Input\\HH00074_05.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Hunter\\JPG\\HH00074_HUNTR_05.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Hunter\\PSD\\HH00074_HUNTR_05.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\HUNTER GREEN.jpg",
+        "full": "Approved Color\\FULL\\HUNTER GREEN_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 3"
+        ],
+        "bytes": 181465935,
+        "modifiedAt": "2026-08-12T19:56:32.795Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Navy/06",
+      "sample": 2,
+      "canonicalTarget": "Navy",
+      "originalTarget": "Navy",
+      "flaggedAlias": false,
+      "viewCode": "06",
+      "view": "Detailed view 1",
+      "source": "Recolor Sample 2\\Input\\HH00074_06.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Navy\\JPG\\HH00074_NAVN_06.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Navy\\PSD\\HH00074_NAVN_06.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\NAVY.jpg",
+        "full": "Approved Color\\FULL\\NAVY_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1"
+        ],
+        "bytes": 1144388569,
+        "modifiedAt": "2026-08-25T12:46:28.939Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Olive/07",
+      "sample": 2,
+      "canonicalTarget": "Olive",
+      "originalTarget": "Olive",
+      "flaggedAlias": false,
+      "viewCode": "07",
+      "view": "Detailed view 2",
+      "source": "Recolor Sample 2\\Input\\HH00074_07.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Olive\\JPG\\HH00074_OLVN_07.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Olive\\PSD\\HH00074_OLVN_07.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\Olive.jpg",
+        "full": "Approved Color\\FULL\\Olive_FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2",
+          "Path 3",
+          "Path 4"
+        ],
+        "bytes": 177841515,
+        "modifiedAt": "2026-08-12T19:52:18.951Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Pink pearl/08",
+      "sample": 2,
+      "canonicalTarget": "Pink pearl",
+      "originalTarget": "Pink pearl",
+      "flaggedAlias": false,
+      "viewCode": "08",
+      "view": "Detailed view 3",
+      "source": "Recolor Sample 2\\Input\\HH00074_08.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Pink pearl\\JPG\\HH00074_PIPR_08.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Pink pearl\\PSD\\HH00074_PIPR_08.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\Pink pearl.jpg",
+        "full": "Approved Color\\FULL\\Pink pearl.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2",
+          "Path 3",
+          "Path 4"
+        ],
+        "bytes": 178577166,
+        "modifiedAt": "2026-08-12T19:52:56.085Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Wine/01",
+      "sample": 2,
+      "canonicalTarget": "Wine",
+      "originalTarget": "Wine",
+      "flaggedAlias": false,
+      "viewCode": "01",
+      "view": "Front",
+      "source": "Recolor Sample 2\\Input\\HH00074_01.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Wine\\JPG\\HH00074_WINE_01.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Wine\\PSD\\HH00074_WINE_01.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\WINE.jpg",
+        "full": "Approved Color\\FULL\\WINE _FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 1",
+          "Path 2"
+        ],
+        "bytes": 111188007,
+        "modifiedAt": "2026-08-12T19:57:02.698Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "sample-2/Wine/05",
+      "sample": 2,
+      "canonicalTarget": "Wine",
+      "originalTarget": "Wine",
+      "flaggedAlias": false,
+      "viewCode": "05",
+      "view": "Back",
+      "source": "Recolor Sample 2\\Input\\HH00074_05.psd",
+      "goldJpg": "Recolor Sample 2\\Output\\Wine\\JPG\\HH00074_WINE_05.jpg",
+      "goldPsd": "Recolor Sample 2\\Output\\Wine\\PSD\\HH00074_WINE_05.psd",
+      "reference": {
+        "crop": "Approved Color\\CROP\\WINE.jpg",
+        "full": "Approved Color\\FULL\\WINE _FULL.jpg"
+      },
+      "sourceMetadata": {
+        "format": "psd",
+        "width": 1300,
+        "height": 2000,
+        "depth": 8,
+        "channels": 3,
+        "mode": "RGB",
+        "profile": "Adobe RGB (1998)",
+        "namedPaths": [
+          "Path 3"
+        ],
+        "bytes": 181465935,
+        "modifiedAt": "2026-08-12T19:56:32.795Z",
+        "pixelDecodeVerified": false,
+        "layersVerified": false
+      },
+      "materialEligibility": "PENDING_INSPECTION",
+      "mask": null,
+      "referenceSamplingRegions": null,
+      "goldComparisonRegions": null,
+      "status": "NOT_RUN"
+    }
+  ]
+}

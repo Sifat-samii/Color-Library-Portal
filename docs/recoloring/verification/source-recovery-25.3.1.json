@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-16",
+  "host": {
+    "uiLocale": "en_US",
+    "version": "25.3.1",
+    "name": "Photoshop"
+  },
+  "productionQualified": false,
+  "build": {
+    "testedBundleSha256": "2bedce10bec9f6ee974dd8a1829776e9b728372cd428566f6169a701d5ab2467",
+    "generatedAt": "2026-10-15T21:02:17.160Z",
+    "entry": "UXP/recolor/host-tests.js"
+  },
+  "cases": [
+    {
+      "name": "Bounded UXP file verification matches an independently computed multi-chunk SHA-256",
+      "status": "PASS",
+      "milliseconds": 71,
+      "details": {
+        "algorithm": "SHA-256",
+        "sha256": "2e5245911775c5a7a1b7078a7e8e76a0988a0df5ff56f11e3deea7f540155f88",
+        "bytes": 2097223,
+        "chunkBytes": 65536
+      }
+    },
+    {
+      "name": "A pinned frozen-source checkpoint recovers a fresh editable source across adapter instances",
+      "status": "PASS",
+      "milliseconds": 1292,
+      "details": {
+        "sourceUnchanged": true,
+        "freshAdapterVerified": true,
+        "bytes": 78848,
+        "sha256": "049692a1341a601e47c2b2a2adc1d6eaa1ce492560838c13b4bf1b310471b51a",
+        "nativeEditsApplied": true
+      }
+    },
+    {
+      "name": "Recovery refuses altered files, altered manifests and already-open artifacts; cancellation retains its journal",
+      "status": "PASS",
+      "milliseconds": 945,
+      "details": {
+        "changedFileRejected": true,
+        "changedManifestRejected": true,
+        "existingDocumentPreserved": true,
+        "cancelledJournalRetained": true,
+        "partialManifestNotPublished": true
+      }
+    }
+  ],
+  "initialDocumentsPreserved": true,
+  "unexpectedNewDocumentIds": [],
+  "cleanupErrors": []
+}

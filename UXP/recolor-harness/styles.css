@@ -1,0 +1,12 @@
+body { background: #262626; color: #ececec; font: 12px Arial, sans-serif; padding: 14px; }
+h1 { font-size: 20px; margin: 0 0 8px; } h2 { font-size: 13px; margin: 0 0 8px; }
+p { line-height: 1.5; } section { border-top: 1px solid #484848; padding: 12px 0; }
+button, select { margin: 3px 0; padding: 7px; border: 1px solid #656565; background: #383838; color: #fff; border-radius: 4px; width: 100%; }
+button:disabled, select:disabled { opacity: .45; } label { display: block; margin-top: 10px; }
+input[type=range] { width: 76%; } label span { margin-left: 8px; }
+.notice { color: #ffd18b; } #status { background: #333; padding: 10px; } pre { white-space: pre-wrap; font-size: 10px; }
+#sourceLayers { max-height: 340px; overflow: auto; border: 1px solid #484848; padding: 6px; }
+#sourceLayers label { overflow-wrap: anywhere; margin-top: 7px; }
+#sourceLayers details { margin-left: 10px; border-left: 1px solid #656565; padding-left: 6px; }
+#sourceLayers summary { margin: 5px 0; }
+#sourceReviewer { width: 100%; padding: 7px; background: #383838; color: #fff; border: 1px solid #656565; }

@@ -2,7 +2,7 @@
   "manifestVersion": 5,
   "id": "com.pixofix.color-library",
   "name": "Pixofix Color Library",
-  "version": "0.5.11",
+  "version": "0.5.15",
   "main": "index.html",
   "icons": [
     {

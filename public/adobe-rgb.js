@@ -79,16 +79,138 @@ function linearize(channel) {
   return encoded ** GAMMA;
 }
 
-function labFromHex(value) {
-  const channels = channelsFromHex(value);
-  if (!channels) return null;
-  const [r, g, b] = channels.map(linearize);
-  const [x, y, z] = multiplyMatrixVector(ADOBE_RGB_TO_XYZ, [r, g, b]);
+function xyzFromChannels(channels) {
+  return multiplyMatrixVector(ADOBE_RGB_TO_XYZ, channels.map(linearize));
+}
+
+function labFromXyz(xyz) {
+  const [x, y, z] = xyz;
   const f = t => (t > (6 / 29) ** 3 ? Math.cbrt(t) : t / (3 * (6 / 29) ** 2) + 4 / 29);
   const fx = f(x / ADOBE_RGB_WHITE[0]);
   const fy = f(y / ADOBE_RGB_WHITE[1]);
   const fz = f(z / ADOBE_RGB_WHITE[2]);
   return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+
+function labFromHex(value) {
+  const channels = channelsFromHex(value);
+  if (!channels) return null;
+  return labFromXyz(xyzFromChannels(channels));
+}
+
+function roundInt(value) {
+  const rounded = Math.round(value);
+  return Object.is(rounded, -0) ? 0 : rounded;
+}
+
+function roundHue(degrees) {
+  const rounded = roundInt(degrees);
+  return rounded === 360 ? 0 : rounded;
+}
+
+function roundPercent(ratio) {
+  return Math.min(100, Math.max(0, roundInt(ratio * 100)));
+}
+
+function formatNumbers(values) {
+  return values.map(roundInt).join(", ");
+}
+
+function rgbHue(r, g, b) {
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+  if (delta === 0) return 0;
+  let hue;
+  if (max === r) hue = ((g - b) / delta) % 6;
+  else if (max === g) hue = (b - r) / delta + 2;
+  else hue = (r - g) / delta + 4;
+  hue *= 60;
+  if (hue < 0) hue += 360;
+  return hue;
+}
+
+function hsbFromChannels(channels) {
+  const [r, g, b] = channels;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  return [
+    roundHue(rgbHue(r, g, b)),
+    max === 0 ? 0 : roundPercent((max - min) / max),
+    roundPercent(max / 255)
+  ];
+}
+
+function hslFromChannels(channels) {
+  const [r, g, b] = channels;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const lightness = (max + min) / 2 / 255;
+  const saturation = max === min ? 0 : ((max - min) / 255) / (1 - Math.abs(2 * lightness - 1));
+  return [roundHue(rgbHue(r, g, b)), roundPercent(saturation), roundPercent(lightness)];
+}
+
+function hwbFromChannels(channels) {
+  const [r, g, b] = channels;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  return [roundHue(rgbHue(r, g, b)), roundPercent(min / 255), roundPercent((255 - max) / 255)];
+}
+
+function cmykFromChannels(channels) {
+  const [r, g, b] = channels.map(channel => channel / 255);
+  const black = 1 - Math.max(r, g, b);
+  if (black >= 1) return [0, 0, 0, 100];
+  const scale = 1 - black;
+  return [
+    roundPercent((1 - r - black) / scale),
+    roundPercent((1 - g - black) / scale),
+    roundPercent((1 - b - black) / scale),
+    roundPercent(black)
+  ];
+}
+
+function lchFromLab(lab) {
+  const chroma = Math.hypot(lab[1], lab[2]);
+  const roundedChroma = roundInt(chroma);
+  let hue = 0;
+  if (roundedChroma !== 0) {
+    let degrees = Math.atan2(lab[2], lab[1]) * 180 / Math.PI;
+    if (degrees < 0) degrees += 360;
+    hue = roundHue(degrees);
+  }
+  return [roundInt(lab[0]), roundedChroma, hue];
+}
+
+function luvFromXyz(xyz, lightness) {
+  const [x, y, z] = xyz;
+  const [Xn, Yn, Zn] = ADOBE_RGB_WHITE;
+  const denom = x + 15 * y + 3 * z;
+  if (!denom || lightness === 0) return [roundInt(lightness), 0, 0];
+  const up = (4 * x) / denom;
+  const vp = (9 * y) / denom;
+  const denomN = Xn + 15 * Yn + 3 * Zn;
+  const u = 13 * lightness * (up - (4 * Xn) / denomN);
+  const v = 13 * lightness * (vp - (9 * Yn) / denomN);
+  return [roundInt(lightness), roundInt(u), roundInt(v)];
+}
+
+function colorValuesFromHex(value) {
+  const channels = channelsFromHex(value);
+  if (!channels) return null;
+  const xyz = xyzFromChannels(channels);
+  const lab = labFromXyz(xyz);
+  return {
+    rgb: formatNumbers(channels),
+    cmyk: formatNumbers(cmykFromChannels(channels)),
+    hsb: formatNumbers(hsbFromChannels(channels)),
+    hsl: formatNumbers(hslFromChannels(channels)),
+    lab: formatNumbers(lab),
+    xyz: formatNumbers(xyz.map(channel => channel * 100)),
+    lch: formatNumbers(lchFromLab(lab)),
+    luv: formatNumbers(luvFromXyz(xyz, lab[0])),
+    hwb: formatNumbers(hwbFromChannels(channels))
+  };
 }
 
 function hueDegrees(a, b) {
@@ -167,6 +289,7 @@ const adobeRgbApi = {
   ADOBE_RGB_WHITE,
   channelsFromHex,
   labFromHex,
+  colorValuesFromHex,
   deltaE00,
   adobeRgbCss
 };

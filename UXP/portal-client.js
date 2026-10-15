@@ -86,7 +86,7 @@ function createPortalClient(options) {
     return list;
   }
 
-  async function request(path, accept, readBody) {
+  async function request(path, accept, readBody, timeoutMs) {
     var hosts = orderedHosts();
     var lastError = null;
     for (var index = 0; index < hosts.length; index += 1) {
@@ -94,7 +94,7 @@ function createPortalClient(options) {
       try {
         var headers = { "Accept": accept };
         var requestOptions = { headers: headers };
-        var response = await fetchWithTimeout(fetchImpl, host + path, requestOptions, 4000);
+        var response = await fetchWithTimeout(fetchImpl, host + path, requestOptions, timeoutMs || 4000);
         if (!response.ok) {
           var payload = null;
           if (accept === "application/json" && response.json) {
@@ -119,11 +119,11 @@ function createPortalClient(options) {
   }
 
   return {
-    getJson: function (path) {
-      return request(path, "application/json", function (response) { return response.json(); });
+    getJson: function (path, timeoutMs) {
+      return request(path, "application/json", function (response) { return response.json(); }, timeoutMs);
     },
-    getBytes: function (path) {
-      return request(path, "image/png", function (response) { return response.arrayBuffer(); });
+    getBytes: function (path, timeoutMs) {
+      return request(path, "image/png", function (response) { return response.arrayBuffer(); }, timeoutMs);
     },
     getFile: function (path) {
       return request(path, "*/*", function (response) { return response.arrayBuffer(); });

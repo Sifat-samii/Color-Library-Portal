@@ -1,6 +1,6 @@
 # Pixofix Color Library roadmap
 
-Last updated: 2026-10-07
+Last updated: 2026-10-08
 
 ## Implemented in this prototype
 
@@ -21,9 +21,9 @@ Last updated: 2026-10-07
 
 ## Recommended next production milestone
 
-Last updated: 2026-10-07
+Last updated: 2026-10-08
 
-Google OpenID Connect is already the production sign-in path; password login remains a local-development fallback only. Web inspection already uses `displayImage` / `/api/display` (native JPEG/PNG/GIF/WebP at full resolution; TIFF/PSD/PSB cached once as `previews/<id>.full.png`). Card thumbnails still use the 720 px JPEG `cachedPreview` path. When Sharp cannot rasterize a format, that path caches a 720 px JPEG placeholder so the Photoshop panel and web cards still receive an image.
+Google OpenID Connect is already the production sign-in path; password login remains a local-development fallback only. Web inspection already uses `displayImage` / `/api/display` (native JPEG/PNG/GIF/WebP at full resolution; TIFF/PSD/PSB cached once as `previews/<id>.full.png`). Web card thumbnails still use the 720 px JPEG `cachedPreview` path. The Photoshop panel loads 360 px JPEGs (`previews/<id>.w360.jpg`) through `GET /api/plugin/previews`, reusing `pixofix-pv-<versionId>.jpg` from the plugin data folder when that file is already present. When Sharp cannot rasterize a format, `cachedPreview` caches a JPEG placeholder at the requested edge so web cards and the panel still receive an image.
 
 Remaining production hardening:
 

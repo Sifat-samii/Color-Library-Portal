@@ -5,16 +5,17 @@ const catalogTools = require("./catalog.js");
 const { createPortalClient, fetchWithTimeout, xhrFetch } = require("./portal-client.js");
 const { createStudioSettings, connectionHosts, orderedConnectHosts } = require("./studio-settings.js");
 const { ensureLanBridge } = require("./lan-bridge.js");
-const { createWebviewBridge } = require("./webview-bridge.js");
+const { createWebviewBridge, decodeBase64 } = require("./webview-bridge.js");
 const { createLibrarySession } = require("./library-session.js");
 const { createApprovedList, createSwatchList, cardPlan } = require("./library-list.js");
-const { bytesToDataUrl, createPreviewLoader } = require("./preview-data.js");
+const { createPreviewLoader } = require("./preview-data.js");
 const { scanLibraryFolder } = require("./folder-scan.js");
 
 const fs = storage.localFileSystem;
 const SEARCH_DELAY = 150;
 
 const studio = { serverUrls: [], preferredHost: "" };
+let directOrigin = "";
 const approvedList = createApprovedList({ pageSize: 0 });
 const swatchList = createSwatchList({ pageSize: 0 });
 const ui = {
@@ -22,7 +23,8 @@ const ui = {
   selectedId: null,
   selectedSwatchId: null,
   scanning: false,
-  swatchLoading: false
+  swatchLoading: false,
+  syncing: false
 };
 let current = emptySnapshot();
 let approvedCards = [];
@@ -32,8 +34,25 @@ let swatchSearchTimer = 0;
 let copyHexTimer = 0;
 
 const settings = createStudioSettings({ storage: createSecretStorage(), namespace: config.storageNamespace });
+function portalWebview() {
+  var existing = document.getElementById("portalWebview");
+  if (existing) return existing;
+  var view = document.createElement("webview");
+  view.id = "portalWebview";
+  view.className = "portal-webview";
+  document.body.appendChild(view);
+  return view;
+}
+
+function portalHosts() {
+  var list = connectionHosts(studio.serverUrls, config.portalHosts);
+  var first = portalBridge.origin() || directOrigin || studio.preferredHost;
+  if (!first) return list;
+  return [first].concat(list.filter(function (host) { return host !== first; }));
+}
+
 const portalBridge = createWebviewBridge({
-  element: function () { return document.getElementById("portalWebview"); },
+  element: portalWebview,
   pages: function () {
     return orderedConnectHosts(connectionHosts(studio.serverUrls, config.portalHosts), studio.preferredHost).map(function (host) {
       return host + "/plugin-bridge.html";
@@ -43,7 +62,7 @@ const portalBridge = createWebviewBridge({
 const portal = createPortalClient({
   hosts: function () {
     if (portalBridge.origin()) return [portalBridge.origin()];
-    return connectionHosts(studio.serverUrls, config.portalHosts);
+    return portalHosts();
   },
   fetchImpl: function (url, requestOptions) {
     if (portalBridge.origin()) return portalBridge.fetch(url, requestOptions);
@@ -52,8 +71,11 @@ const portal = createPortalClient({
 });
 const previews = createPreviewLoader({
   getBytes: function (path) { return portal.getBytes(path); },
+  getBatch: fetchPreviewBatch,
+  cachedFile: cachedPreviewFileUrl,
   toUrl: previewFileUrl,
-  limit: 8
+  batchSize: 24,
+  slots: 2
 });
 const session = createLibrarySession({
   portal: portal,
@@ -323,6 +345,13 @@ function updateConnection() {
     $("#retryConnectionButton").classList.remove("is-hidden");
     return;
   }
+  if (!current.serverOnline && ui.syncing) {
+    dot.classList.remove("is-linked");
+    $("#connectionTitle").textContent = "Syncing";
+    setConnectionPath("");
+    $("#retryConnectionButton").classList.add("is-hidden");
+    return;
+  }
   dot.classList.toggle("is-linked", current.serverOnline);
   $("#connectionTitle").textContent = current.serverOnline ? "Synced" : "Offline cache";
   setConnectionPath(current.serverOnline || !current.cacheSavedAt ? "" : "Last synced " + formatDate(current.cacheSavedAt));
@@ -380,6 +409,7 @@ function paint(snap) {
   updateConnection();
   applyLibraryView();
   renderNotice();
+  clearUnfinishedPreviews();
   render();
   if (ui.library === "swatches") renderSwatches();
 }
@@ -436,26 +466,45 @@ function scheduleAttachLocal() {
   }).catch(function () {});
 }
 
-async function boot() {
-  setBusy(true, "Connecting to color server…", "Loading approved colors");
+async function reachByLoopback() {
+  var reached = await ensureLanBridge({
+    config: config,
+    fetchImpl: xhrFetch,
+    fetchWithTimeout: fetchWithTimeout,
+    start: startLanBridgeHelper
+  });
+  return reached && reached.ready ? reached.ready : "";
+}
+
+async function boot(cached) {
+  if (cached === undefined) cached = await session.hydrate();
+  var hadLibrary = Boolean(cached && cached.rootReady);
+  if (!hadLibrary) setBusy(true, "Connecting to color server…", "Loading approved colors");
   try {
-    await session.hydrate();
-    try {
-      var origin = await portalBridge.connect();
-      await rememberPreferredHost(origin);
-    } catch (error) {
-      await ensureLanBridge({
-        config: config,
-        fetchImpl: xhrFetch,
-        fetchWithTimeout: fetchWithTimeout,
-        start: startLanBridgeHelper
-      });
+    ui.syncing = Boolean(hadLibrary && cached.selectedClient && studio.preferredHost);
+    if (hadLibrary) await paintReadyLibrary(cached);
+    var snap = null;
+    if (ui.syncing) {
+      directOrigin = studio.preferredHost;
+      fillPreviews($("#colorGrid"));
+      snap = await session.refresh();
     }
-    var snap = await session.start();
+    if (!snap || !snap.serverOnline) {
+      directOrigin = await reachByLoopback();
+      if (!directOrigin) {
+        try {
+          directOrigin = await portalBridge.connect();
+        } catch (error) {}
+      }
+      if (directOrigin) await rememberPreferredHost(directOrigin);
+      if (directOrigin) fillPreviews($("#colorGrid"));
+      snap = await session.start();
+    }
     if (portal.activeHost()) await rememberPreferredHost(portal.activeHost());
-    approvedList.resetPage();
-    paint(snap);
+    ui.syncing = false;
+    await paintReadyLibrary(snap);
   } finally {
+    ui.syncing = false;
     setBusy(false);
   }
   scheduleAttachLocal();
@@ -466,8 +515,7 @@ async function refreshLibrary() {
   setBusy(true, "Loading approved colors", " ");
   try {
     var snap = await session.refresh();
-    approvedList.resetPage();
-    paint(snap);
+    await paintReadyLibrary(snap);
   } finally {
     setBusy(false);
   }
@@ -475,17 +523,22 @@ async function refreshLibrary() {
 }
 
 async function selectClient(clientId) {
-  var client = current.clients.find(function (item) { return item.id === clientId; });
   setBusy(true, "Loading approved colors", " ");
   try {
     closeDetails();
     var snap = await session.selectClient(clientId);
-    approvedList.resetPage();
-    paint(snap);
+    await paintReadyLibrary(snap);
   } finally {
     setBusy(false);
   }
   scheduleAttachLocal();
+}
+
+async function paintReadyLibrary(snap) {
+  await warmCachedPreviews(snap && snap.catalog);
+  approvedList.resetPage();
+  paint(snap);
+  setBusy(false);
 }
 
 async function markReviewed() {
@@ -504,19 +557,123 @@ function previewId(ref) {
   return ref && ref.versionId ? ref.versionId : "";
 }
 
-async function previewFileUrl(versionId, bytes) {
-  var folder = await fs.getTemporaryFolder();
-  var name = "pixofix-pv-" + String(versionId || "preview").replace(/[^a-z0-9-]/gi, "") + ".jpg";
-  var file = await folder.createFile(name, { overwrite: true });
-  await file.write(bytes, { format: storage.formats.binary });
+function previewTempName(versionId) {
+  return "pixofix-pv-" + String(versionId || "preview").replace(/[^a-z0-9-]/gi, "") + ".jpg";
+}
+
+function entryFileUrl(entry) {
+  if (!entry) return "";
   if (typeof fs.getFsUrl === "function") {
     try {
-      var localUrl = fs.getFsUrl(file);
+      var localUrl = fs.getFsUrl(entry);
       if (localUrl) return localUrl;
     } catch (error) {}
   }
-  if (file.url) return file.url;
-  return bytesToDataUrl(bytes);
+  return entry.url || "";
+}
+
+var previewFiles = null;
+var previewFolder = null;
+
+function previewStorageFolder() {
+  if (previewFolder) return previewFolder;
+  previewFolder = Promise.resolve().then(function () {
+    if (typeof fs.getDataFolder !== "function") return fs.getTemporaryFolder();
+    return fs.getDataFolder();
+  }).then(function (folder) {
+    if (!folder || typeof folder.getEntry !== "function" || typeof folder.createFolder !== "function") return folder;
+    return folder.getEntry("previews").then(function (entry) {
+      return entry && entry.isFolder ? entry : folder.createFolder("previews");
+    }, function () {
+      return folder.createFolder("previews");
+    });
+  }).catch(function () {
+    return fs.getTemporaryFolder();
+  });
+  return previewFolder;
+}
+
+function previewFileMap() {
+  if (previewFiles) return previewFiles;
+  previewFiles = previewStorageFolder().then(function (folder) {
+    if (typeof folder.getEntries !== "function") return {};
+    return folder.getEntries().then(function (entries) {
+      var map = {};
+      (entries || []).forEach(function (entry) {
+        if (entry && !entry.isFolder && entry.name) map[entry.name] = entry;
+      });
+      return map;
+    }, function () { return {}; });
+  }, function () { return {}; });
+  return previewFiles;
+}
+
+async function cachedPreviewFileUrl(versionId) {
+  if (!versionId) return "";
+  try {
+    var map = await previewFileMap();
+    return entryFileUrl(map[previewTempName(versionId)]);
+  } catch (error) {
+    return "";
+  }
+}
+
+function warmCachedPreviews(catalog) {
+  return previewFileMap().then(function (map) {
+    cardPreviewIds(catalog).forEach(function (id) {
+      var url = entryFileUrl(map[previewTempName(id)]);
+      if (url) previews.seed(id, url);
+    });
+  }, function () {});
+}
+
+function cardPreviewIds(catalog) {
+  var ids = [];
+  var seen = {};
+  (catalog || []).forEach(function (group) {
+    var id = previewId(group.preferredRef);
+    if (!id || seen[id]) return;
+    seen[id] = true;
+    ids.push(id);
+  });
+  return ids;
+}
+
+function filesFromPayload(payload) {
+  var list = payload && payload.previews ? payload.previews : [];
+  return Promise.all(list.map(function (item) {
+    if (!item || !item.id || !item.jpeg) return null;
+    var bytes;
+    try { bytes = decodeBase64(item.jpeg); } catch (error) { return null; }
+    return previewFileUrl(item.id, bytes).then(function (url) {
+      return url ? { id: item.id, url: url } : null;
+    }, function () { return null; });
+  })).then(function (rows) { return rows.filter(Boolean); });
+}
+
+function fetchPreviewBatch(ids) {
+  var query = "/api/plugin/previews?w=360&ids=" + ids.map(function (id) { return encodeURIComponent(id); }).join(",");
+  return portal.getJson(query, 20000).then(filesFromPayload, function () {
+    return Promise.all(ids.map(function (id) {
+      return portal.getBytes("/api/plugin/versions/" + encodeURIComponent(id) + "/preview?w=360", 8000).then(function (bytes) {
+        if (!bytes || !bytes.byteLength) return null;
+        return previewFileUrl(id, bytes).then(function (url) {
+          return url ? { id: id, url: url } : null;
+        }, function () { return null; });
+      }, function () { return null; });
+    })).then(function (rows) { return rows.filter(Boolean); });
+  });
+}
+
+async function previewFileUrl(versionId, bytes) {
+  var folder = await previewStorageFolder();
+  var file = await folder.createFile(previewTempName(versionId), { overwrite: true });
+  await file.write(bytes, { format: storage.formats.binary });
+  try {
+    var map = await previewFileMap();
+    map[previewTempName(versionId)] = file;
+  } catch (error) {}
+  return entryFileUrl(file);
 }
 
 function managedCardMarkup(group) {
@@ -535,7 +692,7 @@ function managedCardMarkup(group) {
   var accessible = "Open " + group.displayName + ", " + summary + (group.colorCode ? ", " + group.colorCode : "");
   var savedMark = favorite ? "<span class=\"saved-chip\">Saved</span>" : "";
   return "<article class=\"color-card" + (favorite ? " is-saved" : "") + "\" data-id=\"" + escapeHtml(group.id) + "\" tabindex=\"0\" role=\"link\" aria-label=\"" + escapeHtml(accessible) + "\">" +
-    "<div class=\"thumb-wrap" + (src ? " has-preview" : (id ? " is-loading" : "")) + "\"" + (id ? " data-preview-id=\"" + escapeHtml(id) + "\"" : "") + ">" + thumbnail + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\"" + fallbackStyle + ">" + (swatch ? "" : escapeHtml(group.displayName.charAt(0) || "")) + "</div>" + badge + "</div>" +
+    "<div class=\"thumb-wrap" + (src ? " has-preview" : (id ? " is-loading" : "")) + "\"" + (id ? " data-preview-id=\"" + escapeHtml(id) + "\" aria-busy=\"" + (src ? "false" : "true") + "\"" : "") + ">" + thumbnail + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\"" + fallbackStyle + ">" + (swatch ? "" : escapeHtml(group.displayName.charAt(0) || "")) + "</div>" + badge + "</div>" +
     "<div class=\"card-body\"><div class=\"color-title-row\">" + dot + "<h3 class=\"color-name\" title=\"" + escapeHtml(group.displayName) + "\">" + escapeHtml(group.displayName) + "</h3>" + OPEN_ICON + "</div>" +
     "<div class=\"color-meta-row\"><span class=\"color-meta\">" + escapeHtml(summary) + savedMark + "</span>" + code + "</div></div>" +
     "<button type=\"button\" class=\"favorite-button" + (favorite ? " is-favorite" : "") + "\"" + savedButtonStyle(favorite) + " aria-pressed=\"" + (favorite ? "true" : "false") + "\" aria-label=\"" + (favorite ? "Remove from saved" : "Save color") + "\" title=\"" + (favorite ? "Remove from saved" : "Save color") + "\">" + starIcon(favorite) + "</button></article>";
@@ -605,15 +762,27 @@ function render() {
   $("#summaryBar").innerHTML = "<strong>" + view.matchedCount + "</strong> color" + (view.matchedCount === 1 ? "" : "s") + " · " + plural(view.fileCount, "file");
 }
 
+function clearUnfinishedPreviews() {
+  ["#colorGrid", "#referenceList"].forEach(function (selector) {
+    var root = $(selector);
+    if (!root || !root.querySelectorAll) return;
+    Array.prototype.forEach.call(root.querySelectorAll("[data-preview-started]"), function (node) {
+      if (!node.classList.contains("has-preview") && !node.classList.contains("is-loading")) {
+        node.removeAttribute("data-preview-started");
+      }
+    });
+  });
+}
+
 function fillPreviews(root) {
   if (!root || !root.querySelectorAll) return;
-  var canFetch = Boolean(portal.activeHost() || portalBridge.origin());
+  var canFetch = Boolean(portal.activeHost() || directOrigin || portalBridge.origin());
   var nodes = root.getAttribute && root.getAttribute("data-preview-id") ? [root] : [];
   Array.prototype.forEach.call(root.querySelectorAll("[data-preview-id]"), function (node) { nodes.push(node); });
   nodes.forEach(function (node) {
     var id = node.getAttribute("data-preview-id");
     if (!id) return;
-    function apply(url) {
+    function reveal(url) {
       if (!url || !node.parentNode) return;
       var image = node.tagName === "IMG" ? node : node.querySelector("img");
       if (!image) {
@@ -623,20 +792,65 @@ function fillPreviews(root) {
         node.insertBefore(image, node.firstChild);
         bindBrokenImages(node);
       }
-      node.classList.add("has-preview");
-      image.classList.remove("is-broken");
+      function settle(ok) {
+        if (!node.parentNode) return;
+        node.classList.remove("is-loading");
+        node.setAttribute("aria-busy", "false");
+        if (ok) {
+          image.classList.add("is-ready");
+          image.classList.remove("is-broken");
+          node.classList.add("has-preview");
+        } else {
+          image.classList.add("is-broken");
+          image.classList.remove("is-ready");
+          node.classList.remove("has-preview");
+        }
+      }
+      if (image.getAttribute("src") === url && image.complete && image.naturalWidth > 0) {
+        settle(true);
+        return;
+      }
+      node.classList.add("is-loading");
+      node.setAttribute("aria-busy", "true");
+      image.classList.remove("is-ready", "is-broken");
+      var settled = false;
+      function finish(ok) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        image.removeEventListener("load", onLoad);
+        image.removeEventListener("error", onError);
+        settle(ok);
+      }
+      function onLoad() { finish(image.naturalWidth > 0); }
+      function onError() { finish(false); }
+      image.addEventListener("load", onLoad);
+      image.addEventListener("error", onError);
+      var timer = setTimeout(function () { finish(image.naturalWidth > 0); }, 2000);
       image.src = url;
+      if (image.complete && image.naturalWidth > 0) onLoad();
     }
+    if (node.getAttribute("data-preview-started") === id) return;
     var cached = previews.cached(id);
     if (cached) {
-      node.classList.remove("is-loading");
-      apply(cached);
+      node.setAttribute("data-preview-started", id);
+      reveal(cached);
     } else if (canFetch) {
+      node.setAttribute("data-preview-started", id);
       node.classList.add("is-loading");
+      node.setAttribute("aria-busy", "true");
       previews.load(id).then(function (url) {
-        node.classList.remove("is-loading");
-        apply(url);
+        if (!url) {
+          if (node.getAttribute("data-preview-started") === id) node.removeAttribute("data-preview-started");
+          node.classList.remove("is-loading");
+          node.setAttribute("aria-busy", "false");
+          return;
+        }
+        reveal(url);
       });
+    } else {
+      node.classList.remove("is-loading");
+      node.setAttribute("aria-busy", "false");
     }
   });
 }
@@ -705,7 +919,7 @@ function managedReferenceMarkup(ref) {
   var approval = ref.approvedAt ? "Approved " + formatDate(ref.approvedAt) : "Approved version";
   var format = ref.extension.toUpperCase();
   var preview = id
-    ? "<div class=\"reference-preview" + (src ? " has-preview" : " is-loading") + "\" data-preview-id=\"" + escapeHtml(id) + "\">" + (src ? "<img src=\"" + escapeHtml(src) + "\" alt=\"\" decoding=\"async\" class=\"is-ready\">" : "") + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>"
+    ? "<div class=\"reference-preview" + (src ? " has-preview" : " is-loading") + "\" data-preview-id=\"" + escapeHtml(id) + "\" aria-busy=\"" + (src ? "false" : "true") + "\">" + (src ? "<img src=\"" + escapeHtml(src) + "\" alt=\"\" decoding=\"async\" class=\"is-ready\">" : "") + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>"
     : "<div class=\"reference-preview is-file\"><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>";
   return "<article class=\"reference-item\" tabindex=\"0\" role=\"button\" aria-label=\"Open " + escapeHtml(ref.baseName) + "\">" + preview +
     "<div class=\"reference-info\"><div class=\"reference-topline\"><span class=\"reference-type\">" + escapeHtml(typeName) + "</span><span class=\"file-format\">" + escapeHtml(format) + "</span></div>" +
@@ -1297,10 +1511,15 @@ function bindEvents() {
 
 async function initialize() {
   bindEvents();
-  var saved = await settings.read();
+  var previewsReady = previewFileMap();
+  var savedPromise = settings.read();
+  var cachedPromise = session.hydrate();
+  var saved = await savedPromise;
   studio.serverUrls = saved.serverUrls.slice();
   studio.preferredHost = saved.preferredHost || "";
-  await boot();
+  var cached = await cachedPromise;
+  await previewsReady;
+  await boot(cached);
 }
 
 document.addEventListener("DOMContentLoaded", initialize);

@@ -56,7 +56,8 @@ async function main() {
   assert.match(catalogStart, /if \(!RECORD_ID\.test\(String\(clientId \|\| ""\)\)\) return null/);
   assert.match(serverIndex, /\/api\/plugin\/versions\/:id\/file/);
   assert.match(serverIndex, /\/api\/plugin\/versions\/:id\/preview/);
-  assert.match(serverIndex, /cachedPreview\(config\.storageRoot, asset\.assetPath, req\.params\.id\)/);
+  assert.match(serverIndex, /\/api\/plugin\/previews/);
+  assert.match(serverIndex, /cachedPreview\(config\.storageRoot, asset\.assetPath, req\.params\.id, \{ maxEdge \}\)/);
   assert.match(fs.readFileSync(path.resolve(__dirname, "../server/previews.js"), "utf8"), /writePlaceholderPreview/);
   assert.match(serverIndex, /v\.status = 'APPROVED'/);
   assert.match(serverIndex, /r\.active_approved_version_id = v\.id/);

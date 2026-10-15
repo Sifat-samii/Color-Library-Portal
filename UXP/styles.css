@@ -42,7 +42,7 @@ html, body {
   font-size: 12px;
 }
 
-body { overflow: hidden; }
+body { position: relative; overflow: hidden; }
 button, input, select { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
 button { cursor: pointer; }
 button:disabled { cursor: default; }
@@ -671,21 +671,24 @@ h2 { font-size: 16px; font-weight: 700; }
 .reference-preview .thumb-spinner {
   display: none;
   position: absolute;
+  z-index: 2;
   top: 50%;
   left: 50%;
-  width: 18px;
-  height: 18px;
-  margin: -9px 0 0 -9px;
-  border: 2px solid var(--border-strong);
-  border-top-color: var(--brand);
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 3px solid rgba(255, 255, 255, .28);
+  border-top-color: #fff;
   border-radius: 50%;
+  background: rgba(12, 12, 13, .55);
+  box-shadow: 0 0 0 6px rgba(12, 12, 13, .35);
   animation: spin .8s linear infinite;
-  z-index: 1;
 }
 .thumb-wrap.is-loading .thumb-spinner,
 .reference-preview.is-loading .thumb-spinner { display: block; }
 .thumb-wrap.is-loading .thumb-fallback,
-.reference-preview.is-loading .thumb-fallback { visibility: hidden; }
+.reference-preview.is-loading .thumb-fallback { opacity: .55; }
 .thumb-fallback {
   position: absolute;
   top: 0;
@@ -1013,7 +1016,7 @@ h2 { font-size: 16px; font-weight: 700; }
 /* Busy overlay */
 
 .busy-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
@@ -1024,7 +1027,7 @@ h2 { font-size: 16px; font-weight: 700; }
   align-items: center;
   justify-content: center;
   padding: 30px;
-  background: rgba(12, 12, 13, .92);
+  background: #0c0c0d;
   text-align: center;
 }
 .busy-overlay strong { margin-bottom: 5px; font-size: 13px; }

@@ -30,6 +30,13 @@ function connectTimeoutMs(url, index) {
   return index === 0 ? 4000 : 1000;
 }
 
+function messageTimeoutMs(path) {
+  var value = String(path || "");
+  if (value.indexOf("/file") !== -1) return 120000;
+  if (value.indexOf("/api/plugin/previews") !== -1) return 20000;
+  return 8000;
+}
+
 function createWebviewBridge(options) {
   var origin = "";
   var seq = 0;
@@ -130,7 +137,7 @@ function createWebviewBridge(options) {
       var timer = setTimeout(function () {
         delete waiters[id];
         reject(new Error("timeout"));
-      }, path.indexOf("/file") !== -1 ? 120000 : 8000);
+      }, messageTimeoutMs(path));
       waiters[id] = {
         settle: function (data) {
           clearTimeout(timer);
@@ -170,5 +177,7 @@ module.exports = {
   createWebviewBridge: createWebviewBridge,
   pluginPathFromUrl: pluginPathFromUrl,
   connectTimeoutMs: connectTimeoutMs,
-  originFromPage: originFromPage
+  messageTimeoutMs: messageTimeoutMs,
+  originFromPage: originFromPage,
+  decodeBase64: decodeBase64
 };

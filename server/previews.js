@@ -5,7 +5,7 @@ const sharp = require("sharp");
 const inFlight = new Map();
 const queue = [];
 let activeJobs = 0;
-const MAX_PREVIEW_JOBS = 2;
+const MAX_PREVIEW_JOBS = 4;
 
 function schedule(task) {
   return new Promise((resolve, reject) => {
@@ -35,11 +35,27 @@ async function exists(filePath) {
 }
 
 const previewWarned = new Set();
+const CARD_PREVIEW_EDGE = 360;
 
-async function writePreviewJpeg(source, destination) {
+function previewEdge(options) {
+  return options && Number(options.maxEdge) === CARD_PREVIEW_EDGE ? CARD_PREVIEW_EDGE : 720;
+}
+
+function previewCacheRelativePaths(versionId) {
+  if (!/^[0-9a-f-]{36}$/i.test(String(versionId || ""))) return [];
+  return [
+    `previews/${versionId}.jpg`,
+    `previews/${versionId}.w${CARD_PREVIEW_EDGE}.jpg`,
+    `previews/${versionId}.full.png`
+  ];
+}
+
+async function writePreviewJpeg(source, destination, options) {
+  const quality = options && options.quality ? options.quality : 78;
+  const mozjpeg = !options || options.mozjpeg !== false;
   const temporaryPath = `${destination}.${process.pid}-${Date.now()}.tmp`;
   try {
-    await source.jpeg({ quality: 78, progressive: true, mozjpeg: true }).toFile(temporaryPath);
+    await source.jpeg({ quality, progressive: true, mozjpeg }).toFile(temporaryPath);
     await fs.rename(temporaryPath, destination);
   } catch (error) {
     await fs.unlink(temporaryPath).catch(() => {});
@@ -47,43 +63,50 @@ async function writePreviewJpeg(source, destination) {
   }
 }
 
-async function writePlaceholderPreview(previewPath) {
+async function writePlaceholderPreview(previewPath, edge) {
+  const size = edge || 720;
   await writePreviewJpeg(
-    sharp({ create: { width: 720, height: 720, channels: 3, background: "#24282d" } }),
-    previewPath
+    sharp({ create: { width: size, height: size, channels: 3, background: "#24282d" } }),
+    previewPath,
+    { quality: 70, mozjpeg: false }
   );
 }
 
-async function cachedPreview(storageRoot, sourcePath, versionId) {
+async function cachedPreview(storageRoot, sourcePath, versionId, options) {
   if (!/^[a-z0-9-]+$/i.test(versionId)) throw new Error("Invalid preview identifier");
+  const edge = previewEdge(options);
   const previewRoot = path.join(storageRoot, "previews");
-  const previewPath = path.join(previewRoot, `${versionId}.jpg`);
+  const previewPath = path.join(previewRoot, edge === 720 ? `${versionId}.jpg` : `${versionId}.w${edge}.jpg`);
+  const flightKey = edge === 720 ? versionId : `${versionId}:${edge}`;
   if (await exists(previewPath)) return previewPath;
-  if (inFlight.has(versionId)) return inFlight.get(versionId);
+  if (inFlight.has(flightKey)) return inFlight.get(flightKey);
 
   const pending = schedule(async () => {
     if (await exists(previewPath)) return previewPath;
     await fs.mkdir(previewRoot, { recursive: true });
+    const fullPreview = path.join(previewRoot, `${versionId}.jpg`);
+    const input = edge < 720 && await exists(fullPreview) ? fullPreview : sourcePath;
     try {
       await writePreviewJpeg(
-        sharp(sourcePath, { failOn: "none", pages: 1 })
+        sharp(input, { failOn: "none", pages: 1 })
           .rotate()
-          .resize({ width: 720, height: 720, fit: "inside", withoutEnlargement: true })
+          .resize({ width: edge, height: edge, fit: "inside", withoutEnlargement: true })
           .flatten({ background: "#24282d" }),
-        previewPath
+        previewPath,
+        edge < 720 ? { quality: 55, mozjpeg: false } : undefined
       );
       return previewPath;
     } catch (error) {
-      if (!previewWarned.has(versionId)) {
-        previewWarned.add(versionId);
+      if (!previewWarned.has(flightKey)) {
+        previewWarned.add(flightKey);
         console.warn("Preview unavailable", versionId, error.message);
       }
-      await writePlaceholderPreview(previewPath);
+      await writePlaceholderPreview(previewPath, edge);
       return previewPath;
     }
-  }).finally(() => inFlight.delete(versionId));
+  }).finally(() => inFlight.delete(flightKey));
 
-  inFlight.set(versionId, pending);
+  inFlight.set(flightKey, pending);
   return pending;
 }
 
@@ -130,4 +153,4 @@ async function cachedFullDisplay(storageRoot, sourcePath, versionId) {
   return pending;
 }
 
-module.exports = { cachedPreview, displayImage };
+module.exports = { cachedPreview, displayImage, previewCacheRelativePaths, CARD_PREVIEW_EDGE };

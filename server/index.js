@@ -19,7 +19,7 @@ const {
 const { writeAudit } = require("./audit");
 const { presentAuditEvent } = require("./audit-history");
 const { syncApprovedVersion, removeSyncedVersion, ensureInside } = require("./sync");
-const { cachedPreview, displayImage } = require("./previews");
+const { cachedPreview, displayImage, previewCacheRelativePaths } = require("./previews");
 const { registerColorRequests } = require("./color-requests");
 const { libraryEditBlock } = require("./library-lock");
 const { normalizeHex } = require("./hex-code");
@@ -395,8 +395,8 @@ app.post("/api/admin/clients/:id/delete", requireRole("ADMIN"), asyncRoute(async
     await client.query("DELETE FROM clients WHERE id=$1", [before.id]);
   });
   const stored = [
-    ...versions.flatMap(version => [version.storage_path, ...(/^[0-9a-f-]{36}$/i.test(version.id) ? [`previews/${version.id}.jpg`, `previews/${version.id}.full.png`] : [])]),
-    ...requestFiles.flatMap(file => [file.storage_path, ...(/^[0-9a-f-]{36}$/i.test(file.id) ? [`previews/${file.id}.jpg`, `previews/${file.id}.full.png`] : [])])
+    ...versions.flatMap(version => [version.storage_path, ...previewCacheRelativePaths(version.id)]),
+    ...requestFiles.flatMap(file => [file.storage_path, ...previewCacheRelativePaths(file.id)])
   ];
   for (const relativePath of stored) {
     if (!relativePath) continue;
@@ -585,7 +585,7 @@ app.post("/api/client/colors/:id/delete", requireRole("ADMIN"), asyncRoute(async
     await client.query("DELETE FROM colors WHERE id=$1", [before.id]);
   });
   for (const version of versions) {
-    const relativePaths = [version.storage_path, ...( /^[0-9a-f-]{36}$/i.test(version.id) ? [`previews/${version.id}.jpg`, `previews/${version.id}.full.png`] : [])];
+    const relativePaths = [version.storage_path, ...previewCacheRelativePaths(version.id)];
     for (const relativePath of relativePaths) {
       if (!relativePath) continue;
       try {
@@ -852,7 +852,7 @@ app.post("/api/client/references/:id/delete", requireRole("ADMIN"), asyncRoute(a
     await client.query("DELETE FROM color_references WHERE id=$1", [before.id]);
   });
   for (const version of versions) {
-    const relativePaths = [version.storage_path, ...( /^[0-9a-f-]{36}$/i.test(version.id) ? [`previews/${version.id}.jpg`, `previews/${version.id}.full.png`] : [])];
+    const relativePaths = [version.storage_path, ...previewCacheRelativePaths(version.id)];
     for (const relativePath of relativePaths) {
       if (!relativePath) continue;
       try {
@@ -966,14 +966,12 @@ app.delete("/api/client/versions/:id", requireRole("CLIENT", "ADMIN"), asyncRout
   const assetPath = path.resolve(config.storageRoot, version.storage_path);
   ensureInside(config.storageRoot, assetPath);
   await fs.unlink(assetPath).catch(() => {});
-  if (/^[0-9a-f-]{36}$/i.test(version.id)) {
-    for (const relativePath of [`previews/${version.id}.jpg`, `previews/${version.id}.full.png`]) {
-      try {
-        const previewPath = path.resolve(config.storageRoot, relativePath);
-        ensureInside(config.storageRoot, previewPath);
-        await fs.unlink(previewPath);
-      } catch (_error) {}
-    }
+  for (const relativePath of previewCacheRelativePaths(version.id)) {
+    try {
+      const previewPath = path.resolve(config.storageRoot, relativePath);
+      ensureInside(config.storageRoot, previewPath);
+      await fs.unlink(previewPath);
+    } catch (_error) {}
   }
   res.json({ ok: true });
 }));
@@ -1083,7 +1081,8 @@ app.get("/api/plugin/versions/:id/preview", asyncRoute(async (req, res) => {
   const asset = await approvedPluginAsset(req.params.id);
   if (!asset) return res.status(404).json({ error: "Preview unavailable" });
   try {
-    const previewPath = await cachedPreview(config.storageRoot, asset.assetPath, req.params.id);
+    const maxEdge = req.query.w === "360" ? 360 : 720;
+    const previewPath = await cachedPreview(config.storageRoot, asset.assetPath, req.params.id, { maxEdge });
     res.setHeader("Content-Type", "image/jpeg");
     res.setHeader("Cache-Control", "private, max-age=86400");
     if (asset.version.checksum_sha256) res.setHeader("ETag", `"${asset.version.checksum_sha256}"`);
@@ -1092,6 +1091,37 @@ app.get("/api/plugin/versions/:id/preview", asyncRoute(async (req, res) => {
     console.warn("Plugin preview unavailable", req.params.id, error.message);
     res.status(404).json({ error: "Preview unavailable" });
   }
+}));
+
+app.get("/api/plugin/previews", asyncRoute(async (req, res) => {
+  const ids = [...new Set(String(req.query.ids || "").split(",").map(id => id.trim()).filter(id => RECORD_ID.test(id)))].slice(0, 24);
+  if (!ids.length) return res.json({ previews: [] });
+  const versions = (await db.query(
+    `SELECT v.id, v.storage_path
+     FROM reference_versions v
+     JOIN color_references r ON r.id = v.reference_id
+     JOIN colors c ON c.id = r.color_id
+     JOIN clients cl ON cl.id = c.client_id
+     WHERE v.id = ANY($1::uuid[])
+       AND v.status = 'APPROVED'
+       AND r.active_approved_version_id = v.id
+       AND c.archived_at IS NULL
+       AND cl.active = true`,
+    [ids]
+  )).rows;
+  const previews = [];
+  await Promise.all(versions.map(async version => {
+    try {
+      const assetPath = path.resolve(config.storageRoot, version.storage_path);
+      ensureInside(config.storageRoot, assetPath);
+      const previewPath = await cachedPreview(config.storageRoot, assetPath, version.id, { maxEdge: 360 });
+      const bytes = await fs.readFile(previewPath);
+      previews.push({ id: version.id, jpeg: bytes.toString("base64") });
+    } catch (error) {
+      console.warn("Plugin preview unavailable", version.id, error.message);
+    }
+  }));
+  res.json({ previews });
 }));
 
 registerPixofixLibrary(app, { asyncRoute });

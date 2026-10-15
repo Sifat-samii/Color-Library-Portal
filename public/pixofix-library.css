@@ -413,7 +413,7 @@
   align-items: center;
   min-height: 0;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 18px;
@@ -483,8 +483,8 @@
   display: grid;
   grid-column: 1 / -1;
   grid-row: 2;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.35fr) minmax(0, 0.9fr);
-  gap: 10px 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 28px;
   margin: 0;
 }
 
@@ -497,7 +497,13 @@
   gap: 4px;
 }
 
+.pixofix-fact {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
 .pixofix-facts dt {
+  margin: 0;
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;
@@ -509,15 +515,88 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 8px;
   min-height: 28px;
   margin: 0;
+  padding: 0;
   font-variant-numeric: tabular-nums;
 }
 
-.pixofix-facts dd.pixofix-hex-line {
-  flex-wrap: wrap;
-  gap: 8px;
+.pixofix-fact-value {
+  flex: none;
+  margin: 0;
+}
+
+.pixofix-value-copy {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pixofix-fact:hover .pixofix-value-copy,
+.pixofix-fact:focus-within .pixofix-value-copy,
+.pixofix-value-copy[aria-pressed="true"] {
+  opacity: 1;
+}
+
+.pixofix-value-copy:hover,
+.pixofix-value-copy:focus-visible,
+.pixofix-value-copy:disabled {
+  cursor: pointer;
+}
+
+.pixofix-value-copy:hover,
+.pixofix-value-copy:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
+.pixofix-value-copy[aria-pressed="true"],
+.pixofix-value-copy[aria-pressed="true"]:hover,
+.pixofix-value-copy[aria-pressed="true"]:focus-visible {
+  color: #fff;
+  background: #111;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.pixofix-value-copy svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pixofix-value-copy .pixofix-copied-glyph {
+  display: none;
+}
+
+.pixofix-value-copy[aria-pressed="true"] .pixofix-copy-glyph {
+  display: none;
+}
+
+.pixofix-value-copy[aria-pressed="true"] .pixofix-copied-glyph {
+  display: block;
+}
+
+@media (hover: none) {
+  .pixofix-value-copy {
+    opacity: 1;
+  }
 }
 
 .pixofix-delete-swatch {
@@ -545,64 +624,6 @@
   color: var(--ink);
   font-family: ui-monospace, Consolas, monospace;
   font-size: 18px;
-}
-
-.pixofix-hex-copy {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 11px 0 8px;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.pixofix-hex-copy svg {
-  display: block;
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.pixofix-hex-copy .pixofix-copied-glyph {
-  display: none;
-}
-
-.pixofix-hex-copy.is-copied .pixofix-copy-glyph {
-  display: none;
-}
-
-.pixofix-hex-copy.is-copied .pixofix-copied-glyph {
-  display: block;
-}
-
-.pixofix-hex-copy:hover,
-.pixofix-hex-copy:focus-visible {
-  border-color: var(--brand);
-  background: var(--mint);
-  color: var(--brand-dark);
-  outline: none;
-}
-
-.pixofix-hex-copy.is-copied,
-.pixofix-hex-copy.is-copied:hover {
-  border-color: #1f7a45;
-  background: #f3faf6;
-  color: #1f7a45;
-}
-
-.pixofix-hex-copy:disabled {
-  cursor: progress;
 }
 
 .pixofix-related {
@@ -901,7 +922,7 @@
   .pixofix-facts,
   .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-facts {
     grid-row: 2;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, .9fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .pixofix-related,
@@ -958,6 +979,11 @@
 
   .pixofix-detail {
     grid-template-rows: minmax(88px, 16vh) minmax(0, 1fr);
+  }
+
+  .pixofix-facts,
+  .pixofix-spec:has(.pixofix-delete-swatch) .pixofix-facts {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

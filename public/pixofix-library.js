@@ -455,38 +455,96 @@ async function downloadPixofixSwatch(button) {
   }
 }
 
+function copyTextNow(text) {
+  const field = document.createElement("textarea");
+  field.value = text;
+  field.setAttribute("readonly", "");
+  field.style.position = "fixed";
+  field.style.top = "0";
+  field.style.left = "-9999px";
+  document.body.appendChild(field);
+  field.focus({ preventScroll: true });
+  field.select();
+  field.setSelectionRange(0, field.value.length);
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (_error) {
+    copied = false;
+  }
+  field.remove();
+  return copied;
+}
+
+async function writeClipboardText(text) {
+  if (copyTextNow(text)) return;
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  throw new Error("Could not copy");
+}
+
+function pixofixCopyValue(button) {
+  const visible = button.closest(".pixofix-fact")?.querySelector(".pixofix-fact-value")?.textContent || "";
+  return visible.trim() || button.dataset.pixofixCopy || "";
+}
+
+function selectPixofixValueCopy(button) {
+  button.closest(".pixofix-facts")?.querySelectorAll(".pixofix-value-copy[aria-pressed='true']").forEach(item => {
+    if (item === button) return;
+    item.setAttribute("aria-pressed", "false");
+    item.classList.remove("is-selected");
+    const fact = item.closest(".pixofix-fact")?.querySelector("dt")?.textContent || "value";
+    item.setAttribute("aria-label", `Copy ${fact}`);
+  });
+  button.setAttribute("aria-pressed", "true");
+  button.classList.add("is-selected");
+  button.setAttribute("aria-label", "Copied");
+}
+
 async function copyPixofixHex(hex, button) {
   if (!hex || !button || button.disabled) return;
+  const valueCopy = button.classList.contains("pixofix-value-copy");
+  const text = valueCopy ? pixofixCopyValue(button) : hex;
+  if (!text) return;
   const label = button.getAttribute("aria-label") || "Copy hex";
   const statusLabel = button.querySelector(".pixofix-hex-copy-label");
-  button.disabled = true;
-  button.setAttribute("aria-busy", "true");
   const actionLabel = button.querySelector(".pixofix-action-label");
-  button.classList.add("is-copied");
-  if (statusLabel) statusLabel.textContent = "Copying…";
-  if (actionLabel) actionLabel.textContent = "Copying…";
+  if (!valueCopy) {
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.classList.add("is-copied");
+    if (statusLabel) statusLabel.textContent = "Copying…";
+    if (actionLabel) actionLabel.textContent = "Copying…";
+  }
   try {
-    await navigator.clipboard.writeText(hex);
-    button.setAttribute("aria-label", "Copied");
-    if (statusLabel) statusLabel.textContent = "Copied";
-    if (actionLabel) actionLabel.textContent = "Copied";
-    toast("Hex code copied");
-    setTimeout(() => {
+    await writeClipboardText(text);
+    if (valueCopy) selectPixofixValueCopy(button);
+    else {
+      button.setAttribute("aria-label", "Copied");
+      if (statusLabel) statusLabel.textContent = "Copied";
+      if (actionLabel) actionLabel.textContent = "Copied";
+      setTimeout(() => {
+        button.classList.remove("is-copied");
+        button.setAttribute("aria-label", label);
+        if (statusLabel) statusLabel.textContent = "Copy";
+        if (actionLabel) actionLabel.textContent = "Copy hex";
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+      }, 900);
+    }
+    toast(valueCopy ? "Copied" : "Hex code copied");
+  } catch (_error) {
+    if (!valueCopy) {
       button.classList.remove("is-copied");
       button.setAttribute("aria-label", label);
       if (statusLabel) statusLabel.textContent = "Copy";
       if (actionLabel) actionLabel.textContent = "Copy hex";
       button.disabled = false;
       button.removeAttribute("aria-busy");
-    }, 900);
-  } catch (_error) {
-    button.classList.remove("is-copied");
-    button.setAttribute("aria-label", label);
-    if (statusLabel) statusLabel.textContent = "Copy";
-    if (actionLabel) actionLabel.textContent = "Copy hex";
-    button.disabled = false;
-    button.removeAttribute("aria-busy");
-    toast("Could not copy the hex code");
+    }
+    toast(valueCopy ? "Could not copy" : "Could not copy the hex code");
   }
 }
 
@@ -495,10 +553,19 @@ function pixofixSwatchBackground(hex) {
   return css ? ` style="background:${css}"` : "";
 }
 
-function pixofixRgb(hex) {
-  const match = String(hex || "").trim().match(/^#([0-9a-f]{6})$/i);
-  if (!match) return "";
-  return [0, 2, 4].map(index => String(Number.parseInt(match[1].slice(index, index + 2), 16))).join(", ");
+function pixofixFact(label, value) {
+  const copy = `<button class="pixofix-value-copy" type="button" data-pixofix-copy="${esc(value)}" aria-pressed="false" aria-label="Copy ${esc(label)}">${pixofixCopyIcon(label)}</button>`;
+  const valueClass = label === "Hex" ? " pixofix-hex" : "";
+  return `<div class="pixofix-fact"><dt>${label}</dt><dd><span class="pixofix-fact-value${valueClass}">${esc(value)}</span>${copy}</dd></div>`;
+}
+
+function pixofixValueFacts(color) {
+  const values = typeof globalThis.colorValuesFromHex === "function" ? globalThis.colorValuesFromHex(color.hexCode) : null;
+  const hex = pixofixFact("Hex", color.hexCode);
+  if (!values) return hex;
+  const left = [hex, pixofixFact("RGB", values.rgb), pixofixFact("CMYK", values.cmyk), pixofixFact("HSB", values.hsb), pixofixFact("HSL", values.hsl)];
+  const right = [pixofixFact("Lab", values.lab), pixofixFact("XYZ", values.xyz), pixofixFact("LCH", values.lch), pixofixFact("Luv", values.luv), pixofixFact("HWB", values.hwb)];
+  return left.map((cell, index) => cell + right[index]).join("");
 }
 
 function pixofixDistance(leftHex, rightHex) {
@@ -581,16 +648,13 @@ function renderPixofixDetail(colorId) {
   $("#content").removeAttribute("aria-busy");
   const shadeId = shadeIdForColor(color);
   const family = (globalThis.COLOR_SHADES || []).find(item => item.id === shadeId);
-  const rgb = pixofixRgb(color.hexCode);
   const familyMarkup = family ? `<p class="pixofix-family"><span class="shade-dot" style="${typeof shadeDotStyle === "function" ? shadeDotStyle(family.dot) : `--shade-dot:${family.dot}`}"></span>${esc(family.label)}</p>` : "";
   const stageClass = `pixofix-stage${color.saved ? " is-saved" : ""}`;
   const deleteMarkup = state.user.role === "ADMIN" ? `<button id="deletePixofixColor" class="secondary pixofix-delete-swatch" type="button" data-pixofix-delete="${esc(color.id)}">Delete swatch</button>` : "";
   const specHead = familyMarkup || deleteMarkup ? `<div class="pixofix-spec-head">${familyMarkup}</div>` : "";
-  const hexCopy = `<button id="copyPixofixHex" class="pixofix-hex-copy" type="button" data-pixofix-copy="${esc(color.hexCode)}" aria-label="Copy hex ${esc(color.hexCode)}">${pixofixCopyIcon(`${color.id}-hex`)}<span class="pixofix-hex-copy-label">Copy</span></button>`;
-  const profile = esc(color.profile || PIXOFIX_PROFILE_NOTE);
   const canRequest = state.user.role === "CLIENT" || state.user.selectedClientId;
   const requestAction = canRequest ? '<button id="requestPixofixColor" class="primary pixofix-request-color" type="button">Request this color</button>' : "";
-  $("#content").innerHTML = `<article class="pixofix-detail"><figure class="${stageClass}"${pixofixSwatchBackground(color.hexCode)}><img src="${esc(color.swatchUrl)}" alt="" width="640" height="640" decoding="async"><figcaption class="pixofix-stage-name"><span class="pixofix-preview-label">Preview</span><span class="pixofix-stage-title-row"><span class="pixofix-stage-title">${esc(color.name)}</span>${pixofixActions(color, true)}</span></figcaption></figure><section class="pixofix-spec" aria-label="${esc(color.name)} values">${specHead}${deleteMarkup}<dl class="pixofix-facts"><div><dt>Profile</dt><dd>${profile}</dd></div><div><dt>Hex</dt><dd class="pixofix-hex-line"><span class="pixofix-hex">${esc(color.hexCode)}</span>${hexCopy}</dd></div>${rgb ? `<div><dt>Adobe RGB</dt><dd>${esc(rgb)}</dd></div>` : ""}</dl>${requestAction}${pixofixRelatedMarkup(color)}</section><p class="pixofix-live" aria-live="polite"></p></article>`;
+  $("#content").innerHTML = `<article class="pixofix-detail"><figure class="${stageClass}"${pixofixSwatchBackground(color.hexCode)}><img src="${esc(color.swatchUrl)}" alt="" width="640" height="640" decoding="async"><figcaption class="pixofix-stage-name"><span class="pixofix-preview-label">Preview</span><span class="pixofix-stage-title-row"><span class="pixofix-stage-title">${esc(color.name)}</span>${pixofixActions(color, true)}</span></figcaption></figure><section class="pixofix-spec" aria-label="${esc(color.name)} values">${specHead}${deleteMarkup}<dl class="pixofix-facts">${pixofixValueFacts(color)}</dl>${requestAction}${pixofixRelatedMarkup(color)}</section><p class="pixofix-live" aria-live="polite"></p></article>`;
   bindPixofixPreview(color);
   bindPixofixActions($("#content"));
   if ($("#requestPixofixColor")) $("#requestPixofixColor").onclick = () => openColorRequestForm(color);

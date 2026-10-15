@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const { connectTimeoutMs, createWebviewBridge, pluginPathFromUrl } = require("../webview-bridge.js");
+const { connectTimeoutMs, createWebviewBridge, messageTimeoutMs, pluginPathFromUrl } = require("../webview-bridge.js");
 
 function fakeWebview(reply) {
   var listeners = {};
@@ -35,6 +35,9 @@ function fakeWebview(reply) {
   assert.equal(connectTimeoutMs("http://192.168.0.112:8787/plugin-bridge.html", 0), 4000);
   assert.equal(connectTimeoutMs("http://tudb01:8787/plugin-bridge.html", 1), 1000);
   assert.equal(connectTimeoutMs("http://127.0.0.1:8787/plugin-bridge.html", 0), 800);
+  assert.equal(messageTimeoutMs("/api/plugin/previews?w=360&ids=a"), 20000);
+  assert.equal(messageTimeoutMs("/api/plugin/versions/a/preview"), 8000);
+  assert.equal(messageTimeoutMs("/api/plugin/versions/a/file"), 120000);
   const view = fakeWebview(function (data) {
     if (data.type === "ping") return { id: data.id, type: "pong" };
     if (data.type === "get" && data.path === "/api/plugin/clients") {

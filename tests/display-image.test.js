@@ -3,7 +3,7 @@ const fs = require("fs/promises");
 const os = require("os");
 const path = require("path");
 const sharp = require("sharp");
-const { cachedPreview, displayImage } = require("../server/previews");
+const { cachedPreview, displayImage, previewCacheRelativePaths } = require("../server/previews");
 
 async function main() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "acl-display-"));
@@ -21,6 +21,19 @@ async function main() {
     const thumbMeta = await sharp(thumbPath).metadata();
     assert.ok(thumbMeta.width <= 720 && thumbMeta.height <= 720);
     assert.ok(thumbMeta.width < jpegMeta.width);
+
+    const cardId = "11111111-1111-4111-8111-111111111111";
+    const cardPath = await cachedPreview(root, jpegPath, cardId, { maxEdge: 360 });
+    assert.strictEqual(cardPath, path.join(root, "previews", cardId + ".w360.jpg"));
+    const cardMeta = await sharp(cardPath).metadata();
+    assert.ok(cardMeta.width <= 360 && cardMeta.height <= 360);
+    const fullCard = await cachedPreview(root, jpegPath, cardId, { maxEdge: 999 });
+    assert.strictEqual(fullCard, path.join(root, "previews", cardId + ".jpg"));
+    assert.deepStrictEqual(previewCacheRelativePaths(cardId), [
+      "previews/" + cardId + ".jpg",
+      "previews/" + cardId + ".w360.jpg",
+      "previews/" + cardId + ".full.png"
+    ]);
 
     const tiffPath = path.join(root, "scan.tif");
     await sharp({ create: { width: 960, height: 640, channels: 3, background: "#2d6b4f" } }).tiff().toFile(tiffPath);

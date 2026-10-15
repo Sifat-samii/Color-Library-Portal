@@ -22,7 +22,7 @@ All platform, catalog, syntax, authentication, and performance tests pass. `npm 
 
 - Replaced web thumbnail downloads of original production assets with immutable 720 px cached JPEG previews.
 - Warmed all existing compatible previews and added automatic background preview creation for new uploads.
-- Limited preview generation to two concurrent jobs to prevent CPU and disk spikes.
+- Limited preview generation to four concurrent jobs to prevent CPU and disk spikes.
 - Added a lightweight fallback for formats that cannot be rasterized by the preview service.
 - Converted server catalog assembly from repeated array filtering to indexed maps.
 - Parallelized independent PostgreSQL catalog queries.
@@ -43,12 +43,16 @@ npm run previews:warm
 npm audit --omit=dev
 ```
 
-Actual first-open time still depends on PostgreSQL availability, disk speed, Photoshop/UXP startup, and the size and format of newly uploaded production files. Cached steady-state paths are now optimized and measured. When Sharp cannot decode PSD or unsupported TIFF, `cachedPreview` caches a 720 px JPEG placeholder (warn once per version id) so web cards and the Photoshop panel still receive an image; the original remains available to open in Photoshop.
+Actual first-open time still depends on PostgreSQL availability, disk speed, Photoshop/UXP startup, and the size and format of newly uploaded production files. Cached steady-state paths are now optimized and measured. When Sharp cannot decode PSD or unsupported TIFF, `cachedPreview` caches a JPEG placeholder at the requested edge (720 px unless the caller asks for 360 px) so web cards and the Photoshop panel still receive an image; the original remains available to open in Photoshop.
 
 ## Follow-up (2026-09-25)
 
-Large inspection views (color details stage and request review) now use `displayImage` / `/api/display` (and request `…/display` routes): browser-native formats are served at full resolution from the original file; TIFF/PSD/PSB are cached once as `previews/<id>.full.png` with no resize. Library cards and small thumbnails remain on the 720 px JPEG `cachedPreview` path measured above. `npm run previews:warm` still warms only the JPEG thumbnails.
+Large inspection views (color details stage and request review) now use `displayImage` / `/api/display` (and request `…/display` routes): browser-native formats are served at full resolution from the original file; TIFF/PSD/PSB are cached once as `previews/<id>.full.png` with no resize. Library cards and small thumbnails on the web portal remain on the 720 px JPEG `cachedPreview` path measured above. `npm run previews:warm` still warms only the JPEG thumbnails.
 
 ## Follow-up (2026-10-07)
 
-`cachedPreview` now writes that 720 px JPEG placeholder when Sharp cannot rasterize the original. `GET /api/previews/:versionId` and `GET /api/plugin/versions/:id/preview` therefore return an image instead of an SVG or 404 JSON on those decode failures. Improving actual rasterization of those formats remains a follow-up.
+`cachedPreview` writes a JPEG placeholder at the requested edge when Sharp cannot rasterize the original. `GET /api/previews/:versionId` and `GET /api/plugin/versions/:id/preview` (720 px by default, 360 px with `?w=360`) therefore return an image instead of an SVG or 404 JSON on those decode failures. Improving actual rasterization of those formats remains a follow-up.
+
+## Follow-up (2026-10-08)
+
+Portal library cards stay on the 720 px JPEG (`previews/<id>.jpg`, `GET /api/previews/:versionId`). `npm run previews:warm` still warms only those files. The Photoshop panel (`0.5.15`) reuses a plugin data JPEG (`pixofix-pv-<versionId>.jpg`) before any download, then loads remaining card and detail thumbs in two batches of 24 from `GET /api/plugin/previews?w=360&ids=` (`{ previews: [{ id, jpeg }] }`, `jpeg` base64). The webview batch waits 20s. A failed batch falls back to `GET /api/plugin/versions/:id/preview?w=360`, which stores `previews/<id>.w360.jpg` and resizes from the existing 720 px JPEG when that file is present. The single plugin preview route still defaults to 720 px. `previewCacheRelativePaths()` includes the `.w360.jpg` file when preview files are deleted. The connecting screen stays hidden when a saved catalog is already on this computer. Card pictures already saved in the plugin data folder show with that catalog. Missing pictures load after. A successful batch is written to `pixofix-pv-<versionId>.jpg` in the plugin data folder and the card uses that file URL; a later Photoshop launch reuses that file from one data-folder listing. Cards keep the letter or hex placeholder and a spinner until the image loads (2s safety). The 360 px card JPEG is quality 55. Preview generation allows 4 jobs at once.

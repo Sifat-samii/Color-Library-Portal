@@ -54,6 +54,56 @@ const { bytesToDataUrl, createPreviewLoader } = require("../preview-data.js");
   assert.equal(await mapped.load("saved"), "file:saved");
   assert.equal(mapped.cached("saved"), "file:saved");
 
+  let diskReads = 0;
+  const disk = createPreviewLoader({
+    cachedFile: async function (id) { return id === "warm" ? "file:warm" : ""; },
+    getBytes: async function () {
+      diskReads += 1;
+      return jpeg;
+    }
+  });
+  assert.equal(await disk.load("warm"), "file:warm");
+  assert.equal(diskReads, 0);
+  assert.match(await disk.load("cold"), /^data:image\/jpeg;base64,/);
+  assert.equal(diskReads, 1);
+
+  const seen = [];
+  const batched = createPreviewLoader({
+    batchSize: 8,
+    getBatch: async function (ids) {
+      seen.push(ids.slice());
+      return ids.filter(function (id) { return id !== "gone"; }).map(function (id) {
+        return { id: id, bytes: jpeg };
+      });
+    },
+    toUrl: async function (id) { return "batch:" + id; }
+  });
+  const [one, two, gone] = await Promise.all([
+    batched.load("one"),
+    batched.load("two"),
+    batched.load("gone")
+  ]);
+  assert.equal(one, "batch:one");
+  assert.equal(two, "batch:two");
+  assert.equal(gone, "");
+  assert.equal(seen.length, 1);
+  assert.deepEqual(seen[0].sort(), ["gone", "one", "two"]);
+  assert.equal(await batched.load("one"), "batch:one");
+  assert.equal(seen.length, 1);
+
+  let wrote = 0;
+  const linked = createPreviewLoader({
+    getBatch: async function (ids) {
+      return ids.map(function (id) { return { id: id, url: "data:" + id }; });
+    },
+    toUrl: async function () {
+      wrote += 1;
+      return "file";
+    }
+  });
+  assert.equal(await linked.load("pic"), "data:pic");
+  assert.equal(wrote, 0);
+
   console.log("Preview data tests passed.");
 })().catch(function (error) {
   console.error(error);

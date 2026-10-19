@@ -1,0 +1,75 @@
+{
+  "startedAt": "2026-10-19T01:38:58.062Z",
+  "build": {
+    "directory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-vvlaeU",
+    "artifactPluginDirectory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-vvlaeU\\plugin",
+    "artifactManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-vvlaeU\\plugin\\manifest.json",
+    "pluginDirectory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin",
+    "manifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "pluginId": "com.pixofix.color-library",
+    "version": "0.6.1",
+    "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-vvlaeU\\pixofix-color-library-recolor-pilot-0.6.1.ccx",
+    "ccxSha256": "3296b4929b18ef6e3cdbd53b7642328fb55fe834dcf0240b5ebdc9b8db318b90",
+    "productionQualified": false
+  },
+  "checks": [
+    "Recolor and Browse library respond",
+    "Use active product captures the bound source through actual plugin modal scopes",
+    "Material selection is read and retained in the live panel",
+    "Approved-library Apply Color opens and samples a verified temporary reference",
+    "Preview color fits actual Photoshop adjustments from panel events",
+    "Fine-tune intensity updates native adjustments through the serialized UI queue",
+    "Before/after and editable Apply Color respond in the loaded panel",
+    "New variant starts separately and retains the committed document",
+    "Original source history preserved",
+    "End source session releases only its frozen working source"
+  ],
+  "productionQualified": false,
+  "cleanup": {
+    "state": "complete",
+    "results": [
+      {
+        "id": 891,
+        "closed": true
+      },
+      {
+        "id": 897,
+        "closed": true
+      },
+      {
+        "id": 909,
+        "closed": true
+      },
+      {
+        "id": 904,
+        "closed": true
+      },
+      {
+        "id": 935,
+        "closed": true
+      }
+    ]
+  },
+  "pluginSessionId": "af5337f0-932a-4a75-9ba5-2decb5141cbf",
+  "stage": "rendered preview and apply",
+  "fixture": {
+    "id": 891,
+    "name": "Recolor live test 1792373938816",
+    "historyId": 892
+  },
+  "referenceSampling": "Provisional center region for technical UI validation; not color accuracy qualification",
+  "passed": true,
+  "finishedAt": "2026-10-19T01:39:05.929Z",
+  "runtimeContexts": [
+    {
+      "id": 1,
+      "origin": "",
+      "name": "Pixofix Color Library",
+      "uniqueId": "2911498522662739451.7479687454024842755",
+      "auxData": {
+        "frameId": "6cfe4a9a-e202-48e8-9248-9883efdc7300",
+        "isDefault": true
+      }
+    }
+  ]
+}

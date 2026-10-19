@@ -19,7 +19,8 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
   function view() {
     const target = targets.get(selected);
     return { busy, fitting: Boolean(signal), message, source: snapshot && clone(snapshot.original),
-      sourceQualification: snapshot && snapshot.sourceQualification, previewDocumentId: preview && preview.documentId,
+      sourceQualification: snapshot && snapshot.sourceQualification, workingSourceDocumentId: snapshot && snapshot.documentId,
+      previewDocumentId: preview && preview.documentId,
       hasMask: Boolean(mask), target: target && { key: selected, reference: clone(target.reference), sampled: Boolean(target.measurement) },
       targets: [...targets].map(([id, t]) => ({ id, name: t.reference.colorName, sampled: Boolean(t.measurement) })),
       rendered: Boolean(preview && preview.recipe && preview.recipe.target.id === selected),

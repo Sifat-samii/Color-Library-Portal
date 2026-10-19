@@ -2,6 +2,22 @@ const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const color = require("../recolor/color");
 
+test('RGB and opaque RGBA composites compare exactly while real color or alpha changes remain failures', () => {
+  const { compareFrames } = require('../recolor/quality');
+  const base = { width: 2, height: 2, components: 3, maximum: 65535, profile: color.ADOBE_RGB,
+    bounds: { left: 0, top: 0, right: 2, bottom: 2 }, data: new Uint16Array(12).fill(40000) };
+  const after = { ...base, components: 4, data: new Uint16Array([40000,40000,40000,65535, 40000,40000,40000,65535, 40000,40000,40000,65535, 20000,10000,30000,65535]) };
+  const mask = { width: 1, height: 1, left: 1, top: 1, maximum: 255, data: new Uint8Array([255]) };
+  assert.equal(compareFrames(base, after, mask).protectedPixelsChanged, 0);
+  after.data[0]++;
+  assert.equal(compareFrames(base, after, mask).protectedPixelsChanged, 1);
+  assert.equal(compareFrames(base, after, mask).critical, true);
+  after.data[0]--; after.data[3] = 0;
+  assert.equal(compareFrames(base, after, mask).protectedPixelsChanged, 1);
+  assert.equal(compareFrames(after, base, mask).critical, true);
+  assert.throws(() => compareFrames(base, { ...after, maximum: 32768 }, mask), /geometry, depth, or profiles/);
+});
+
 test("recolor measurements use explicit profiles and unrounded Lab D50", () => {
   const white = color.rgbToLab([255, 255, 255], color.ADOBE_RGB);
   assert.ok(Math.abs(white[0] - 100) < 0.001);

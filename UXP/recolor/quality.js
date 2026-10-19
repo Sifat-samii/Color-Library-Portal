@@ -71,7 +71,7 @@ function measureMaterial(frame, mask, options = {}) {
 }
 
 function sameGeometry(a, b) {
-  return a.width === b.width && a.height === b.height && a.components === b.components && a.maximum === b.maximum
+  return a.width === b.width && a.height === b.height && a.maximum === b.maximum
     && a.profile === b.profile && ["left", "top", "right", "bottom"].every(key => a.bounds[key] === b.bounds[key]);
 }
 
@@ -92,10 +92,17 @@ function compareFrames(before, after, mask) {
     const x = before.bounds.left + (index % before.width + 0.5) * xScale;
     const y = before.bounds.top + (Math.floor(index / before.width) + 0.5) * yScale;
     const alpha = coverage(mask, x, y);
-    const offset = index * before.components;
     if (alpha === 0) {
       protectedCount += 1;
-      for (let c = 0; c < before.components; c += 1) if (before.data[offset + c] !== after.data[offset + c]) { changed += 1; break; }
+      // Photoshop may add an opaque alpha channel to a masked composite.
+      // Compare semantic channels with each frame's stride, including alpha:
+      // an RGB frame has implicit full opacity, never missing protection.
+      const beforeOffset = index * before.components, afterOffset = index * after.components;
+      const beforeAlpha = before.components === 4 ? before.data[beforeOffset + 3] : before.maximum;
+      const afterAlpha = after.components === 4 ? after.data[afterOffset + 3] : after.maximum;
+      if (beforeAlpha !== afterAlpha || before.data[beforeOffset] !== after.data[afterOffset]
+        || before.data[beforeOffset + 1] !== after.data[afterOffset + 1]
+        || before.data[beforeOffset + 2] !== after.data[afterOffset + 2]) changed += 1;
     }
     if (index % stride !== 0 || alpha < 0.98 || !opaque(before, index)) continue;
     interior += 1;

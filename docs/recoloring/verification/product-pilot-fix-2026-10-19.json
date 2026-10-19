@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-19",
+  "baselineCheckpoint": "0071ae7",
+  "checkpointTag": "checkpoint/recolor-pilot-fix-2026-10-19",
+  "version": "0.6.1",
+  "pluginId": "com.pixofix.color-library",
+  "artifact": "storage/recolor-dev/pilot-vvlaeU/pixofix-color-library-recolor-pilot-0.6.1.ccx",
+  "ccxSha256": "3296b4929b18ef6e3cdbd53b7642328fb55fe834dcf0240b5ebdc9b8db318b90",
+  "developmentManifest": "storage/recolor-dev/pilot-current/plugin/manifest.json",
+  "nativeEvidence": "product-pilot-fix-native-25.3.1.json",
+  "nativeTestedBundleSha256": "12694a59aef5987d90e7767b3fb195c1a388d7f7ba6f101b4b5490f01d972f17",
+  "nativePassed": 26,
+  "nativeFailed": 0,
+  "initialDocumentsPreserved": true,
+  "unexpectedNewDocumentIds": [],
+  "panelEvidence": "product-pilot-fix-panel-25.3.1.json",
+  "panelChecksPassed": 10,
+  "repositoryRegressionSuitePassed": true,
+  "pilotSessionTestsPassed": 8,
+  "modalScopeTestsPassed": 2,
+  "fixedCauses": [
+    "Modeless Imaging reads required short executeAsModal scopes on Photoshop 25.3.1",
+    "Dynamically populated UXP selects required explicit initial selectedIndex",
+    "Exact protected-pixel comparison must handle RGB versus opaque RGBA using separate strides and implicit alpha",
+    "New variant mask availability must follow the current rendered preview, not retained target parameters"
+  ],
+  "deployment": "LOCAL_0.6.1_DEVELOPMENT_PANEL_LOADED_AND_LIVE_TESTED",
+  "regularReleaseManifestUnchanged": true,
+  "productionQualified": false,
+  "limitations": [
+    "Live checks dispatch real panel DOM events; physical pointer hit areas and save-picker interaction were not automated",
+    "Synthetic fixtures and provisional reference sampling verify functionality, not professional color-match quality",
+    "UDT may time out on initial debugger attachment after a reload; the subsequent attached run passed",
+    "Production material/color validation, delivery exports, multi-color batch orchestration and segmentation remain pending"
+  ],
+  "userDocumentDiagnostic": {
+    "documentId": 59,
+    "note": "An empty diagnostic group was briefly added to the pre-existing Wine document, then only that verified empty group was removed. No user file was saved or overwritten; original pixels and Background layer remain. This turn does not claim its history was untouched."
+  }
+}

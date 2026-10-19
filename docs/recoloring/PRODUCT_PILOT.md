@@ -22,11 +22,17 @@ From the repository root:
 npm run recolor:pilot
 ```
 
-This writes an integrated plugin folder and CCX under a unique `storage/recolor-dev/pilot-*/` directory. The generated `storage/recolor-dev/latest-pilot.json` records the exact paths. Generated artifacts are ignored by Git; rebuild when code changes.
+This writes an integrated plugin folder and CCX under a unique `storage/recolor-dev/pilot-*/` directory, and refreshes the stable development folder at `storage/recolor-dev/pilot-current/plugin/`. The generated `storage/recolor-dev/latest-pilot.json` records both paths and the CCX checksum. Generated artifacts are ignored by Git; rebuild when code changes, then reload in UDT.
 
-The pilot uses the **same plugin identity and panel entrypoint** as the existing Color Library, version **0.6.0**, with Photoshop **25.3+** and explicit Photoshop API v2. The regular 0.5.15 manifest/config and release CCX remain available. Normal `plugin:package` still excludes experimental recoloring; the pilot command is the explicit distribution path for this increment.
+The pilot uses the **same plugin identity and panel entrypoint** as the existing Color Library, version **0.6.1**, with Photoshop **25.3+** and explicit Photoshop API v2. The regular 0.5.15 manifest/config and release CCX remain available. Normal `plugin:package` still excludes experimental recoloring; the pilot command is the explicit distribution path for this increment.
 
-Load the generated `plugin/manifest.json` with **Adobe UXP Developer Tools > Add Plugin > Load**. If the same plugin ID is already loaded in UDT, unload its old development entry before loading the pilot; preserve any unsaved Photoshop work. Do not load the separate Recolor Lab manifest for this workflow. Alternatively, install the generated CCX using Adobe's installer. Installing/updating the panel on a workstation is separate from building it; this code change does not silently reload an installed copy.
+Load this manifest with **Adobe UXP Developer Tools > Add Plugin > Load**:
+
+```text
+D:\Sifat_Project Coordinator\Color Library Portal\storage\recolor-dev\pilot-current\plugin\manifest.json
+```
+
+If the same plugin ID is already loaded in UDT, unload its old development entry before loading the pilot; preserve any unsaved Photoshop work. If this stable entry is already added, use **Reload** after a rebuild. Confirm UDT shows **0.6.1**. The `UXP/manifest.json` in the source folder is the regular library release; the separate Recolor Lab manifest is a harness. Alternatively, install the generated pilot CCX using Adobe's installer. Installing/updating the panel on a workstation is separate from building it.
 
 The current native workstation is Photoshop 25.3.1. Broader compatibility is unqualified. Explicit API v2 is required for native modal operations; it is set in the generated pilot manifest without raising the regular library manifest's minimum version. [Adobe modal execution](https://developer.adobe.com/photoshop/uxp/2022/ps-reference/media/executeasmodal), [Adobe manifest/API version policy](https://github.com/AdobeDocs/uxp-photoshop/blob/main/src/pages/guides/uxp-guide/uxp-misc/manifest-v4/photoshop-manifest/index.md)
 
@@ -43,6 +49,8 @@ The current native workstation is Photoshop 25.3.1. Broader compatibility is unq
 
 The source/reference must have an explicit profile interpretation. Tagged inputs are read with their actual profiles and converted on working copies. Missing HEX values do not matter. The pilot does not infer a profile for an untagged image.
 
+Disabled controls express prerequisites: **Preview color** needs a captured material mask and sampled approved reference; **Apply Color** needs a completed preview; **Save editable PSD/PSB** needs an applied result. Status and errors stay visible above the scrollable controls. Selecting a different method takes effect on the next **Preview color** operation.
+
 ## Reference identity and failure behavior
 
 The library still owns approval status. Targets retain client/color/reference/version identity, original filename, declared checksum and historical approval metadata. A fresh temporary file is hashed before opening. A declared checksum mismatch rejects it. After opening, the reference's full rendered-pixel fingerprint is checked at sampling: changing a selection is allowed; editing image pixels is refused. Pixel fingerprints establish session consistency, not another client approval or physical-swatch accuracy.
@@ -53,10 +61,12 @@ Saving protects source/reference paths and refuses existing nonempty output file
 
 ## Validation and remaining work
 
-Local implementation checkpoint: `checkpoint/recolor-pilot-2026-10-19`. The [build record](verification/product-pilot-build-2026-10-19.json) pins the generated CCX checksum, native tested bundle and outstanding validation. This checkpoint is code and evidence; generated installers and Photoshop artifacts remain under ignored local storage.
+The initial implementation checkpoint is `checkpoint/recolor-pilot-2026-10-19`. Its [0.6.0 build record](verification/product-pilot-build-2026-10-19.json) remains historical. The [0.6.1 fix record](verification/product-pilot-fix-2026-10-19.json) pins the corrected build and live validation. Generated installers and Photoshop artifacts remain under ignored local storage.
 
 Run `npm test` for application/library regressions, eight pilot session behavior checks and a complete pilot-package dependency/manifest check. Run `npm run test:recolor:photoshop` for actual native rendering and editability. The added integrated fixture samples an image, fits a native result, checks protected pixels, applies, saves/reopens, verifies source preservation, refuses master overwrite and retains independent target settings. Existing native fixtures cover soft masks, native control edits, PSD/PSB reopening, source preparation and source recovery.
 
-The checked [integrated pilot native report](verification/product-pilot-25.3.1.json) records this tested bundle. It is synthetic technical evidence. Actual modeless panel interaction, live catalog/reference downloading and visual layout still need a workstation session; standalone script tests do not establish those UI properties. The pilot is packaged, not production-qualified.
+The initial [integrated pilot native report](verification/product-pilot-25.3.1.json) is retained alongside the [0.6.1 native report](verification/product-pilot-fix-native-25.3.1.json). Both are synthetic technical evidence. The [live panel report](verification/product-pilot-fix-panel-25.3.1.json) additionally drives actual loaded-panel DOM events against Photoshop and an approved CBI library reference. This verifies modeless source/mask reads, reference retrieval and sampling, fitting, fine-tuning, Apply and independent variant controls. It does not test physical pointer hit areas, the interactive save picker, or qualify visual matching on production garments. Native fixtures verify PSD/PSB saves and reopening separately. The pilot is not production-qualified.
+
+To repeat the live check, leave the panel visible in Photoshop and run `npm run test:recolor:panel -- --attached --reference` with Adobe UDT running and a client catalog selected. This uses the local runtime session recorded by the debugging script. Without `--attached`, the script validates and reloads the generated pilot first; end any active recoloring session before doing so. It creates isolated synthetic documents and a temporary reference copy, closes only unchanged documents it owns, and restores the prior active document. It never saves the user's open image. The synthetic reference region is only a technical probe, not a color accuracy assessment.
 
 Next iterations: interactive defects and usability; actual product-image color/detail/edge tuning; better reference preparation and original-source benchmarks; repeatable total designer timing; full multi-color generation/recovery; destination exports and per-output validation; then optional segmentation. The experimental Delta E anchor in the panel is not median/p95 gold performance or an industry certification. Professional appearance and productivity are evaluated on working results instead of making broad historical review a development prerequisite.

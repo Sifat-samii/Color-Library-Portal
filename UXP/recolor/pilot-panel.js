@@ -13,6 +13,8 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   pane.innerHTML = `
     <div class="recolor-heading"><div><span class="eyebrow">RECOLOR PILOT</span><h2>Apply approved color</h2></div><button id="recolorClose" class="secondary-button" type="button">Browse library</button></div>
     <p class="recolor-help">Matte fabrics and solid surfaces. Review the result before delivery.</p>
+    <p id="recolorStatus" role="status" aria-live="polite"></p>
+    <div class="recolor-content">
     <section><h3>1. Product</h3><p id="recolorSource">Activate the original product image. Its current appearance will be the source.</p>
       <div class="recolor-row"><button id="recolorBegin" class="primary-button" type="button">Use active product</button><button id="recolorProduct" class="secondary-button" type="button">Go to preview</button></div>
       <p class="recolor-help">Work uses a layered duplicate in Adobe RGB. Prepare any existing recoloring visibility yourself before starting.</p></section>
@@ -27,7 +29,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
       ${[['intensity','Color intensity',0,100,100],['lightness','Brightness',-60,60,0],['contrast','Contrast',-40,40,0],['shadows','Shadows',-25,25,0],['highlights','Highlights',-25,25,0]].map(([key,label,min,max,value]) => `<label class="recolor-slider">${label}<input data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span>${value}</span></label>`).join('')}</details>
       <p id="recolorMeasurement" class="recolor-help"></p><button id="recolorApply" class="primary-button" type="button">Apply Color</button>
       <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save editable PSD/PSB</button><button id="recolorNew" class="secondary-button" type="button">New variant</button></div></section>
-    <p id="recolorStatus" role="status" aria-live="polite"></p><button id="recolorEnd" class="secondary-button" type="button">End source session</button>`;
+    <button id="recolorEnd" class="secondary-button" type="button">End source session</button></div>`;
   shell.appendChild(pane);
   const $ = id => document.getElementById(id);
   let pending = null, opening = false, deferredUpdates = false, queuedUpdates = 0, latestView;
@@ -35,6 +37,9 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   function show() { pane.classList.remove('is-hidden'); paint(session.view()); }
   function paint(state) {
     latestView = state;
+    pane.setAttribute('data-source-document-id', state.source ? String(state.source.id) : '');
+    pane.setAttribute('data-working-document-id', state.workingSourceDocumentId ? String(state.workingSourceDocumentId) : '');
+    pane.setAttribute('data-preview-document-id', state.previewDocumentId ? String(state.previewDocumentId) : '');
     const busy = state.busy || opening;
     $('recolorBinding').textContent = state.source ? state.source.name : 'Select your product in Photoshop';
     $('recolorSource').textContent = state.source ? 'Bound source: ' + state.source.name + ' · Adobe RGB working copy' : 'Activate the original product image. Its current appearance will be the source.';
@@ -44,7 +49,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     for (const id of ['recolorBegin', 'recolorProduct', 'recolorMask', 'recolorSample', 'recolorPreview', 'recolorBefore', 'recolorApply', 'recolorSave', 'recolorNew', 'recolorEnd', 'recolorTarget', 'recolorMaskSource', 'recolorMethod']) $(id).disabled = busy;
     $('recolorBegin').disabled = busy || Boolean(state.source);
     $('recolorProduct').disabled = busy || !state.source;
-    $('recolorMask').disabled = busy || !state.source || state.committed || Boolean(state.recipe);
+    $('recolorMask').disabled = busy || !state.source || state.committed || state.rendered;
     $('recolorSample').disabled = busy || !state.target;
     $('recolorPreview').disabled = busy || !state.hasMask || !state.target || !state.target.sampled;
     $('recolorBefore').disabled = busy || !state.rendered || state.committed;
@@ -57,7 +62,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     const oldTarget = $('recolorTarget').value;
     $('recolorTarget').innerHTML = '';
     for (const t of state.targets) { const option = document.createElement('option'); option.value = t.id; option.textContent = t.name + (t.sampled ? '' : ' (sample required)'); $('recolorTarget').appendChild(option); }
-    $('recolorTarget').value = state.target ? state.target.key : oldTarget;
+    $('recolorTarget').selectedIndex = state.targets.findIndex(target => target.id === (state.target ? state.target.key : oldTarget));
     const quality = state.quality;
     $('recolorMeasurement').textContent = quality && quality.available ? 'Diffuse reference difference: ΔE00 ' + quality.anchorDeltaE00.toFixed(2) + '. Inspect texture and edges at 100%; this is not a final quality pass.' : '';
     for (const slider of pane.querySelectorAll('[data-recolor-parameter]')) {
@@ -67,7 +72,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   }
   async function run(work) {
     try { await work(); }
-    catch (error) { $('recolorStatus').textContent = error.message; }
+    catch (error) { $('recolorStatus').textContent = error.message || String(error); console.error('Recolor operation failed', error); }
   }
   async function refreshMasks() {
     const choices = await session.maskSources(), select = $('recolorMaskSource'); select.innerHTML = '';
@@ -76,6 +81,8 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     for (const layer of choices.layers) add({ kind: 'layerMask', layerId: layer.id }, 'Layer mask: ' + layer.name);
     for (const channel of choices.channels) add({ kind: 'channel', channelIndex: channel.index, name: channel.name }, 'Saved selection: ' + channel.name);
     for (const path of choices.paths) add({ kind: 'path', pathIndex: path.index, name: path.name }, 'Path: ' + path.name);
+    // Photoshop UXP leaves a populated select at -1; browsers select item 0.
+    select.selectedIndex = 0;
   }
   async function openPendingReference() {
     if (!pending || !session.view().source || opening) return;
@@ -115,6 +122,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     if (file) await session.save(file, await fs.getDataFolder());
   }));
   const update = latestQueue(parameters => session.update(parameters));
+  $('recolorMethod').selectedIndex = 0;
   for (const slider of pane.querySelectorAll('[data-recolor-parameter]')) slider.addEventListener('input', () => {
     if (!latestView.recipe || latestView.committed) return;
     const parameters = {};

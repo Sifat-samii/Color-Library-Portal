@@ -243,30 +243,32 @@ function createPhotoshopAdapter(photoshop, options = {}) {
   }
 
   async function readPixels(documentId, maxEdge) {
-    const doc = docById(documentId);
-    const width = doc.width, height = doc.height;
-    const reduced = Boolean(maxEdge && Math.max(width, height) > maxEdge);
-    // Photoshop 25.3.1 cannot arbitrarily resample some 8-bit composites
-    // while also promoting them to 16-bit. Exact cache levels can conceal
-    // the failure. Keep reduced reads at native precision; full-resolution
-    // reads and normalized 16-bit working sources retain 16-bit output.
-    const componentSize = reduced && doc.bitsPerChannel === constants.BitsPerChannelType.EIGHT ? 8 : 16;
-    const request = { documentID: documentId, colorSpace: "RGB", colorProfile: ADOBE_RGB,
-      componentSize, applyAlpha: false };
-    if (reduced) {
-      request.targetSize = width >= height ? { width: maxEdge } : { height: maxEdge };
-    }
-    const image = await imaging.getPixels(request);
-    try {
-      const actualSize = image.imageData.componentSize;
-      if (![8, 16].includes(actualSize)) throw new Error("Unsupported Photoshop pixel component size: " + actualSize);
-      const raw = await image.imageData.getData({ fullRange: true });
-      const data = actualSize === 8 ? new Uint8Array(raw) : new Uint16Array(raw);
-      const scale = 2 ** (image.level || 0), b = image.sourceBounds;
-      return { width: image.imageData.width, height: image.imageData.height, components: image.imageData.components,
-        componentSize: actualSize, maximum: actualSize === 8 ? 255 : 65535, profile: ADOBE_RGB, data,
-        bounds: { left: b.left * scale, top: b.top * scale, right: b.right * scale, bottom: b.bottom * scale } };
-    } finally { image.imageData.dispose(); }
+    return modal('Read recoloring pixels', async () => {
+      const doc = docById(documentId);
+      const width = doc.width, height = doc.height;
+      const reduced = Boolean(maxEdge && Math.max(width, height) > maxEdge);
+      // Photoshop 25.3.1 cannot arbitrarily resample some 8-bit composites
+      // while also promoting them to 16-bit. Exact cache levels can conceal
+      // the failure. Keep reduced reads at native precision; full-resolution
+      // reads and normalized 16-bit working sources retain 16-bit output.
+      const componentSize = reduced && doc.bitsPerChannel === constants.BitsPerChannelType.EIGHT ? 8 : 16;
+      const request = { documentID: documentId, colorSpace: "RGB", colorProfile: ADOBE_RGB,
+        componentSize, applyAlpha: false };
+      if (reduced) {
+        request.targetSize = width >= height ? { width: maxEdge } : { height: maxEdge };
+      }
+      const image = await imaging.getPixels(request);
+      try {
+        const actualSize = image.imageData.componentSize;
+        if (![8, 16].includes(actualSize)) throw new Error("Unsupported Photoshop pixel component size: " + actualSize);
+        const raw = await image.imageData.getData({ fullRange: true });
+        const data = actualSize === 8 ? new Uint8Array(raw) : new Uint16Array(raw);
+        const scale = 2 ** (image.level || 0), b = image.sourceBounds;
+        return { width: image.imageData.width, height: image.imageData.height, components: image.imageData.components,
+          componentSize: actualSize, maximum: actualSize === 8 ? 255 : 65535, profile: ADOBE_RGB, data,
+          bounds: { left: b.left * scale, top: b.top * scale, right: b.right * scale, bottom: b.bottom * scale } };
+      } finally { image.imageData.dispose(); }
+    });
   }
 
   function flattenLayers(layers) {
@@ -274,33 +276,50 @@ function createPhotoshopAdapter(photoshop, options = {}) {
   }
 
   async function maskSources(documentId) {
-    const doc = docById(documentId);
-    const layers = flattenLayers(doc.layers);
-    const properties = await play(layers.map(layer => ({ _obj: "get", _target: [{ _ref: "layer", _id: layer.id }, { _ref: "document", _id: documentId }] })));
-    return {
-      layers: layers.filter((_layer, index) => properties[index].hasUserMask).map(layer => ({ id: layer.id, name: layer.name, kind: layer.kind })),
-      channels: Array.from(doc.channels).map((channel, index) => ({ id: channel.id, index, name: channel.name, kind: channel.kind }))
-        .filter(channel => channel.kind === constants.ChannelType.MASKEDAREA || channel.kind === constants.ChannelType.SELECTEDAREA),
-      paths: Array.from(doc.pathItems).map((path, index) => ({ id: path.id, index, name: path.name }))
-    };
+    return modal('Inspect material mask sources', async () => {
+      const doc = docById(documentId);
+      const layers = flattenLayers(doc.layers);
+      const properties = await play(layers.map(layer => ({ _obj: "get", _target: [{ _ref: "layer", _id: layer.id }, { _ref: "document", _id: documentId }] })));
+      return {
+        layers: layers.filter((_layer, index) => properties[index].hasUserMask).map(layer => ({ id: layer.id, name: layer.name, kind: layer.kind })),
+        channels: Array.from(doc.channels).map((channel, index) => ({ id: channel.id, index, name: channel.name, kind: channel.kind }))
+          .filter(channel => channel.kind === constants.ChannelType.MASKEDAREA || channel.kind === constants.ChannelType.SELECTEDAREA),
+        paths: Array.from(doc.pathItems).map((path, index) => ({ id: path.id, index, name: path.name }))
+      };
+    });
   }
 
   async function acquireMask(documentId, source) {
     const doc = docById(documentId);
-    let image;
+    const readMask = getImage => modal('Read recoloring material mask', async () => {
+      const image = await getImage();
+      try {
+        const componentSize = image.imageData.componentSize;
+        const data = await image.imageData.getData({ fullRange: true });
+        const mask = { width: image.imageData.width, height: image.imageData.height,
+          left: image.sourceBounds.left, top: image.sourceBounds.top,
+          maximum: componentSize === 16 ? 65535 : 255,
+          data: componentSize === 16 ? new Uint16Array(data) : new Uint8Array(data) };
+        validateMask(mask);
+        if (!mask.data.some(v => v > 0)) throw new Error('Material mask is empty');
+        return mask;
+      } finally { image.imageData.dispose(); }
+    });
     if (source.kind === "layerMask") {
-      const layer = flattenLayers(doc.layers).find(v => v.id === source.layerId);
-      if (!layer) throw new Error("Selected mask layer no longer exists");
-      const [properties] = await play([{ _obj: "get", _target: [{ _ref: "layer", _id: layer.id }, { _ref: "document", _id: documentId }] }]);
-      if (!properties.hasUserMask) throw new Error("Selected layer has no pixel mask; layer transparency is not a layer mask");
-      // These are documented DOM percentages/pixels. A broad get(layer)
-      // descriptor does not reliably include mask density/feather on 25.3.
-      const density = layer.layerMaskDensity;
-      const feather = layer.layerMaskFeather;
-      if (properties.userMaskEnabled === false || properties.hasVectorMask || density !== 100 || feather !== 0) {
-        throw new Error("Complex mask modifiers require an explicit Photoshop selection in this experimental harness");
-      }
-      image = await imaging.getLayerMask({ documentID: documentId, layerID: layer.id, kind: "user" });
+      return readMask(async () => {
+        const layer = flattenLayers(doc.layers).find(v => v.id === source.layerId);
+        if (!layer) throw new Error("Selected mask layer no longer exists");
+        const [properties] = await play([{ _obj: "get", _target: [{ _ref: "layer", _id: layer.id }, { _ref: "document", _id: documentId }] }]);
+        if (!properties.hasUserMask) throw new Error("Selected layer has no pixel mask; layer transparency is not a layer mask");
+        // These are documented DOM percentages/pixels. A broad get(layer)
+        // descriptor does not reliably include mask density/feather on 25.3.
+        const density = layer.layerMaskDensity;
+        const feather = layer.layerMaskFeather;
+        if (properties.userMaskEnabled === false || properties.hasVectorMask || density !== 100 || feather !== 0) {
+          throw new Error("Complex mask modifiers require an explicit Photoshop selection in this experimental harness");
+        }
+        return imaging.getLayerMask({ documentID: documentId, layerID: layer.id, kind: "user" });
+      });
     } else {
       if (source.kind !== "selection") {
         await atomic(documentId, "Load recoloring mask", async () => {
@@ -318,20 +337,11 @@ function createPhotoshopAdapter(photoshop, options = {}) {
           } else throw new Error("Choose an explicit selection, layer mask, alpha channel, or path");
         });
       }
-      if (!doc.selection.bounds) throw new Error("Create or load a material selection first");
-      image = await imaging.getSelection({ documentID: documentId });
+      return readMask(() => {
+        if (!doc.selection.bounds) throw new Error('Create or load a material selection first');
+        return imaging.getSelection({ documentID: documentId });
+      });
     }
-    try {
-      const componentSize = image.imageData.componentSize;
-      const data = await image.imageData.getData({ fullRange: true });
-      const mask = { width: image.imageData.width, height: image.imageData.height,
-        left: image.sourceBounds.left, top: image.sourceBounds.top,
-        maximum: componentSize === 16 ? 65535 : 255,
-        data: componentSize === 16 ? new Uint16Array(data) : new Uint8Array(data) };
-      validateMask(mask);
-      if (!mask.data.some(v => v > 0)) throw new Error("Material mask is empty");
-      return mask;
-    } finally { image.imageData.dispose(); }
   }
 
   async function putMask(documentId, layerId, mask, existing = false) {

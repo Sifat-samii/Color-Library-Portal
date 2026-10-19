@@ -18,7 +18,7 @@ function stagePilot(pluginDirectory) {
   copyRuntime(path.join(root, 'UXP'), pluginDirectory);
   const manifestPath = path.join(pluginDirectory, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  manifest.version = '0.6.0';
+  manifest.version = '0.6.1';
   manifest.host.minVersion = '25.3.0';
   manifest.host.data = { ...manifest.host.data, apiVersion: 2 };
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
@@ -34,13 +34,16 @@ function buildPilot() {
   const directory = fs.mkdtempSync(path.join(root, 'storage/recolor-dev/pilot-'));
   const pluginDirectory = path.join(directory, 'plugin');
   const metadata = stagePilot(pluginDirectory);
-  const ccxPath = path.join(directory, 'pixofix-color-library-recolor-pilot-0.6.0.ccx');
+  const ccxPath = path.join(directory, 'pixofix-color-library-recolor-pilot-' + metadata.version + '.ccx');
   const quote = value => "'" + value.replace(/'/g, "''") + "'";
   const zip = spawnSync('powershell', ['-NoProfile', '-Command',
     `Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory(${quote(pluginDirectory)}, ${quote(ccxPath)})`], { encoding: 'utf8' });
   if (zip.status !== 0) throw new Error(zip.stderr || zip.stdout || (zip.error && zip.error.message) || 'Pilot packaging failed');
   const ccxSha256 = crypto.createHash('sha256').update(fs.readFileSync(ccxPath)).digest('hex');
-  const result = { directory, pluginDirectory, ...metadata, ccxPath, ccxSha256, productionQualified: false };
+  const developmentDirectory = path.join(root, 'storage/recolor-dev/pilot-current/plugin');
+  const development = stagePilot(developmentDirectory);
+  const result = { directory, artifactPluginDirectory: pluginDirectory, artifactManifestPath: metadata.manifestPath,
+    pluginDirectory: developmentDirectory, ...development, ccxPath, ccxSha256, productionQualified: false };
   fs.writeFileSync(path.join(root, 'storage/recolor-dev/latest-pilot.json'), JSON.stringify(result, null, 2) + '\n');
   return result;
 }

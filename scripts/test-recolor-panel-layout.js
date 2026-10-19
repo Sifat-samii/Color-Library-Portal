@@ -14,6 +14,8 @@ async function run() {
   let evaluate, originallyOpen;
   try {
     await channel.ready;
+    report.registration = require('./check-recolor-pilot').check();
+    assert.ok(report.registration.runtimeMatchesLatestBuild, 'UDT points to an outdated build: ' + report.registration.registeredManifestPath);
     await channel.request({ method: 'Runtime.enable', params: {} });
     let contextId;
     evaluate = async expression => {

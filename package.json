@@ -26,6 +26,7 @@
     "test:recolor:recovery": "node UXP/tests/recolor-recovery.test.js",
     "test:recolor:pilot": "node UXP/tests/recolor-pilot.test.js && node tests/recolor-pilot-package.test.js",
     "recolor:pilot": "node scripts/build-recolor-pilot.js",
+    "recolor:pilot:check": "node scripts/check-recolor-pilot.js",
     "test:recolor:panel": "node scripts/test-recolor-panel-live.js",
     "test:recolor:layout": "node scripts/test-recolor-panel-layout.js"
   },

@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-19",
+  "baselineCheckpoint": "551e73d",
+  "cause": "UDT kept loading an earlier registered folder; service-only loads did not replace its saved development entry.",
+  "initialSavedManifest": "UXP/manifest.json",
+  "laterSavedManifest": "storage/recolor-dev/pilot-VlepQ6/plugin/manifest.json",
+  "refresh": {
+    "updatedAt": "2026-10-19T08:01:09.941Z",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "previousVersion": "0.6.0",
+    "version": "0.6.2",
+    "backupDirectory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\registered-pilot-backup-72tNSo",
+    "verifiedAgainstStable": [
+      {
+        "file": "manifest.json",
+        "sha256": "efb4e7caf28efb364083e83d094a1717007c661685ce83c9dc4645eaa3a59a8e"
+      },
+      {
+        "file": "main.js",
+        "sha256": "9da6ca573fc65287f8e61e51cf3e164b9255b7ab8db9b99362f70b029db4bd52"
+      },
+      {
+        "file": "styles.css",
+        "sha256": "cb7be969a7f827dca77998785330eae69ffe8180b35675f27caadb2869e55d77"
+      },
+      {
+        "file": "recolor/pilot-panel.js",
+        "sha256": "416a8008f6b49c3971de9132983b7281efbdc8c15434d94eced37af554f9b5e4"
+      },
+      {
+        "file": "recolor/pilot-session.js",
+        "sha256": "289332fd30a0e10a719614086695e213c3e96311b0866cf0f8f1db9af23f29ec"
+      },
+      {
+        "file": "recolor/photoshop-adapter.js",
+        "sha256": "efd8a635f4b1fac91309f41420385056e88a9fcdc7f4eae6b4696e3ae4060fe9"
+      },
+      {
+        "file": "recolor/quality.js",
+        "sha256": "655415482abd45f25dbe5f176e0ae0af0d4b1bef1dcd0d3cdcb64061820a4707"
+      }
+    ],
+    "udtReloadRequired": true,
+    "originalImageFilesModified": false,
+    "installerArchivesModified": false
+  },
+  "registrationCheck": {
+    "checkedAt": "2026-10-19T08:05:31.597Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.2",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.2",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 42,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "originalInstallerHashVerified": "b60cb91b65b65e8f09fdccbd03bf8d08ac6cae3f9414d3500a4cd81ff71e13eb",
+  "latestPilotArchiveSha256": "4598d43efd6864a1f1317885da545d6169e80bcb865744852d57e80b91f52138",
+  "ownerConfirmed": {
+    "visiblePilotVersion": "0.6.2",
+    "libraryControlsNoLongerOverlap": true,
+    "goToPreviewWorks": true
+  },
+  "materialMaskCapture": "PENDING_OWNER_TEST",
+  "sourceSessionPreserved": true,
+  "photoshopDocumentsClosedByThisRepair": 0,
+  "notes": [
+    "An initial saved-workspace path update was overwritten by the running developer tool. The actual registered generated development copy was then backed up and refreshed in place.",
+    "The read-only registration check compares all current runtime files; live harnesses now fail before workflow testing when the persistent entry is stale.",
+    "Original installer archives are unchanged. The old generated development folder is intentionally updated and has its own backup."
+  ],
+  "productionQualified": false
+}

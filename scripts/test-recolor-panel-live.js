@@ -40,6 +40,8 @@ async function run() {
     throw new Error('Timed out: ' + description);
   }
   try {
+    report.registration = require('./check-recolor-pilot').check();
+    assert.ok(report.registration.runtimeMatchesLatestBuild, 'UDT points to an outdated build: ' + report.registration.registeredManifestPath);
     cli = connection('ws://127.0.0.1:14001/socket/cli'); await cli.ready;
     const host = await until(() => cli.events.find(event => event.command === 'didAddRuntimeClient' && event.app.appId === 'PS'), 'connected Photoshop', 5000);
     const currentSession = path.join(root, 'storage/recolor-dev/current-ui-session.json');

@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-19",
+  "baselineCheckpoint": "96b87db",
+  "version": "0.6.3",
+  "artifact": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-dNlc7p\\pixofix-color-library-recolor-pilot-0.6.3.ccx",
+  "ccxSha256": "68996aaf524f5e0d474debfb12adc740b3c5e70a39d935a9affc1e17213d7e58",
+  "nativeEvidence": "product-pilot-mask-native-25.3.1.json",
+  "nativeBundleSha256": "e9f414cc4ee7827e6540f7ed2741b3febe2bb2d200d66e3e18fe4a5f187b5735",
+  "nativePassed": 27,
+  "nativeFailed": 0,
+  "repositoryRegressionsPassed": true,
+  "pilotSessionChecksPassed": 10,
+  "sourceFailure": "Internal frozen source had Quick Selection history changes; fresh preview refused its changed token before mask capture could complete.",
+  "fixes": [
+    "Recover only from an exactly unchanged original; compare normalized baseline before replacing the internal binding",
+    "Retain edited copies and refuse a changed original or different baseline",
+    "Show explicit unready/ready mask status and restore the inspectable selection outline"
+  ],
+  "ownerSelectionRepair": {
+    "startedAt": "2026-10-19T08:16:17.903Z",
+    "originalDocumentId": 59,
+    "retainedSelectionDocumentId": 73,
+    "steps": [
+      {
+        "preservedSelection": true,
+        "width": 684,
+        "height": 1610
+      },
+      {
+        "protectedPixelsChanged": 0,
+        "selectionTransferred": true,
+        "originalHistoryPreserved": true,
+        "retainedDocumentIds": [
+          59,
+          68,
+          73
+        ],
+        "nextAction": "Click Use material selection"
+      }
+    ],
+    "previewDocumentId": 441,
+    "passed": true,
+    "finishedAt": "2026-10-19T08:16:18.762Z"
+  },
+  "physicalMaskButtonConfirmation": "PENDING",
+  "productionQualified": false
+}

@@ -26,7 +26,15 @@ function workstation() {
       docs.set(frozen, { ...docs.get(id), id: frozen, frame: copyFrame(docs.get(id).frame) }); captures.push(id);
       return { original, documentId: frozen, sourceQualification: 'UNREVIEWED_VISIBLE_STATE' };
     },
-    async createPreview(snapshot) { const id = ++next; docs.set(id, { ...docs.get(snapshot.documentId), id, frame: copyFrame(docs.get(snapshot.documentId).frame) }); active = id; return { documentId: id, committed: false, snapshot, recipe: null }; },
+    async createPreview(snapshot) {
+      if (docs.get(snapshot.documentId).frozenEdited) throw Object.assign(new Error('Frozen source changed'), { code: 'FROZEN_SOURCE_CHANGED' });
+      const id = ++next; docs.set(id, { ...docs.get(snapshot.documentId), id, frame: copyFrame(docs.get(snapshot.documentId).frame) }); active = id; return { documentId: id, committed: false, snapshot, recipe: null };
+    },
+    async recoverSource(snapshot) {
+      if (inspect(snapshot.original.id).historyId !== snapshot.original.historyId) throw Object.assign(new Error('Original source changed'), { code: 'ORIGINAL_SOURCE_CHANGED' });
+      return adapter.captureSource(snapshot.original.id);
+    },
+    async showMaterialSelection(preview, mask) { docs.get(preview.documentId).displayedSelection = mask; active = preview.documentId; },
     async readPixels(id) { return copyFrame(docs.get(id).frame); },
     async acquireMask(id) { docs.get(id).historyId++; return mask; },
     async maskSources() { return { layers: [], channels: [], paths: [] }; },
@@ -135,4 +143,32 @@ test('an opened reference is never silently rebound as the next product source',
   const w = workstation(); await w.ready(); await w.session.end();
   await assert.rejects(() => w.session.begin(w.referenceId), /reference cannot become the source/);
   assert.equal(w.session.view().source, null); assert.equal(w.session.view().busy, false);
+});
+
+test('mask capture recovers an altered internal source only from its unchanged original and retains all edited copies', async () => {
+  const w = workstation(); await w.session.begin(w.sourceId);
+  const before = w.session.view(), oldSource = before.workingSourceDocumentId, oldPreview = before.previewDocumentId;
+  w.docs.get(oldSource).frozenEdited = true;
+  w.docs.get(oldPreview).edited = true; // Designer's garment selection must survive.
+  await w.session.useMask({ kind: 'selection' });
+  const after = w.session.view();
+  assert.equal(after.hasMask, true); assert.equal(after.sourceRecovered, true);
+  assert.notEqual(after.workingSourceDocumentId, oldSource);
+  assert.equal(w.docs.has(oldSource), true); assert.equal(w.docs.has(oldPreview), true);
+  assert.ok(w.docs.get(after.previewDocumentId).displayedSelection);
+  assert.deepEqual(w.captures, [w.sourceId, w.sourceId]);
+});
+
+test('internal source recovery refuses a changed original or different normalized pixels without discarding work', async () => {
+  const w = workstation(); await w.session.begin(w.sourceId);
+  const before = w.session.view(); w.docs.get(before.workingSourceDocumentId).frozenEdited = true;
+  w.docs.get(w.sourceId).historyId++;
+  await assert.rejects(() => w.session.useMask({ kind: 'selection' }), /Original source changed/);
+  assert.equal(w.session.view().hasMask, false); assert.equal(w.docs.has(before.previewDocumentId), true);
+  w.docs.get(w.sourceId).historyId--;
+  const recover = w.adapter.recoverSource;
+  w.adapter.recoverSource = async snapshot => { const next = await recover(snapshot); w.docs.get(next.documentId).frame.data[0]++; return next; };
+  await assert.rejects(() => w.session.useMask({ kind: 'selection' }), /does not match the captured source/);
+  assert.equal(w.session.view().workingSourceDocumentId, before.workingSourceDocumentId);
+  assert.equal(w.docs.has(before.previewDocumentId), true); assert.equal(w.session.view().hasMask, false);
 });

@@ -12,6 +12,7 @@ function frameSignature(frame) {
 function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange = () => {} }) {
   let snapshot = null, preview = null, baseline = null, mask = null, sourceStats = null;
   let selected = null, busy = false, signal = null, showingAfter = true;
+  let sourceRecovered = false;
   let message = 'Activate your original product image, then choose Use active product.';
   const targets = new Map(), outputs = [];
   const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
@@ -21,7 +22,7 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
     return { busy, fitting: Boolean(signal), message, source: snapshot && clone(snapshot.original),
       sourceQualification: snapshot && snapshot.sourceQualification, workingSourceDocumentId: snapshot && snapshot.documentId,
       previewDocumentId: preview && preview.documentId,
-      hasMask: Boolean(mask), target: target && { key: selected, reference: clone(target.reference), sampled: Boolean(target.measurement) },
+      hasMask: Boolean(mask), sourceRecovered, target: target && { key: selected, reference: clone(target.reference), sampled: Boolean(target.measurement) },
       targets: [...targets].map(([id, t]) => ({ id, name: t.reference.colorName, sampled: Boolean(t.measurement) })),
       rendered: Boolean(preview && preview.recipe && preview.recipe.target.id === selected),
       recipe: clone(target && target.recipe), quality: clone(target && target.quality),
@@ -43,10 +44,27 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
     if (!mask) throw new Error('Select the material in the product preview, then choose Use material selection.');
     return target;
   }
-  async function freshPreview() {
+  async function freshPreview(selection = mask) {
     const previous = preview;
-    const next = await adapter.createPreview(snapshot);
+    let next;
+    try { next = await adapter.createPreview(snapshot); }
+    catch (error) {
+      if (error.code !== 'FROZEN_SOURCE_CHANGED') throw error;
+      const recovered = await adapter.recoverSource(snapshot);
+      try {
+        if (frameSignature(await adapter.readPixels(recovered.documentId, 640)) !== frameSignature(baseline)) {
+          throw new Error('Recovery does not match the captured source. Existing work was preserved; begin a new source session.');
+        }
+        next = await adapter.createPreview(recovered);
+      } catch (failure) {
+        try { await adapter.releaseSource(recovered); } catch (_) { /* Preserve any concurrent manual edits. */ }
+        throw failure;
+      }
+      // The changed internal source stays open. Never merge or discard edits.
+      snapshot = recovered; sourceRecovered = true;
+    }
     preview = next; showingAfter = true;
+    if (selection) await adapter.showMaterialSelection(preview, selection);
     if (previous && !previous.committed) {
       try { await adapter.cancel(previous); }
       catch (error) { if (!['MANUAL_EDITS', 'DOCUMENT_CLOSED'].includes(error.code)) throw error; }
@@ -84,7 +102,7 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
       const candidate = await adapter.acquireMask(preview.documentId, source || { kind: 'selection' });
       const measured = measureMaterial(baseline, candidate);
       if (!measured.available) throw new Error(measured.reason);
-      await freshPreview(); // Capturing a selection/path may alter native history.
+      await freshPreview(candidate); // Retain the captured outline in the new preview.
       mask = candidate; sourceStats = measured;
       for (const target of targets.values()) { target.recipe = null; target.quality = null; }
       emit('Material mask captured. Browse the approved library and choose Apply Color on a reference.');
@@ -212,6 +230,7 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
       if (snapshot) { try { await adapter.releaseSource(snapshot); } catch (_) { /* Preserve native edits. */ } }
       snapshot = null; preview = null; baseline = null; mask = null; sourceStats = null; selected = null;
       targets.clear(); outputs.length = 0;
+      sourceRecovered = false;
       emit('Session ended. Existing result and preview documents remain open. Activate a new product to begin.');
     })
   };

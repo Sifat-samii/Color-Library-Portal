@@ -138,6 +138,35 @@ async function runHostTests(photoshop, uxp, folder) {
   const mask = { width: 96, height: 64, left: 0, top: 0, data: maskData, maximum: 255 };
   let source, snapshot, session, baseline, candidates;
   try {
+    await run('Changed internal source recovers from the unchanged original and restores an inspectable soft selection', async () => {
+      const source = await fixture(), original = adapter.inspect(source.id);
+      const snapshot = await adapter.captureSource(source.id); owned.add(snapshot.documentId);
+      await executeChecked(photoshop, [{ _obj: 'select', _target: [{ _ref: 'document', _id: snapshot.documentId }] }]);
+      const edited = Array.from(photoshop.app.documents).find(doc => doc.id === snapshot.documentId);
+      await edited.selection.selectRectangle({ left: 8, top: 8, right: 40, bottom: 40 });
+      let guarded = false;
+      try { await adapter.createPreview(snapshot); } catch (error) { guarded = error.code === 'FROZEN_SOURCE_CHANGED'; }
+      assert(guarded, 'An edited frozen source was not rejected');
+      const recovered = await adapter.recoverSource(snapshot); owned.add(recovered.documentId);
+      assert(Array.from(photoshop.app.documents).some(doc => doc.id === edited.id), 'Edited internal source was discarded');
+      const preview = await adapter.createPreview(recovered); owned.add(preview.documentId);
+      const material = { left: 12, top: 10, width: 24, height: 16, maximum: 65535, data: new Uint16Array(24 * 16).fill(65535) };
+      for (let y = 0; y < material.height; y++) material.data[y * material.width] = 21845;
+      await adapter.showMaterialSelection(preview, material);
+      const restored = await adapter.acquireMask(preview.documentId, { kind: 'selection' });
+      assert(restored.left === material.left && restored.top === material.top && restored.width === material.width && restored.height === material.height, 'Displayed selection lost material coordinates');
+      assert(restored.data.every((value, index) => Math.abs(value / restored.maximum - material.data[index] / material.maximum) <= 1 / 255), 'Displayed selection lost soft coverage');
+      const zero = { left: 0, top: 0, width: 1, height: 1, maximum: 255, data: new Uint8Array([0]) };
+      const pixels = compareFrames(await adapter.readPixels(source.id), await adapter.readPixels(preview.documentId), zero);
+      assert(pixels.protectedPixelsChanged === 0, 'Source recovery or selection display changed image pixels');
+      assert(JSON.stringify(adapter.inspect(source.id)) === JSON.stringify(original), 'Recovery changed the original source');
+      source.layers[0].name = 'Synthetic original edit';
+      let refused = false;
+      try { await adapter.recoverSource(snapshot); } catch (error) { refused = error.code === 'ORIGINAL_SOURCE_CHANGED'; }
+      assert(refused, 'Changed original source was silently recaptured');
+      return { editedCopyRetained: true, originalPreserved: true, protectedPixelsChanged: pixels.protectedPixelsChanged,
+        selectionCoordinatesPreserved: true, softSelectionPreservedWithin: '1/255 native selection precision', changedOriginalRejected: true };
+    });
     await run('Integrated pilot samples an approved image, fits independent variants and reopens an editable master', async () => {
       const source = await fixture(), sourceBefore = adapter.inspectSource(source.id);
       const reference = await fixture();

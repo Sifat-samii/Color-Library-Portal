@@ -18,7 +18,7 @@ function stagePilot(pluginDirectory) {
   copyRuntime(path.join(root, 'UXP'), pluginDirectory);
   const manifestPath = path.join(pluginDirectory, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  manifest.version = '0.6.2';
+  manifest.version = '0.6.3';
   manifest.host.minVersion = '25.3.0';
   manifest.host.data = { ...manifest.host.data, apiVersion: 2 };
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');

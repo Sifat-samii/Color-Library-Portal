@@ -1,5 +1,5 @@
 const { ADOBE_RGB } = require("./color");
-const { validateMask } = require("./quality");
+const { validateMask, coverage } = require("./quality");
 const { layerDescriptors } = require("./native-descriptors");
 const { resolveSourcePreparation } = require("./source-preparation");
 const { fingerprintFile } = require("./file-identity");
@@ -367,10 +367,11 @@ function createPhotoshopAdapter(photoshop, options = {}) {
   }
 
   async function createPreview(snapshot) {
-    if (token(snapshot.documentId) !== snapshot.snapshotToken) throw new Error("Frozen source changed; capture a new source");
+    const changed = () => Object.assign(new Error('Frozen source changed; capture a new source'), { code: 'FROZEN_SOURCE_CHANGED' });
+    if (token(snapshot.documentId) !== snapshot.snapshotToken) throw changed();
     let preview;
     await modal("Create recoloring preview", async () => {
-      if (token(snapshot.documentId) !== snapshot.snapshotToken) throw new Error("Frozen source changed; capture a new source");
+      if (token(snapshot.documentId) !== snapshot.snapshotToken) throw changed();
       preview = await duplicateDocument(snapshot.documentId, "Recolor preview " + id());
     });
     const insertion = snapshot.sourcePreparation && snapshot.sourcePreparation.insertion;
@@ -381,9 +382,40 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     return session;
   }
 
+  async function recoverSource(snapshot) {
+    if (token(snapshot.original.id) !== JSON.stringify(snapshot.original)) {
+      throw Object.assign(new Error('The original source also changed. All copies were preserved; start a new source session explicitly.'), { code: 'ORIGINAL_SOURCE_CHANGED' });
+    }
+    return captureSource(snapshot.original.id, { sourcePreparation: snapshot.sourcePreparation,
+      untaggedProfile: snapshot.normalization && snapshot.normalization.explicitlyAssignedUntaggedProfile });
+  }
+
   function assertPreview(session) {
     if (!sessions.has(session) || session.cancelled || session.committed) throw new Error("Preview is closed or already committed; create a new revision");
     if (token(session.documentId) !== session.expectedToken) throw Object.assign(new Error("Photoshop was edited outside the preview controls; existing edits were preserved. Create a new revision."), { code: "MANUAL_EDITS" });
+  }
+
+  async function showMaterialSelection(session, mask) {
+    assertPreview(session); validateMask(mask);
+    const doc = docById(session.documentId), width = doc.width, height = doc.height;
+    const left = Math.max(0, Math.floor(mask.left)), top = Math.max(0, Math.floor(mask.top));
+    const right = Math.min(width, Math.ceil(mask.left + mask.width)), bottom = Math.min(height, Math.ceil(mask.top + mask.height));
+    if (right <= left || bottom <= top) throw new Error('The material mask is outside the preview canvas');
+    const highPrecision = mask.maximum !== 255;
+    const data = highPrecision ? new Uint16Array((right - left) * (bottom - top)) : new Uint8Array((right - left) * (bottom - top));
+    const maximum = highPrecision ? 65535 : 255;
+    for (let y = top; y < bottom; y++) for (let x = left; x < right; x++) {
+      data[(y - top) * (right - left) + x - left] = Math.round(coverage(mask, x + 0.5, y + 0.5) * maximum);
+    }
+    await atomic(doc.id, 'Show captured material selection', async () => {
+      assertPreview(session);
+      await selectDoc(doc.id);
+      const imageData = await imaging.createImageDataFromBuffer(data, { width: right - left, height: bottom - top,
+        components: 1, colorSpace: 'Grayscale', colorProfile: 'Gray Gamma 2.2', fullRange: highPrecision });
+      try { await imaging.putSelection({ documentID: doc.id, imageData, replace: true, targetBounds: { left, top } }); }
+      finally { imageData.dispose(); }
+    });
+    session.expectedToken = token(doc.id);
   }
 
   async function render(session, recipe, mask) {
@@ -534,7 +566,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB };
   }
 
-  return { inspect, inspectSource, atomic, captureSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, render, toggle, commit, cancel, saveMaster,
+  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster,
     activateDocument: documentId => modal('Activate bound recoloring document', () => selectDoc(documentId)),
     markReference: documentId => openedReferences.add(documentId),
     releaseSource: snapshot => {

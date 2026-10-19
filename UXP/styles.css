@@ -102,6 +102,8 @@ button:disabled { cursor: default; }
 .recolor-slider input { min-width: 60px; flex: 1; margin: 0 8px; }
 .recolor-slider span { width: 28px; text-align: right; }
 #recolorStatus { padding: 9px; border-radius: 7px; background: var(--surface); color: var(--text); }
+#recolorMaskStatus { padding: 9px; border-left: 3px solid var(--warning); color: var(--warning); background: var(--surface); }
+#recolorMaskStatus.is-ready { border-left-color: var(--success); color: var(--success); }
 .reference-actions { display: flex; margin: 0 10px 10px; gap: 7px; }
 .reference-actions button { flex: 1; min-height: 30px; padding: 6px; }
 

@@ -19,7 +19,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
       <div class="recolor-row"><button id="recolorBegin" class="primary-button" type="button">Use active product</button><button id="recolorProduct" class="secondary-button" type="button">Go to preview</button></div>
       <p class="recolor-help">Work uses a layered duplicate in Adobe RGB. Prepare any existing recoloring visibility yourself before starting.</p></section>
     <section><h3>2. Material</h3><p class="recolor-help">Select the fabric in the product preview, or reuse a mask, saved selection or path.</p>
-      <select id="recolorMaskSource" aria-label="Material mask source"></select><button id="recolorMask" class="secondary-button" type="button">Use material selection</button><p id="recolorMaskStatus"></p></section>
+      <select id="recolorMaskSource" aria-label="Material mask source"></select><button id="recolorMask" class="secondary-button" type="button">Use material selection</button><p id="recolorMaskStatus" role="status" aria-live="polite"></p></section>
     <section><h3>3. Approved target</h3><p id="recolorReference">Browse an approved color and choose Apply Color on its reference.</p>
       <select id="recolorTarget" aria-label="Recolor target"></select><button id="recolorSample" class="secondary-button" type="button">Sample reference</button>
       <p class="recolor-help">On the opened reference, select diffuse fabric without deep shadows or bright reflections. No HEX is required.</p></section>
@@ -42,9 +42,10 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     pane.setAttribute('data-preview-document-id', state.previewDocumentId ? String(state.previewDocumentId) : '');
     const busy = state.busy || opening;
     $('recolorBinding').textContent = state.source ? state.source.name : 'Select your product in Photoshop';
-    $('recolorSource').textContent = state.source ? 'Bound source: ' + state.source.name + ' · Adobe RGB working copy' : 'Activate the original product image. Its current appearance will be the source.';
+    $('recolorSource').textContent = state.source ? 'Bound source: ' + state.source.name + ' · Adobe RGB working copy' + (state.sourceRecovered ? '. Internal source recovered from the unchanged original; edited copies kept open.' : '') : 'Activate the original product image. Its current appearance will be the source.';
     $('recolorStatus').textContent = state.message;
-    $('recolorMaskStatus').textContent = state.hasMask ? 'Material mask ready. Use New variant before replacing it.' : '';
+    $('recolorMaskStatus').textContent = state.hasMask ? 'Material mask ready. Selection outline restored. Next: choose an approved reference.' : 'No material mask captured yet.';
+    $('recolorMaskStatus').classList.toggle('is-ready', state.hasMask);
     $('recolorReference').textContent = state.target ? state.target.reference.colorName + ' · ' + state.target.reference.filename + (state.target.sampled ? ' · sampled' : ' · select fabric, then sample') : pending ? pending.reference.colorName + ' selected. Bind your product first.' : 'Browse an approved color and choose Apply Color on its reference.';
     for (const id of ['recolorBegin', 'recolorProduct', 'recolorMask', 'recolorSample', 'recolorPreview', 'recolorBefore', 'recolorApply', 'recolorSave', 'recolorNew', 'recolorEnd', 'recolorTarget', 'recolorMaskSource', 'recolorMethod']) $(id).disabled = busy;
     $('recolorBegin').disabled = busy || Boolean(state.source);

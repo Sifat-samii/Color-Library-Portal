@@ -21,6 +21,7 @@ test('pilot stages the existing library with all recoloring dependencies and API
     function visit(filename) {
       if (visited.has(filename)) return;
       visited.add(filename); const text = fs.readFileSync(filename, 'utf8');
+      if (path.extname(filename) === '.json') { JSON.parse(text); return; }
       new vm.Script(text, { filename });
       for (const m of text.matchAll(/require\(['"](\.[^'"]+)['"]\)/g)) {
         let dependency = path.resolve(path.dirname(filename), m[1]);

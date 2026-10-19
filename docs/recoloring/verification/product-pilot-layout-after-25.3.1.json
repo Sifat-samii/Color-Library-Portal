@@ -1,0 +1,169 @@
+{
+  "startedAt": "2026-10-19T01:58:05.380Z",
+  "passed": true,
+  "sourceOperationsRun": false,
+  "checks": [
+    "Library native widgets are hidden when Recolor opens",
+    "Browse library restores the previous library view"
+  ],
+  "libraryBefore": {
+    "version": "0.6.2",
+    "paneOpen": false,
+    "begin": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      }
+    ],
+    "status": "Activate your original product image, then choose Use active product."
+  },
+  "recolor": {
+    "version": "0.6.2",
+    "paneOpen": true,
+    "begin": {
+      "x": 14,
+      "y": 300,
+      "width": 161,
+      "height": 40
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      }
+    ],
+    "status": "Activate your original product image, then choose Use active product."
+  },
+  "libraryAfter": {
+    "version": "0.6.2",
+    "paneOpen": false,
+    "begin": {
+      "x": 14,
+      "y": 300,
+      "width": 161,
+      "height": 40
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      }
+    ],
+    "status": "Activate your original product image, then choose Use active product."
+  },
+  "finishedAt": "2026-10-19T01:58:06.835Z"
+}

@@ -7,7 +7,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   const adapter = createPhotoshopAdapter(photoshop), fs = storage.localFileSystem;
   const shell = document.querySelector('.app-shell');
   const toolbar = document.createElement('div'); toolbar.className = 'recolor-toolbar';
-  toolbar.innerHTML = '<button id="recolorShow" type="button">Recolor <span>Pilot</span></button><span id="recolorBinding">Select your product in Photoshop</span>';
+  toolbar.innerHTML = '<button id="recolorShow" type="button">Recolor <span>Pilot ' + require('../package.json').version + '</span></button><span id="recolorBinding">Select your product in Photoshop</span>';
   shell.insertBefore(toolbar, document.getElementById('librarySwitch'));
   const pane = document.createElement('aside'); pane.className = 'recolor-panel is-hidden'; pane.setAttribute('aria-label', 'Product recoloring');
   pane.innerHTML = `
@@ -34,7 +34,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   const $ = id => document.getElementById(id);
   let pending = null, opening = false, deferredUpdates = false, queuedUpdates = 0, latestView;
   const session = createPilotSession({ adapter, referenceIsCurrent, onChange: paint });
-  function show() { pane.classList.remove('is-hidden'); paint(session.view()); }
+  function show() { shell.classList.add('is-recolor'); pane.classList.remove('is-hidden'); paint(session.view()); }
   function paint(state) {
     latestView = state;
     pane.setAttribute('data-source-document-id', state.source ? String(state.source.id) : '');
@@ -104,7 +104,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     } finally { opening = false; paint(session.view()); }
   }
   $('recolorShow').addEventListener('click', show);
-  $('recolorClose').addEventListener('click', () => pane.classList.add('is-hidden'));
+  $('recolorClose').addEventListener('click', () => { pane.classList.add('is-hidden'); shell.classList.remove('is-recolor'); });
   $('recolorBegin').addEventListener('click', () => run(async () => { await session.begin(adapter.inspect().id); await refreshMasks(); await openPendingReference(); }));
   $('recolorProduct').addEventListener('click', () => run(() => adapter.activateDocument(session.view().previewDocumentId)));
   $('recolorMask').addEventListener('click', () => run(async () => { await session.useMask(JSON.parse($('recolorMaskSource').value)); await refreshMasks(); }));

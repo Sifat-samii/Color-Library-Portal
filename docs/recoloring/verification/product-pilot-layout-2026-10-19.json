@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.2",
+  "baselineCheckpoint": "c3ec2ce",
+  "artifact": "storage/recolor-dev/pilot-iZOE8y/pixofix-color-library-recolor-pilot-0.6.2.ccx",
+  "ccxSha256": "4598d43efd6864a1f1317885da545d6169e80bcb865744852d57e80b91f52138",
+  "developmentManifest": "storage/recolor-dev/pilot-current/plugin/manifest.json",
+  "cause": "Native library controls remained visible below the recolor overlay; UXP native text editors can render above overlays despite z-index.",
+  "fix": "Use a separate Recolor layout state; hide inactive library views with display:none and visibility:hidden, restore on Browse library, and show the pilot version.",
+  "primarySource": "https://developer.adobe.com/photoshop/uxp/2021/uxp/known-issues/",
+  "before": "product-pilot-layout-before-25.3.1.json",
+  "after": "product-pilot-layout-after-25.3.1.json",
+  "layoutChecksPassed": 2,
+  "repositoryRegressionSuitePassed": true,
+  "sourceOperationsRun": false,
+  "physicalClickConfirmation": "SOURCE_HANDLER_COMPLETION_OBSERVED_AFTER_OWNER_CLICK_REQUEST; PREVIEW_TAB_VISUAL_CONFIRMATION_PENDING",
+  "captureLimitation": "Computer Use Photoshop screenshots failed twice: FrameArrived timed out and window capture timed out. No screenshot-based pointer action was performed.",
+  "productionQualified": false,
+  "observedPanelStatus": "Source fixed: WW115_WINE_01.jpg. In the preview, select only the garment or material.",
+  "sourceOperationsNote": "The layout regression itself runs no source operations. A source session appeared after requesting the owner to click Use active product; it was preserved and not reset."
+}

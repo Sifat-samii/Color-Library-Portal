@@ -1,0 +1,106 @@
+{
+  "startedAt": "2026-10-19T01:55:51.632Z",
+  "passed": false,
+  "sourceOperationsRun": false,
+  "checks": [],
+  "libraryBefore": {
+    "version": "0.6.1",
+    "paneOpen": false,
+    "begin": {
+      "x": 14,
+      "y": 290,
+      "width": 161,
+      "height": 40
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "status": "Activate your original product image, then choose Use active product."
+  },
+  "recolor": {
+    "version": "0.6.1",
+    "paneOpen": true,
+    "begin": {
+      "x": 14,
+      "y": 290,
+      "width": 161,
+      "height": 40
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "status": "Activate your original product image, then choose Use active product."
+  },
+  "error": "Native library controls remain in the Recolor layout and can intercept pointer input",
+  "finishedAt": "2026-10-19T01:55:51.991Z"
+}

@@ -24,7 +24,7 @@ npm run recolor:pilot
 
 This writes an integrated plugin folder and CCX under a unique `storage/recolor-dev/pilot-*/` directory, and refreshes the stable development folder at `storage/recolor-dev/pilot-current/plugin/`. The generated `storage/recolor-dev/latest-pilot.json` records both paths and the CCX checksum. Generated artifacts are ignored by Git; rebuild when code changes, then reload in UDT.
 
-The pilot uses the **same plugin identity and panel entrypoint** as the existing Color Library, version **0.6.1**, with Photoshop **25.3+** and explicit Photoshop API v2. The regular 0.5.15 manifest/config and release CCX remain available. Normal `plugin:package` still excludes experimental recoloring; the pilot command is the explicit distribution path for this increment.
+The pilot uses the **same plugin identity and panel entrypoint** as the existing Color Library, version **0.6.2**, with Photoshop **25.3+** and explicit Photoshop API v2. The regular 0.5.15 manifest/config and release CCX remain available. Normal `plugin:package` still excludes experimental recoloring; the pilot command is the explicit distribution path for this increment.
 
 Load this manifest with **Adobe UXP Developer Tools > Add Plugin > Load**:
 
@@ -32,7 +32,7 @@ Load this manifest with **Adobe UXP Developer Tools > Add Plugin > Load**:
 D:\Sifat_Project Coordinator\Color Library Portal\storage\recolor-dev\pilot-current\plugin\manifest.json
 ```
 
-If the same plugin ID is already loaded in UDT, unload its old development entry before loading the pilot; preserve any unsaved Photoshop work. If this stable entry is already added, use **Reload** after a rebuild. Confirm UDT shows **0.6.1**. The `UXP/manifest.json` in the source folder is the regular library release; the separate Recolor Lab manifest is a harness. Alternatively, install the generated pilot CCX using Adobe's installer. Installing/updating the panel on a workstation is separate from building it.
+If the same plugin ID is already loaded in UDT, unload its old development entry before loading the pilot; preserve any unsaved Photoshop work. If this stable entry is already added, use **Reload** after a rebuild. Confirm UDT and the Recolor toolbar show **0.6.2**. The `UXP/manifest.json` in the source folder is the regular library release; the separate Recolor Lab manifest is a harness. Alternatively, install the generated pilot CCX using Adobe's installer. Installing/updating the panel on a workstation is separate from building it.
 
 The current native workstation is Photoshop 25.3.1. Broader compatibility is unqualified. Explicit API v2 is required for native modal operations; it is set in the generated pilot manifest without raising the regular library manifest's minimum version. [Adobe modal execution](https://developer.adobe.com/photoshop/uxp/2022/ps-reference/media/executeasmodal), [Adobe manifest/API version policy](https://github.com/AdobeDocs/uxp-photoshop/blob/main/src/pages/guides/uxp-guide/uxp-misc/manifest-v4/photoshop-manifest/index.md)
 
@@ -50,6 +50,10 @@ The current native workstation is Photoshop 25.3.1. Broader compatibility is unq
 The source/reference must have an explicit profile interpretation. Tagged inputs are read with their actual profiles and converted on working copies. Missing HEX values do not matter. The pilot does not infer a profile for an untagged image.
 
 Disabled controls express prerequisites: **Preview color** needs a captured material mask and sampled approved reference; **Apply Color** needs a completed preview; **Save editable PSD/PSB** needs an applied result. Status and errors stay visible above the scrollable controls. Selecting a different method takes effect on the next **Preview color** operation.
+
+In 0.6.2, Recolor is a separate layout view. Opening it hides the library controls with both `display: none` and `visibility: hidden`; Browse library restores their previous view. This addresses the [documented UXP native-text-widget stacking limitation](https://developer.adobe.com/photoshop/uxp/2021/uxp/known-issues/). A high z-index alone cannot isolate an overlay from native text inputs. The owner's screenshots exposed overlapping library fields that synthetic event tests missed.
+
+The [0.6.2 layout record](verification/product-pilot-layout-2026-10-19.json) distinguishes the reproduced overlap, native computed-style regression, and pending physical-click confirmation. Run `npm run test:recolor:layout` against the connected development runtime to check library-widget hiding and restoration without creating or altering any Photoshop documents. Passing this check does not establish physical-pointer functionality. When debugging with the owner, verify **Use active product** with a real click before continuing to masking or reference selection.
 
 ## Reference identity and failure behavior
 

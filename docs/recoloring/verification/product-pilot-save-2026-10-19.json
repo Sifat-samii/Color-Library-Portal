@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.4",
+  "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-cPFwsf\\pixofix-color-library-recolor-pilot-0.6.4.ccx",
+  "ccxSha256": "83e7b11817876dfad3ad3bf8f212800a73330df185f86d0d2e48240017f99a86",
+  "repositoryRegressionsPassed": true,
+  "pilotSessionChecksPassed": 12,
+  "nativePassed": 28,
+  "nativeFailed": 0,
+  "nativeEvidence": "product-pilot-save-native-25.3.1.json",
+  "nativeBundleSha256": "4b9d672abd55cf2493dbb8e6f24c3d7a79b5923f31ba7a8fb53a4ba58ec5f0a3",
+  "modelessEvidence": "product-pilot-save-modeless-25.3.1.json",
+  "modelessPassed": true,
+  "registration": {
+    "checkedAt": "2026-10-19T09:21:54.323Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.4",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.4",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 44,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "outputPolicy": {
+    "master": "Embedded Adobe RGB (1998), editable PSD or PSB",
+    "jpeg": "Embedded sRGB IEC61966-2.1, 8-bit, quality 12, original dimensions/resolution, white transparency matte",
+    "naming": "One picker; same basename and folder",
+    "existingFiles": "Never overwrite automatically"
+  },
+  "liveUpdate": {
+    "passed": true,
+    "retainedSourceDocumentId": 1516,
+    "retainedPreviewDocumentId": 1953,
+    "documentsAndHistoryUnchanged": true,
+    "saveLabel": "Save PSD/PSB + JPEG",
+    "nativeAdapterBundleSha256": "9733cb4cb3a51e90e174071ceabf775fde0691cbcc2b1f80ae80d43aed0547db",
+    "note": "Only the save action was upgraded in the active 0.6.3 session to retain its bindings. Its remaining code stays loaded until normal reload. The registered folder and CCX are 0.6.4."
+  },
+  "ownerConfirmedBeforeThisChange": [
+    "Material mask ready",
+    "Approved reference opening",
+    "Reference sampled and Preview enabled",
+    "Recolored preview visible",
+    "Show original / Show recolored",
+    "Apply succeeded and Save enabled"
+  ],
+  "physicalPairedSavePickerConfirmation": "PENDING",
+  "productionQualified": false
+}

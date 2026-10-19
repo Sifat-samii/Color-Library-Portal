@@ -6,7 +6,7 @@ const { ADOBE_RGB, labToRgb } = require('../recolor/color');
 // Adapter seam: session tests exercise real color/quality/fitting logic. Native
 // Photoshop fixtures separately establish actual rendering and PSD editability.
 function workstation() {
-  const docs = new Map(), marked = new Set(), saved = [], captures = [];
+  const docs = new Map(), marked = new Set(), saved = [], captures = [], deliveries = [];
   let next = 0, active = null, valid = true, rendered = 0, failRender = false;
   const copyFrame = f => ({ ...f, data: new Uint16Array(f.data) });
   function image(rgb) {
@@ -50,6 +50,11 @@ function workstation() {
     async toggle(preview, visible) { preview.visible = visible; },
     async commit(preview) { preview.committed = true; return { sessionId: 'case-' + preview.documentId, documentId: preview.documentId, sourceQualification: preview.snapshot.sourceQualification, recipe: preview.recipe }; },
     async saveMaster(id, file, paths) { if (paths.includes(file.nativePath)) throw new Error('Source protected'); saved.push(id); return { path: file.nativePath }; },
+    async saveOutputs(id, file, jpegFile, paths) {
+      const master = await this.saveMaster(id, file, paths);
+      const jpeg = { path: jpegFile.nativePath, profile: 'sRGB IEC61966-2.1', format: 'jpg', verified: true };
+      deliveries.push(jpeg); return { master, jpeg };
+    },
     async releaseSource(snapshot) { docs.delete(snapshot.documentId); }
   };
   const reference = { clientId: 'cbi', colorId: 'wine', referenceId: 'crop', versionId: 'v1', colorName: 'Wine', checksumSha256: '', filename: 'reference.jpg' };
@@ -59,7 +64,7 @@ function workstation() {
     await session.chooseReference(reference, referenceId);
     await session.sampleReference();
   }
-  return { session, adapter, docs, sourceId, referenceId, reference, ready, saved, captures,
+  return { session, adapter, docs, sourceId, referenceId, reference, ready, saved, captures, deliveries,
     activate(id) { active = id; }, withdraw() { valid = false; }, get renders() { return rendered; },
     blockRender() { failRender = true; } };
 }
@@ -137,6 +142,26 @@ test('a saved master remains recorded when session-record storage fails', async 
   await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder), /Master saved at C:\/retained.psd.*disk full/);
   assert.equal(w.session.view().outputs[0].savedPath, 'C:/retained.psd');
   assert.equal(w.saved.length, 1); assert.equal(w.session.view().busy, false);
+});
+
+test('paired saving records the editable master and JPEG in one output manifest', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
+  const result = await w.session.save({ nativePath: 'C:/result.psd' }, folder, { jpegFile: { nativePath: 'C:/result.jpg' } });
+  assert.equal(w.saved.length, 1); assert.equal(w.deliveries.length, 1);
+  assert.equal(result.output, 'C:/result.psd'); assert.equal(result.jpeg.path, 'C:/result.jpg');
+  assert.equal(written[0].jpeg.profile, 'sRGB IEC61966-2.1');
+  assert.equal(w.session.view().outputs[0].jpegPath, 'C:/result.jpg');
+});
+
+test('JPEG failure retains a saved master and reports its path without claiming paired success', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  w.adapter.saveOutputs = async () => { throw Object.assign(new Error('Master saved at C:/retained.psd, but JPEG export failed: disk full'), { savedMaster: { path: 'C:/retained.psd' } }); };
+  const folder = { async createFile() { throw new Error('Unexpected completed manifest'); } };
+  await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder, { jpegFile: { nativePath: 'C:/retained.jpg' } }), /JPEG export failed/);
+  assert.equal(w.session.view().outputs[0].savedPath, 'C:/retained.psd');
+  assert.equal(w.session.view().outputs[0].jpegPath, undefined);
+  assert.equal(w.session.view().busy, false);
 });
 
 test('an opened reference is never silently rebound as the next product source', async () => {

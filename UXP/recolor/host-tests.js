@@ -6,6 +6,7 @@ const { createPhotoshopAdapter, executeChecked } = require("./photoshop-adapter"
 const { createSourcePreparation } = require("./source-preparation");
 const { fingerprintFile } = require("./file-identity");
 const { createPilotSession } = require("./pilot-session");
+const { chooseOutputFiles } = require("./output-files");
 
 async function addOwnedDocument(photoshop, settings, owned) {
   const before = new Set(Array.from(photoshop.app.documents).map(doc => doc.id));
@@ -195,7 +196,21 @@ async function runHostTests(photoshop, uxp, folder) {
       const output = await pilot.apply();
       assert(output.fullResolutionIntegrity.protectedPixelsChanged === 0, 'Pilot changed protected source pixels');
       const file = await folder.createFile('integrated-pilot.psd', { overwrite: false });
-      await pilot.save(file, folder);
+      const pair = await chooseOutputFiles({ getFileForSaving: async () => file,
+        getEntryWithUrl: url => uxp.storage.localFileSystem.getEntryWithUrl(url) }, file.name);
+      const beforeSave = adapter.inspectSource(output.documentId), beforePixels = await adapter.readPixels(output.documentId);
+      const savedPair = await pilot.save(pair.masterFile, folder, { jpegFile: pair.jpegFile });
+      assert(savedPair.jpeg.verified && savedPair.jpeg.profile === SRGB, 'Paired save did not verify an sRGB JPEG');
+      assert(JSON.stringify(beforeSave) === JSON.stringify(adapter.inspectSource(output.documentId)), 'Export modified editable master structure or history');
+      assert((await adapter.readPixels(output.documentId)).data.every((v, i) => v === beforePixels.data[i]), 'Export changed editable master pixels');
+      const jpeg = await adapter.openDocument(pair.jpegFile); owned.add(jpeg.id);
+      assert(jpeg.colorProfileName === SRGB && jpeg.bitsPerChannel === photoshop.constants.BitsPerChannelType.EIGHT && jpeg.width === 96 && jpeg.height === 64, 'JPEG format/profile/dimensions differ');
+      const jpegPixels = await adapter.readPixels(jpeg.id), comparable = { left: 24, top: 20, width: 48, height: 24, maximum: 255, data: new Uint8Array(48 * 24).fill(255) };
+      const originalColor = measureMaterial(beforePixels, comparable), jpegColor = measureMaterial(jpegPixels, comparable);
+      const { deltaE00 } = require('./color');
+      const jpegDifference = deltaE00(originalColor.diffuseLab, jpegColor.diffuseLab);
+      assert(jpegDifference < 2, 'JPEG differs excessively from the color-managed master: ' + jpegDifference);
+      await jpeg.closeWithoutSaving(); owned.delete(jpeg.id);
       const savedIdentity = await fingerprintFile(file.url, require('fs'));
       let overwriteRejected = false;
       try { await pilot.save(file, folder); } catch (error) { overwriteRejected = /already exists/.test(error.message); }
@@ -226,7 +241,44 @@ async function runHostTests(photoshop, uxp, folder) {
       assert(pilot.view().recipe.parameters.lightness === savedSettings, 'Target controls were not retained independently');
       assert(JSON.stringify(sourceBefore) === JSON.stringify(adapter.inspectSource(source.id)), 'Pilot modified original source structure or history');
       await pilot.end();
-      return { originalUnchanged: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB'], editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
+      return { originalUnchanged: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
+    });
+    await run('Paired exports matte transparency white, preserve 8/16-bit sources, and refuse JPEG collisions before writing a master', async () => {
+      const results = [];
+      for (const depth of [8, 16]) {
+        const transparent = await addOwnedDocument(photoshop, { name: 'Owned transparent JPEG fixture ' + depth,
+          width: 96, height: 64, resolution: 144, mode: photoshop.constants.NewDocumentMode.RGB,
+          fill: photoshop.constants.DocumentFill.TRANSPARENT, depth, profile: ADOBE_RGB }, owned);
+        const data = new Uint8Array(32 * 32 * 3).fill(120);
+        const image = await photoshop.imaging.createImageDataFromBuffer(data, { width: 32, height: 32, components: 3, colorSpace: 'RGB', colorProfile: ADOBE_RGB });
+        try { await photoshop.imaging.putPixels({ documentID: transparent.id, layerID: transparent.layers[0].id, imageData: image, targetBounds: { left: 32, top: 16 }, replace: true }); }
+        finally { image.dispose(); }
+        const before = adapter.inspectSource(transparent.id), pixelsBefore = await adapter.readPixels(transparent.id);
+        const master = await folder.createFile('transparent-' + depth + '.psb', { overwrite: false });
+        const jpeg = await folder.createFile('transparent-' + depth + '.jpg', { overwrite: false });
+        const pair = await adapter.saveOutputs(transparent.id, master, jpeg);
+        assert(JSON.stringify(before) === JSON.stringify(adapter.inspectSource(transparent.id)), 'JPEG export changed source structure, depth, profile or history');
+        assert((await adapter.readPixels(transparent.id)).data.every((v, i) => v === pixelsBefore.data[i]), 'JPEG export changed transparent source pixels');
+        const reopened = await adapter.openDocument(jpeg); owned.add(reopened.id);
+        const frame = await adapter.readPixels(reopened.id);
+        assert([0, 1, 2].every(channel => frame.data[channel] >= frame.maximum - 1), 'Transparent JPEG background did not become white');
+        assert(reopened.resolution === 144 && pair.jpeg.resolution === 144, 'JPEG did not retain resolution metadata');
+        await reopened.closeWithoutSaving(); owned.delete(reopened.id);
+        const identity = await fingerprintFile(jpeg.url, require('fs'));
+        const unusedMaster = await folder.createFile('must-not-save-' + depth + '.psd', { overwrite: false });
+        let refused = false;
+        try { await adapter.saveOutputs(transparent.id, unusedMaster, jpeg); } catch (error) { refused = /already exists/.test(error.message); }
+        let created = false;
+        try { created = (await unusedMaster.getMetadata()).size > 0; } catch (_) { /* No master should exist. */ }
+        assert(refused && !created, 'JPEG collision wrote a partial master or was not refused');
+        assert((await fingerprintFile(jpeg.url, require('fs'))).sha256 === identity.sha256, 'Existing JPEG was overwritten');
+        let protectedRefused = false;
+        const protectedFile = await folder.createFile('protected-' + depth + '.jpg', { overwrite: false });
+        try { await adapter.saveOutputs(transparent.id, unusedMaster, protectedFile, [protectedFile.nativePath]); } catch (error) { protectedRefused = /protected/.test(error.message); }
+        assert(protectedRefused, 'Protected source/reference JPEG path was not refused');
+        results.push({ depth, sourceDocumentId: transparent.id, whiteMatte: true, unchangedSource: true, collisionRefusedBeforeMaster: true, protectedPathRefused: true, jpeg: pair.jpeg });
+      }
+      return { results };
     });
     await run("Bounded UXP file verification matches an independently computed multi-chunk SHA-256", async () => {
       const bytes = new Uint8Array(2 * 1024 * 1024 + 71);

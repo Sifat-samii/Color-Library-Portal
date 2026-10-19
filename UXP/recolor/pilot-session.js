@@ -2,6 +2,7 @@ const { measureMaterial, evaluateRender, compareFrames } = require('./quality');
 const { createCandidates, validateRecipe } = require('./recipes');
 const { fit } = require('./fitting');
 const sha256 = require('./vendor/sha256');
+const { saveOutput } = require('./output-save');
 
 function frameSignature(frame) {
   return sha256.create().update(JSON.stringify([frame.width, frame.height, frame.components, frame.maximum, frame.profile, frame.bounds]))
@@ -210,18 +211,11 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
       emit('Editable result kept in Photoshop. Save its PSD/PSB, or start another independent variant.');
       return clone(manifest);
     }),
-    save: (file, manifestFolder) => task(async () => {
+    save: (file, manifestFolder, settings = {}) => task(async () => {
       const output = outputs.find(v => preview && v.documentId === preview.documentId);
-      if (!output) throw new Error('Apply Color before saving the editable master.');
-      const protectedPaths = [snapshot.original.path, ...[...targets.values()].flatMap(t => [t.referenceDocument.path, t.reference.originalAssetPath])].filter(Boolean);
-      const saved = await adapter.saveMaster(output.documentId, file, protectedPaths);
-      const record = { ...output, output: saved.path, savedAt: new Date().toISOString(), productionQualified: false };
-      output.savedPath = saved.path;
-      try {
-        const manifestFile = await manifestFolder.createFile(output.sessionId + '-' + Date.now() + '.json', { overwrite: false });
-        await manifestFile.write(JSON.stringify(record, null, 2)); output.manifestPath = manifestFile.nativePath;
-      } catch (error) { throw new Error('Master saved at ' + saved.path + ', but its session record could not be saved: ' + error.message); }
-      emit('Layered Adobe RGB master saved. You can continue normal Photoshop editing.');
+      const protectedPaths = snapshot ? [snapshot.original.path, ...[...targets.values()].flatMap(t => [t.referenceDocument.path, t.reference.originalAssetPath])].filter(Boolean) : [];
+      const record = await saveOutput({ adapter, output, protectedPaths, file, manifestFolder, jpegFile: settings.jpegFile });
+      emit(record.jpeg ? 'Saved editable Adobe RGB master and sRGB JPEG in the selected folder.' : 'Layered Adobe RGB master saved. You can continue normal Photoshop editing.');
       return clone(record);
     }),
     cancelFit: () => { if (signal) { signal.aborted = true; emit('Cancelling after the current Photoshop operation.'); } },

@@ -1,4 +1,4 @@
-const { ADOBE_RGB } = require("./color");
+const { ADOBE_RGB, SRGB } = require("./color");
 const { validateMask, coverage } = require("./quality");
 const { layerDescriptors } = require("./native-descriptors");
 const { resolveSourcePreparation } = require("./source-preparation");
@@ -56,11 +56,16 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     const before = documentIds();
     let result;
     await modal("Open verified working artifact", async () => {
-      const storage = require("uxp").storage.localFileSystem;
-      await play([{ _obj: "open", null: { _path: storage.createSessionToken(file), _kind: "local" }, _options: { dialogOptions: "silent" } }]);
-      result = createdDocument(before, file.name);
-      await selectDoc(result.id);
+      result = await openInModal(file, before);
     });
+    return result;
+  }
+
+  async function openInModal(file, before = documentIds()) {
+    const storage = require("uxp").storage.localFileSystem;
+    await play([{ _obj: "open", null: { _path: storage.createSessionToken(file), _kind: "local" }, _options: { dialogOptions: "silent" } }]);
+    const result = createdDocument(before, file.name);
+    await selectDoc(result.id);
     return result;
   }
 
@@ -541,32 +546,91 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     sessions.delete(session);
   }
 
-  async function saveMaster(documentId, file, protectedPaths = []) {
+  async function checkOutput(file, extensions, protectedPaths) {
     const normalize = value => String(value || '').replace(/\\/g, '/').toLowerCase();
-    if (!file || !/\.(psd|psb)$/i.test(file.name)) throw new Error('Choose a PSD or PSB output file.');
+    if (!file || !extensions.includes(String(file.name).split('.').pop().toLowerCase())) throw new Error('Choose a ' + extensions.join(' or ').toUpperCase() + ' output file.');
     if (protectedPaths.some(path => path && normalize(path) === normalize(file.nativePath))) throw new Error('Choose a new filename; source and approved reference files are protected.');
-    const checkOutput = async () => {
-      let metadata;
-      try { metadata = await file.getMetadata(); }
-      catch (error) {
-        // UXP save-picker/createFile entries may not exist on disk until saved.
-        if (error.code !== 'ENOENT' && !/^no such file or directory$/i.test(error.message)) throw error;
-      }
-      if (metadata && metadata.size > 0) throw new Error('This output already exists. Choose a new filename to preserve the previous master.');
-    };
-    await checkOutput();
+    if (Array.from(app.documents).some(doc => normalize(inspect(doc.id).path) === normalize(file.nativePath))) throw new Error('This output is open in Photoshop. Choose a new filename.');
+    let metadata;
+    try { metadata = await file.getMetadata(); }
+    catch (error) {
+      // UXP save-picker/createFile entries may not exist on disk until saved.
+      if (error.code !== 'ENOENT' && !/^no such file or directory$/i.test(error.message)) throw error;
+    }
+    if (metadata && metadata.size > 0) throw new Error('This output already exists: ' + file.name + '. Choose a new filename to preserve existing files.');
+  }
+
+  function requireMaster(documentId) {
+    const doc = docById(documentId);
+    if (doc.colorProfileName !== ADOBE_RGB || doc.mode !== constants.DocumentMode.RGB) throw new Error('The master must remain RGB with the Adobe RGB (1998) profile.');
+    return doc;
+  }
+
+  async function saveMaster(documentId, file, protectedPaths = []) {
+    await checkOutput(file, ['psd', 'psb'], protectedPaths);
     const extension = /\.psb$/i.test(file.name) ? 'psb' : 'psd';
     await modal('Save editable recolor master', async () => {
-      const doc = docById(documentId);
-      await checkOutput();
-      if (doc.colorProfileName !== ADOBE_RGB || doc.mode !== constants.DocumentMode.RGB) throw new Error('The master must remain RGB with the Adobe RGB (1998) profile.');
+      const doc = requireMaster(documentId);
+      await checkOutput(file, ['psd', 'psb'], protectedPaths);
       await selectDoc(documentId);
       await doc.saveAs[extension](file, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
     });
     return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB };
   }
 
-  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster,
+  async function saveOutputs(documentId, masterFile, jpegFile, protectedPaths = []) {
+    // Check both destinations before writing either one. Recheck under the host
+    // modal lock; never replace a previous master, reference, or JPEG.
+    const check = async () => {
+      await checkOutput(masterFile, ['psd', 'psb'], protectedPaths);
+      await checkOutput(jpegFile, ['jpg', 'jpeg'], protectedPaths);
+    };
+    await check();
+    let master, jpeg;
+    try {
+      await modal('Save editable master and JPEG', async () => {
+        await check();
+        const doc = requireMaster(documentId), prior = app.activeDocument.id;
+        const extension = /\.psb$/i.test(masterFile.name) ? 'psb' : 'psd';
+        const width = doc.width, height = doc.height, resolution = doc.resolution;
+        let copy, reopened;
+        try {
+          await selectDoc(documentId);
+          await doc.saveAs[extension](masterFile, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
+          master = { path: String(masterFile.nativePath), format: extension, profile: ADOBE_RGB };
+          copy = await duplicateDocument(documentId, 'Recolor JPEG export ' + id());
+          // Flatten in the original space before conversion so native blending
+          // matches the master. Only this disposable duplicate is flattened.
+          await copy.flatten();
+          await copy.convertProfile(SRGB, constants.Intent.RELATIVECOLORIMETRIC, true, false);
+          copy.bitsPerChannel = constants.BitsPerChannelType.EIGHT;
+          await copy.saveAs.jpg(jpegFile, { quality: 12, embedColorProfile: true,
+            formatOptions: constants.JPEGFormatOptions.STANDARDBASELINE, matteColor: constants.MatteColor.WHITE }, true);
+          reopened = await openInModal(jpegFile);
+          if (reopened.width !== width || reopened.height !== height || reopened.mode !== constants.DocumentMode.RGB
+            || reopened.bitsPerChannel !== constants.BitsPerChannelType.EIGHT || reopened.colorProfileName !== SRGB
+            || Math.abs(reopened.resolution - resolution) > 0.01 || reopened.layers.length !== 1) {
+            throw new Error('Reopened JPEG differs from the requested dimensions, resolution, profile, depth, or flattened structure.');
+          }
+          jpeg = { path: String(jpegFile.nativePath), format: 'jpg', profile: SRGB, depth: 8,
+            width, height, resolution, quality: 12, matte: 'WHITE', verified: true };
+        } finally {
+          if (reopened && documentIds().has(reopened.id)) await reopened.closeWithoutSaving();
+          if (copy && documentIds().has(copy.id)) await copy.closeWithoutSaving();
+          if (documentIds().has(prior)) await selectDoc(prior);
+        }
+      });
+    } catch (error) {
+      if (master) {
+        error.savedMaster = master;
+        error.message = 'Master saved at ' + master.path + ', but JPEG export failed: ' + error.message + ' Existing files and the editable document were retained.';
+      }
+      throw error;
+    }
+    return { master, jpeg };
+  }
+
+  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster, saveOutputs,
     activateDocument: documentId => modal('Activate bound recoloring document', () => selectDoc(documentId)),
     markReference: documentId => openedReferences.add(documentId),
     releaseSource: snapshot => {

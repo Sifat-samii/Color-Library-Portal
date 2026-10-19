@@ -42,6 +42,14 @@
     "passed": true,
     "finishedAt": "2026-10-19T08:16:18.762Z"
   },
-  "physicalMaskButtonConfirmation": "PENDING",
+  "physicalMaskButtonConfirmation": "PASS — owner confirmed the green Material mask ready message after clicking Use material selection in the current bound preview.",
+  "physicalMaskButtonObservedState": {
+    "date": "2026-10-19",
+    "sourceDocumentId": 59,
+    "previewDocumentId": 452,
+    "activeDocumentId": 452,
+    "status": "Material mask captured. Browse the approved library and choose Apply Color on a reference.",
+    "maskStatus": "Material mask ready. Selection outline restored. Next: choose an approved reference."
+  },
   "productionQualified": false
 }

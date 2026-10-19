@@ -28,7 +28,8 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
       <details><summary>Fine-tune color and tone</summary><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic comparison</option><option value="A">Color and curves</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select>
       ${[['intensity','Color intensity',0,100,100],['lightness','Brightness',-60,60,0],['contrast','Contrast',-40,40,0],['shadows','Shadows',-25,25,0],['highlights','Highlights',-25,25,0]].map(([key,label,min,max,value]) => `<label class="recolor-slider">${label}<input data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span>${value}</span></label>`).join('')}</details>
       <p id="recolorMeasurement" class="recolor-help"></p><button id="recolorApply" class="primary-button" type="button">Apply Color</button>
-      <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save editable PSD/PSB</button><button id="recolorNew" class="secondary-button" type="button">New variant</button></div></section>
+      <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save PSD/PSB + JPEG</button><button id="recolorNew" class="secondary-button" type="button">New variant</button></div>
+      <p class="recolor-help">Saves the editable Adobe RGB master and a full-resolution sRGB JPEG beside it. JPEG transparency uses white.</p></section>
     <button id="recolorEnd" class="secondary-button" type="button">End source session</button></div>`;
   shell.appendChild(pane);
   const $ = id => document.getElementById(id);
@@ -119,8 +120,8 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   $('recolorEnd').addEventListener('click', () => run(async () => { await session.end(); pending = null; $('recolorMaskSource').innerHTML = ''; paint(session.view()); }));
   $('recolorSave').addEventListener('click', () => run(async () => {
     const state = session.view(), color = state.target.reference.colorName.replace(/[^\w -]/g, '').slice(0, 40);
-    const file = await fs.getFileForSaving('recolor-' + color + '-' + Date.now() + '.psd', { types: ['psd', 'psb'] });
-    if (file) await session.save(file, await fs.getDataFolder());
+    const files = await require('./output-files').chooseOutputFiles(fs, 'recolor-' + color + '-' + Date.now() + '.psd');
+    if (files) await session.save(files.masterFile, await fs.getDataFolder(), { jpegFile: files.jpegFile });
   }));
   const update = latestQueue(parameters => session.update(parameters));
   $('recolorMethod').selectedIndex = 0;

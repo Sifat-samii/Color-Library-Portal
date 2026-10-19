@@ -4,10 +4,10 @@ const controlIds = ['recolorClose', 'recolorBegin', 'recolorProduct', 'recolorMa
 
 function panelMarkup(version) {
   const step = (number, title, body) => `<section class="recolor-step" data-recolor-step="${number}">
-    <button class="recolor-step-toggle" type="button" data-recolor-toggle="${number}" aria-expanded="false" aria-controls="recolorStepBody${number}">
-      <span class="recolor-step-number">${number}</span><span class="recolor-step-copy"><strong>${title}</strong><span id="recolorStepSummary${number}"></span></span>
+    <div class="recolor-step-toggle" role="button" tabindex="0" data-recolor-toggle="${number}" aria-expanded="false" aria-controls="recolorStepBody${number}">
+      <span class="recolor-step-number">${number}</span><div class="recolor-step-copy"><strong>${title}</strong><span id="recolorStepSummary${number}"></span></div>
       <span id="recolorStepBadge${number}" class="recolor-step-badge"></span><span class="recolor-step-chevron" aria-hidden="true">+</span>
-    </button><div id="recolorStepBody${number}" class="recolor-step-body">${body}</div></section>`;
+    </div><div id="recolorStepBody${number}" class="recolor-step-body">${body}</div></section>`;
   return `<div class="recolor-heading"><div class="recolor-title"><div class="recolor-title-line"><h2>Recolor</h2><span class="recolor-build">Pilot ${version}</span></div><p>From approved reference to editable color.</p></div>
     <button id="recolorClose" class="secondary-button recolor-library-button" type="button">Browse library</button></div>
     <div id="recolorContext" class="recolor-context"><div class="recolor-context-copy"><span class="recolor-caption">PRODUCT</span><strong id="recolorContextName"></strong></div><button id="recolorProduct" class="secondary-button" type="button">Go to preview</button></div>
@@ -93,9 +93,17 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
     }
     settleSelections();
   }
-  for (const button of pane.querySelectorAll('[data-recolor-toggle]')) button.addEventListener('click', () => {
-    openStep(button.getAttribute('aria-expanded') === 'true' ? 0 : Number(button.getAttribute('data-recolor-toggle')));
-  });
+  // Native UXP buttons flatten nested content into one label. A focusable
+  // disclosure row preserves the number, two text lines and separate status.
+  for (const toggle of pane.querySelectorAll('[data-recolor-toggle]')) {
+    const activate = () => openStep(toggle.getAttribute('aria-expanded') === 'true' ? 0 : Number(toggle.getAttribute('data-recolor-toggle')));
+    toggle.addEventListener('click', activate);
+    toggle.addEventListener('keydown', event => {
+      if (!['Enter', ' ', 'Spacebar'].includes(event.key)) return;
+      event.preventDefault();
+      if (!event.repeat) activate();
+    });
+  }
   $('recolorBrowseTarget').addEventListener('click', onBrowse);
   function visible(id, show) { $(id).classList.toggle('is-hidden', !show); }
   function notice(title, message, kind) {

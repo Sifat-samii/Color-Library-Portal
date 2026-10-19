@@ -1,0 +1,254 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.7",
+  "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-by01TH\\pixofix-color-library-recolor-pilot-0.6.7.ccx",
+  "ccxSha256": "d40d4b0ff692f4707f53d78ec241c76984c0e86d035d9645bb188f7b566be262",
+  "repositoryRegressionsPassed": true,
+  "nativePhotoshopVersion": "25.3.1",
+  "reproduction": {
+    "command": "npm run test:recolor:layout",
+    "passed": false,
+    "error": "Step 1 flattens its title and summary into native button text",
+    "firstRow": {
+      "number": "1",
+      "header": {
+        "x": 15,
+        "y": 207,
+        "width": 519,
+        "height": 48
+      },
+      "numberBox": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "title": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "summary": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "badge": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "chevron": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "native": {
+    "command": "npm run test:recolor:layout",
+    "passed": true,
+    "sourceOperationsRun": false,
+    "checks": [
+      "All four step rows separate number, stacked title/summary, status and disclosure",
+      "Output actions stay below the scrolling workflow and inside the panel",
+      "Library native widgets are hidden when Recolor opens",
+      "Collapsed steps hide native selectors, including after disclosure changes",
+      "Enter and Space toggle the disclosure rows in UXP",
+      "Native dropdown choices survive disclosure and keyboard changes",
+      "Browse library restores the previous library view"
+    ],
+    "panelSize": {
+      "width": 549,
+      "height": 760
+    },
+    "stepRows": [
+      {
+        "number": "1",
+        "header": {
+          "x": 15,
+          "y": 207,
+          "width": 503,
+          "height": 64
+        },
+        "numberBox": {
+          "x": 27,
+          "y": 225,
+          "width": 28,
+          "height": 28
+        },
+        "title": {
+          "x": 66,
+          "y": 222,
+          "width": 369,
+          "height": 16
+        },
+        "summary": {
+          "x": 66,
+          "y": 242,
+          "width": 369,
+          "height": 14
+        },
+        "badge": {
+          "x": 445,
+          "y": 229,
+          "width": 39,
+          "height": 20
+        },
+        "chevron": {
+          "x": 494,
+          "y": 229,
+          "width": 12,
+          "height": 20
+        }
+      },
+      {
+        "number": "2",
+        "header": {
+          "x": 15,
+          "y": 281,
+          "width": 503,
+          "height": 64
+        },
+        "numberBox": {
+          "x": 27,
+          "y": 299,
+          "width": 28,
+          "height": 28
+        },
+        "title": {
+          "x": 66,
+          "y": 296,
+          "width": 369,
+          "height": 16
+        },
+        "summary": {
+          "x": 66,
+          "y": 316,
+          "width": 369,
+          "height": 14
+        },
+        "badge": {
+          "x": 445,
+          "y": 303,
+          "width": 39,
+          "height": 20
+        },
+        "chevron": {
+          "x": 494,
+          "y": 303,
+          "width": 12,
+          "height": 20
+        }
+      },
+      {
+        "number": "3",
+        "header": {
+          "x": 15,
+          "y": 355,
+          "width": 503,
+          "height": 64
+        },
+        "numberBox": {
+          "x": 27,
+          "y": 373,
+          "width": 28,
+          "height": 28
+        },
+        "title": {
+          "x": 66,
+          "y": 370,
+          "width": 359,
+          "height": 16
+        },
+        "summary": {
+          "x": 66,
+          "y": 390,
+          "width": 359,
+          "height": 14
+        },
+        "badge": {
+          "x": 435,
+          "y": 377,
+          "width": 49,
+          "height": 20
+        },
+        "chevron": {
+          "x": 494,
+          "y": 377,
+          "width": 12,
+          "height": 20
+        }
+      },
+      {
+        "number": "4",
+        "header": {
+          "x": 15,
+          "y": 429,
+          "width": 503,
+          "height": 64
+        },
+        "numberBox": {
+          "x": 27,
+          "y": 447,
+          "width": 28,
+          "height": 28
+        },
+        "title": {
+          "x": 66,
+          "y": 444,
+          "width": 363,
+          "height": 16
+        },
+        "summary": {
+          "x": 66,
+          "y": 464,
+          "width": 363,
+          "height": 14
+        },
+        "badge": {
+          "x": 439,
+          "y": 451,
+          "width": 45,
+          "height": 20
+        },
+        "chevron": {
+          "x": 494,
+          "y": 451,
+          "width": 12,
+          "height": 20
+        }
+      }
+    ],
+    "dropdownChoicesPreserved": true,
+    "fullLocalReport": "storage/recolor-dev/panel-layout-check-1792404610341.json",
+    "fullLocalReportSha256": "6d181765ede75dbb13471bc3f6d8c914f1fc87ec95d197cd2733da5796d0eea2"
+  },
+  "liveUpdate": {
+    "passed": true,
+    "documentsAndHistoryUnchanged": true,
+    "sourceDocumentId": "223",
+    "previewDocumentId": "263",
+    "dropdownAndSliderValuesUnchanged": true,
+    "scope": "0.6.7 presenter and CSS applied in place. Existing 0.6.6 adapter/session retained. Normal reload loads complete 0.6.7 package."
+  },
+  "registration": {
+    "checkedAt": "2026-10-19T10:10:09.253Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.7",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.7",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 46,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "limitations": "Native computed geometry and synthetic events; not a physical-pointer or full recoloring/export rerun.",
+  "productionQualified": false
+}

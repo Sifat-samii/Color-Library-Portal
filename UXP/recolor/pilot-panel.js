@@ -28,8 +28,9 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
       <details><summary>Fine-tune color and tone</summary><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic comparison</option><option value="A">Color and curves</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select>
       ${[['intensity','Color intensity',0,100,100],['lightness','Brightness',-60,60,0],['contrast','Contrast',-40,40,0],['shadows','Shadows',-25,25,0],['highlights','Highlights',-25,25,0]].map(([key,label,min,max,value]) => `<label class="recolor-slider">${label}<input data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span>${value}</span></label>`).join('')}</details>
       <p id="recolorMeasurement" class="recolor-help"></p><button id="recolorApply" class="primary-button" type="button">Apply Color</button>
-      <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save PSD/PSB + JPEG</button><button id="recolorNew" class="secondary-button" type="button">New variant</button></div>
-      <p class="recolor-help">Saves the editable Adobe RGB master and a full-resolution sRGB JPEG beside it. JPEG transparency uses white.</p></section>
+      <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save PSD/PSB</button><button id="recolorSaveJpeg" class="secondary-button" type="button">Save JPEG</button></div>
+      <p class="recolor-help">Save the editable Adobe RGB master or a full-resolution sRGB JPEG separately. JPEG transparency uses white.</p>
+      <button id="recolorNew" class="secondary-button" type="button">New variant</button></section>
     <button id="recolorEnd" class="secondary-button" type="button">End source session</button></div>`;
   shell.appendChild(pane);
   const $ = id => document.getElementById(id);
@@ -48,7 +49,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     $('recolorMaskStatus').textContent = state.hasMask ? 'Material mask ready. Selection outline restored. Next: choose an approved reference.' : 'No material mask captured yet.';
     $('recolorMaskStatus').classList.toggle('is-ready', state.hasMask);
     $('recolorReference').textContent = state.target ? state.target.reference.colorName + ' · ' + state.target.reference.filename + (state.target.sampled ? ' · sampled' : ' · select fabric, then sample') : pending ? pending.reference.colorName + ' selected. Bind your product first.' : 'Browse an approved color and choose Apply Color on its reference.';
-    for (const id of ['recolorBegin', 'recolorProduct', 'recolorMask', 'recolorSample', 'recolorPreview', 'recolorBefore', 'recolorApply', 'recolorSave', 'recolorNew', 'recolorEnd', 'recolorTarget', 'recolorMaskSource', 'recolorMethod']) $(id).disabled = busy;
+    for (const id of ['recolorBegin', 'recolorProduct', 'recolorMask', 'recolorSample', 'recolorPreview', 'recolorBefore', 'recolorApply', 'recolorSave', 'recolorSaveJpeg', 'recolorNew', 'recolorEnd', 'recolorTarget', 'recolorMaskSource', 'recolorMethod']) $(id).disabled = busy;
     $('recolorBegin').disabled = busy || Boolean(state.source);
     $('recolorProduct').disabled = busy || !state.source;
     $('recolorMask').disabled = busy || !state.source || state.committed || state.rendered;
@@ -57,6 +58,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     $('recolorBefore').disabled = busy || !state.rendered || state.committed;
     $('recolorApply').disabled = busy || !state.rendered || state.committed;
     $('recolorSave').disabled = busy || !state.committed;
+    $('recolorSaveJpeg').disabled = busy || !state.committed;
     $('recolorNew').disabled = busy || !state.source;
     $('recolorEnd').disabled = busy || !state.source;
     $('recolorCancel').classList.toggle('is-hidden', !state.fitting);
@@ -120,8 +122,13 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   $('recolorEnd').addEventListener('click', () => run(async () => { await session.end(); pending = null; $('recolorMaskSource').innerHTML = ''; paint(session.view()); }));
   $('recolorSave').addEventListener('click', () => run(async () => {
     const state = session.view(), color = state.target.reference.colorName.replace(/[^\w -]/g, '').slice(0, 40);
-    const files = await require('./output-files').chooseOutputFiles(fs, 'recolor-' + color + '-' + Date.now() + '.psd');
-    if (files) await session.save(files.masterFile, await fs.getDataFolder(), { jpegFile: files.jpegFile });
+    const file = await fs.getFileForSaving('recolor-' + color + '-' + Date.now() + '.psd', { types: ['psd', 'psb'] });
+    if (file) await session.save(file, await fs.getDataFolder());
+  }));
+  $('recolorSaveJpeg').addEventListener('click', () => run(async () => {
+    const state = session.view(), color = state.target.reference.colorName.replace(/[^\w -]/g, '').slice(0, 40);
+    const file = await fs.getFileForSaving('recolor-' + color + '-' + Date.now() + '.jpg', { types: ['jpg', 'jpeg'] });
+    if (file) await session.saveJpeg(file, await fs.getDataFolder());
   }));
   const update = latestQueue(parameters => session.update(parameters));
   $('recolorMethod').selectedIndex = 0;

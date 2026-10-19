@@ -578,6 +578,42 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB };
   }
 
+  async function writeJpegInModal(documentId, jpegFile) {
+    const doc = requireMaster(documentId), width = doc.width, height = doc.height, resolution = doc.resolution;
+    let copy, reopened;
+    try {
+      copy = await duplicateDocument(documentId, 'Recolor JPEG export ' + id());
+      // Flatten only the disposable copy, before color-space conversion, to
+      // preserve the master composite's native blending appearance.
+      await copy.flatten();
+      await copy.convertProfile(SRGB, constants.Intent.RELATIVECOLORIMETRIC, true, false);
+      copy.bitsPerChannel = constants.BitsPerChannelType.EIGHT;
+      await copy.saveAs.jpg(jpegFile, { quality: 12, embedColorProfile: true,
+        formatOptions: constants.JPEGFormatOptions.STANDARDBASELINE, matteColor: constants.MatteColor.WHITE }, true);
+      reopened = await openInModal(jpegFile);
+      if (reopened.width !== width || reopened.height !== height || reopened.mode !== constants.DocumentMode.RGB
+        || reopened.bitsPerChannel !== constants.BitsPerChannelType.EIGHT || reopened.colorProfileName !== SRGB
+        || Math.abs(reopened.resolution - resolution) > 0.01 || reopened.layers.length !== 1) {
+        throw new Error('Reopened JPEG differs from the requested dimensions, resolution, profile, depth, or flattened structure.');
+      }
+      return { path: String(jpegFile.nativePath), format: 'jpg', profile: SRGB, depth: 8,
+        width, height, resolution, quality: 12, matte: 'WHITE', verified: true };
+    } finally {
+      if (reopened && documentIds().has(reopened.id)) await reopened.closeWithoutSaving();
+      if (copy && documentIds().has(copy.id)) await copy.closeWithoutSaving();
+    }
+  }
+
+  async function saveJpeg(documentId, file, protectedPaths = []) {
+    await checkOutput(file, ['jpg', 'jpeg'], protectedPaths);
+    return modal('Save recolor JPEG', async () => {
+      await checkOutput(file, ['jpg', 'jpeg'], protectedPaths);
+      const prior = app.activeDocument.id;
+      try { return await writeJpegInModal(documentId, file); }
+      finally { if (documentIds().has(prior)) await selectDoc(prior); }
+    });
+  }
+
   async function saveOutputs(documentId, masterFile, jpegFile, protectedPaths = []) {
     // Check both destinations before writing either one. Recheck under the host
     // modal lock; never replace a previous master, reference, or JPEG.
@@ -592,31 +628,12 @@ function createPhotoshopAdapter(photoshop, options = {}) {
         await check();
         const doc = requireMaster(documentId), prior = app.activeDocument.id;
         const extension = /\.psb$/i.test(masterFile.name) ? 'psb' : 'psd';
-        const width = doc.width, height = doc.height, resolution = doc.resolution;
-        let copy, reopened;
         try {
           await selectDoc(documentId);
           await doc.saveAs[extension](masterFile, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
           master = { path: String(masterFile.nativePath), format: extension, profile: ADOBE_RGB };
-          copy = await duplicateDocument(documentId, 'Recolor JPEG export ' + id());
-          // Flatten in the original space before conversion so native blending
-          // matches the master. Only this disposable duplicate is flattened.
-          await copy.flatten();
-          await copy.convertProfile(SRGB, constants.Intent.RELATIVECOLORIMETRIC, true, false);
-          copy.bitsPerChannel = constants.BitsPerChannelType.EIGHT;
-          await copy.saveAs.jpg(jpegFile, { quality: 12, embedColorProfile: true,
-            formatOptions: constants.JPEGFormatOptions.STANDARDBASELINE, matteColor: constants.MatteColor.WHITE }, true);
-          reopened = await openInModal(jpegFile);
-          if (reopened.width !== width || reopened.height !== height || reopened.mode !== constants.DocumentMode.RGB
-            || reopened.bitsPerChannel !== constants.BitsPerChannelType.EIGHT || reopened.colorProfileName !== SRGB
-            || Math.abs(reopened.resolution - resolution) > 0.01 || reopened.layers.length !== 1) {
-            throw new Error('Reopened JPEG differs from the requested dimensions, resolution, profile, depth, or flattened structure.');
-          }
-          jpeg = { path: String(jpegFile.nativePath), format: 'jpg', profile: SRGB, depth: 8,
-            width, height, resolution, quality: 12, matte: 'WHITE', verified: true };
+          jpeg = await writeJpegInModal(documentId, jpegFile);
         } finally {
-          if (reopened && documentIds().has(reopened.id)) await reopened.closeWithoutSaving();
-          if (copy && documentIds().has(copy.id)) await copy.closeWithoutSaving();
           if (documentIds().has(prior)) await selectDoc(prior);
         }
       });
@@ -630,7 +647,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     return { master, jpeg };
   }
 
-  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster, saveOutputs,
+  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster, saveJpeg, saveOutputs,
     activateDocument: documentId => modal('Activate bound recoloring document', () => selectDoc(documentId)),
     markReference: documentId => openedReferences.add(documentId),
     releaseSource: snapshot => {

@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.5",
+  "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-HLkWvi\\pixofix-color-library-recolor-pilot-0.6.5.ccx",
+  "ccxSha256": "ca43e2b34e0f3bce86104871bc6531398e493a1d653a7fb4fe0bd7b179c89e6e",
+  "repositoryRegressionsPassed": true,
+  "pilotSessionChecksPassed": 14,
+  "nativePassed": 29,
+  "nativeFailed": 0,
+  "nativeBundleSha256": "4c786b5b004779ad90bd0283e83efda07ccfecf26ca21b814b76c6e2457d1ada",
+  "nativeEvidence": "product-pilot-separate-save-native-25.3.1.json",
+  "modelessEvidence": "product-pilot-separate-save-modeless-25.3.1.json",
+  "modelessPassed": true,
+  "registration": {
+    "checkedAt": "2026-10-19T09:30:37.048Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.5",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.5",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 44,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "policy": {
+    "masterButton": "Save PSD/PSB",
+    "jpegButton": "Save JPEG",
+    "pickers": "Independent filename and folder pickers",
+    "jpegBeforePsd": true,
+    "psdSavesOnlyMaster": true,
+    "masterProfile": "Adobe RGB (1998)",
+    "jpegProfile": "sRGB IEC61966-2.1"
+  },
+  "liveUpdate": {
+    "passed": true,
+    "sourceDocumentId": 1516,
+    "previewDocumentId": 1953,
+    "documentsAndHistoryUnchanged": true,
+    "masterLabel": "Save PSD/PSB",
+    "jpegLabel": "Save JPEG",
+    "masterEnabled": true,
+    "jpegEnabled": true,
+    "remainingRuntimeCode": "0.6.3 retained to preserve the active session; independent save controls/code upgraded in place; normal reload uses packaged 0.6.5"
+  },
+  "physicalSeparateSavePickerConfirmation": "PENDING",
+  "productionQualified": false
+}

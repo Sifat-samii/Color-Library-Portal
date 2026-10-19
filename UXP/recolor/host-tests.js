@@ -243,6 +243,26 @@ async function runHostTests(photoshop, uxp, folder) {
       await pilot.end();
       return { originalUnchanged: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
     });
+    await run('Independent JPEG saving needs no PSD, and independent PSD saving creates no additional JPEG', async () => {
+      const source = await fixture();
+      await source.createLayerGroup({ name: 'Independent save editable fixture' });
+      const before = adapter.inspectSource(source.id), beforePixels = await adapter.readPixels(source.id);
+      const jpeg = await folder.createFile('independent-save.jpg', { overwrite: false });
+      const saved = await adapter.saveJpeg(source.id, jpeg);
+      assert(saved.verified && saved.profile === SRGB, 'Independent JPEG was not verified');
+      const names = async () => (await folder.getEntries()).filter(e => /^independent-save\./.test(e.name)).map(e => e.name).sort();
+      assert(JSON.stringify(await names()) === JSON.stringify(['independent-save.jpg']), 'JPEG saving created a master');
+      const identity = await fingerprintFile(jpeg.url, require('fs'));
+      const master = await folder.createFile('independent-save.psd', { overwrite: false });
+      await adapter.saveMaster(source.id, master);
+      assert(JSON.stringify(await names()) === JSON.stringify(['independent-save.jpg', 'independent-save.psd']), 'PSD save created extra outputs');
+      assert((await fingerprintFile(jpeg.url, require('fs'))).sha256 === identity.sha256, 'PSD save re-exported or changed the JPEG');
+      assert(JSON.stringify(before) === JSON.stringify(adapter.inspectSource(source.id)), 'Independent saves changed source history or structure');
+      assert((await adapter.readPixels(source.id)).data.every((v, i) => v === beforePixels.data[i]), 'Independent saves changed source pixels');
+      const reopened = await adapter.openDocument(master); owned.add(reopened.id);
+      assert(reopened.layers.some(layer => layer.name === 'Independent save editable fixture') && reopened.colorProfileName === ADOBE_RGB, 'Independent master lost editable layers or profile');
+      return { jpegWithoutMaster: true, masterWithoutJpegExport: true, originalPreserved: true, jpeg: saved };
+    });
     await run('Paired exports matte transparency white, preserve 8/16-bit sources, and refuse JPEG collisions before writing a master', async () => {
       const results = [];
       for (const depth of [8, 16]) {

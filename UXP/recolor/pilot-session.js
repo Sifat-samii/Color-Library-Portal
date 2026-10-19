@@ -79,6 +79,14 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
     emit('Preview updated. Check the Photoshop canvas at 100% before applying.');
     return quality;
   }
+  const save = (file, manifestFolder, settings = {}) => task(async () => {
+    const output = outputs.find(v => preview && v.documentId === preview.documentId);
+    const protectedPaths = snapshot ? [snapshot.original.path, ...[...targets.values()].flatMap(t => [t.referenceDocument.path, t.reference.originalAssetPath])].filter(Boolean) : [];
+    const record = await saveOutput({ adapter, output, protectedPaths, file, manifestFolder, jpegFile: settings.jpegFile, format: settings.format });
+    emit(record.master && record.jpeg ? 'Saved editable Adobe RGB master and sRGB JPEG in the selected folder.'
+      : record.jpeg ? 'sRGB JPEG saved. The editable Photoshop document remains available.' : 'Layered Adobe RGB master saved. You can continue normal Photoshop editing.');
+    return clone(record);
+  });
   return {
     view,
     begin: documentId => task(async () => {
@@ -211,13 +219,8 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
       emit('Editable result kept in Photoshop. Save its PSD/PSB, or start another independent variant.');
       return clone(manifest);
     }),
-    save: (file, manifestFolder, settings = {}) => task(async () => {
-      const output = outputs.find(v => preview && v.documentId === preview.documentId);
-      const protectedPaths = snapshot ? [snapshot.original.path, ...[...targets.values()].flatMap(t => [t.referenceDocument.path, t.reference.originalAssetPath])].filter(Boolean) : [];
-      const record = await saveOutput({ adapter, output, protectedPaths, file, manifestFolder, jpegFile: settings.jpegFile });
-      emit(record.jpeg ? 'Saved editable Adobe RGB master and sRGB JPEG in the selected folder.' : 'Layered Adobe RGB master saved. You can continue normal Photoshop editing.');
-      return clone(record);
-    }),
+    save,
+    saveJpeg: (file, manifestFolder) => save(file, manifestFolder, { format: 'jpeg' }),
     cancelFit: () => { if (signal) { signal.aborted = true; emit('Cancelling after the current Photoshop operation.'); } },
     end: () => task(async () => {
       // All results and previews remain open: ending a session never discards work.

@@ -50,6 +50,11 @@ function workstation() {
     async toggle(preview, visible) { preview.visible = visible; },
     async commit(preview) { preview.committed = true; return { sessionId: 'case-' + preview.documentId, documentId: preview.documentId, sourceQualification: preview.snapshot.sourceQualification, recipe: preview.recipe }; },
     async saveMaster(id, file, paths) { if (paths.includes(file.nativePath)) throw new Error('Source protected'); saved.push(id); return { path: file.nativePath }; },
+    async saveJpeg(id, file, paths) {
+      if (paths.includes(file.nativePath)) throw new Error('Source protected');
+      const jpeg = { path: file.nativePath, profile: 'sRGB IEC61966-2.1', format: 'jpg', verified: true };
+      deliveries.push(jpeg); return jpeg;
+    },
     async saveOutputs(id, file, jpegFile, paths) {
       const master = await this.saveMaster(id, file, paths);
       const jpeg = { path: jpegFile.nativePath, profile: 'sRGB IEC61966-2.1', format: 'jpg', verified: true };
@@ -152,6 +157,28 @@ test('paired saving records the editable master and JPEG in one output manifest'
   assert.equal(result.output, 'C:/result.psd'); assert.equal(result.jpeg.path, 'C:/result.jpg');
   assert.equal(written[0].jpeg.profile, 'sRGB IEC61966-2.1');
   assert.equal(w.session.view().outputs[0].jpegPath, 'C:/result.jpg');
+});
+
+test('JPEG saving works before a PSD save and creates no editable master', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
+  const record = await w.session.saveJpeg({ nativePath: 'C:/standalone.jpg' }, folder);
+  assert.equal(w.saved.length, 0); assert.equal(w.deliveries.length, 1);
+  assert.equal(record.output, 'C:/standalone.jpg'); assert.equal(record.master, undefined);
+  assert.equal(w.session.view().outputs[0].savedPath, undefined);
+  assert.equal(written[0].jpeg.verified, true);
+  await w.session.save({ nativePath: 'C:/standalone.psd' }, folder);
+  assert.equal(w.saved.length, 1); assert.equal(w.deliveries.length, 1, 'PSD saving must not export another JPEG');
+});
+
+test('separate JPEG failures retain any completed PSD and create no extra master', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const folder = { async createFile() { return { async write() {} }; } };
+  await w.session.save({ nativePath: 'C:/retained.psd' }, folder);
+  w.adapter.saveJpeg = async () => { throw new Error('JPEG disk full'); };
+  await assert.rejects(() => w.session.saveJpeg({ nativePath: 'C:/failed.jpg' }, folder), /JPEG disk full/);
+  assert.equal(w.saved.length, 1); assert.equal(w.session.view().outputs[0].savedPath, 'C:/retained.psd');
+  assert.equal(w.session.view().busy, false);
 });
 
 test('JPEG failure retains a saved master and reports its path without claiming paired success', async () => {

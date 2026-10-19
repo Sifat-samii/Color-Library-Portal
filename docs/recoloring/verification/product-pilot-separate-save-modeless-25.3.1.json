@@ -1,0 +1,79 @@
+{
+  "state": "complete",
+  "passed": true,
+  "initial": [
+    {
+      "id": 1516,
+      "name": "MC00040_PLRN_01.psd",
+      "history": 1528
+    },
+    {
+      "id": 1531,
+      "name": "Recolor source mvf1oqi9-q",
+      "history": 1540
+    },
+    {
+      "id": 1541,
+      "name": "Recolor preview mvf1oqv4-r",
+      "history": 1937
+    },
+    {
+      "id": 1943,
+      "name": "BLUE JEAN BABY.jpg",
+      "history": 1958
+    },
+    {
+      "id": 1953,
+      "name": "Recolor preview mvf1qz95-x",
+      "history": 1996
+    }
+  ],
+  "after": [
+    {
+      "id": 1516,
+      "name": "MC00040_PLRN_01.psd",
+      "history": 1528
+    },
+    {
+      "id": 1531,
+      "name": "Recolor source mvf1oqi9-q",
+      "history": 1540
+    },
+    {
+      "id": 1541,
+      "name": "Recolor preview mvf1oqv4-r",
+      "history": 1937
+    },
+    {
+      "id": 1943,
+      "name": "BLUE JEAN BABY.jpg",
+      "history": 1958
+    },
+    {
+      "id": 1953,
+      "name": "Recolor preview mvf1qz95-x",
+      "history": 1996
+    }
+  ],
+  "pair": {
+    "master": {
+      "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\separate-save-modeless-OTgm7f\\modeless.psd",
+      "format": "psd",
+      "profile": "Adobe RGB (1998)"
+    },
+    "jpeg": {
+      "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\separate-save-modeless-OTgm7f\\modeless.jpg",
+      "format": "jpg",
+      "profile": "sRGB IEC61966-2.1",
+      "depth": 8,
+      "width": 96,
+      "height": 64,
+      "resolution": 144,
+      "quality": 12,
+      "matte": "WHITE",
+      "verified": true
+    }
+  },
+  "masterReopenedEditable": true,
+  "sourceUnchanged": true
+}

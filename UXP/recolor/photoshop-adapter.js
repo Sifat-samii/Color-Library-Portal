@@ -32,7 +32,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     : photoshop.core.executeAsModal(work, { commandName: name });
   const docById = documentId => {
     const doc = Array.from(app.documents).find(v => v.id === documentId);
-    if (!doc) throw new Error("The bound Photoshop document is no longer open");
+    if (!doc) throw Object.assign(new Error("The bound Photoshop document is no longer open"), { code: 'DOCUMENT_CLOSED' });
     return doc;
   };
   const selectDoc = documentId => play([{ _obj: "select", _target: [{ _ref: "document", _id: documentId }] }]);
@@ -499,7 +499,33 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     sessions.delete(session);
   }
 
-  return { inspect, inspectSource, atomic, captureSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, render, toggle, commit, cancel,
+  async function saveMaster(documentId, file, protectedPaths = []) {
+    const normalize = value => String(value || '').replace(/\\/g, '/').toLowerCase();
+    if (!file || !/\.(psd|psb)$/i.test(file.name)) throw new Error('Choose a PSD or PSB output file.');
+    if (protectedPaths.some(path => path && normalize(path) === normalize(file.nativePath))) throw new Error('Choose a new filename; source and approved reference files are protected.');
+    const checkOutput = async () => {
+      let metadata;
+      try { metadata = await file.getMetadata(); }
+      catch (error) {
+        // UXP save-picker/createFile entries may not exist on disk until saved.
+        if (error.code !== 'ENOENT' && !/^no such file or directory$/i.test(error.message)) throw error;
+      }
+      if (metadata && metadata.size > 0) throw new Error('This output already exists. Choose a new filename to preserve the previous master.');
+    };
+    await checkOutput();
+    const extension = /\.psb$/i.test(file.name) ? 'psb' : 'psd';
+    await modal('Save editable recolor master', async () => {
+      const doc = docById(documentId);
+      await checkOutput();
+      if (doc.colorProfileName !== ADOBE_RGB || doc.mode !== constants.DocumentMode.RGB) throw new Error('The master must remain RGB with the Adobe RGB (1998) profile.');
+      await selectDoc(documentId);
+      await doc.saveAs[extension](file, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
+    });
+    return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB };
+  }
+
+  return { inspect, inspectSource, atomic, captureSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, render, toggle, commit, cancel, saveMaster,
+    activateDocument: documentId => modal('Activate bound recoloring document', () => selectDoc(documentId)),
     markReference: documentId => openedReferences.add(documentId),
     releaseSource: snapshot => {
       if (token(snapshot.documentId) !== snapshot.snapshotToken) throw new Error("Frozen source has manual edits and was left open");

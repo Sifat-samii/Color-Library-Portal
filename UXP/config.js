@@ -1,4 +1,5 @@
 module.exports = {
+  recolorPilot: false,
   storageNamespace: "pixofix-color-library-v1",
   supportedExtensions: ["jpg", "jpeg", "png", "tif", "tiff", "psd", "psb"],
   lanBridge: {

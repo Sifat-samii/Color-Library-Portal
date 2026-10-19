@@ -5,6 +5,7 @@ const { measureMaterial, compareFrames, evaluateRender } = require("./quality");
 const { createPhotoshopAdapter, executeChecked } = require("./photoshop-adapter");
 const { createSourcePreparation } = require("./source-preparation");
 const { fingerprintFile } = require("./file-identity");
+const { createPilotSession } = require("./pilot-session");
 
 async function addOwnedDocument(photoshop, settings, owned) {
   const before = new Set(Array.from(photoshop.app.documents).map(doc => doc.id));
@@ -137,6 +138,67 @@ async function runHostTests(photoshop, uxp, folder) {
   const mask = { width: 96, height: 64, left: 0, top: 0, data: maskData, maximum: 255 };
   let source, snapshot, session, baseline, candidates;
   try {
+    await run('Integrated pilot samples an approved image, fits independent variants and reopens an editable master', async () => {
+      const source = await fixture(), sourceBefore = adapter.inspectSource(source.id);
+      const reference = await fixture();
+      const data = new Uint16Array(96 * 64 * 3);
+      for (let p = 0; p < 96 * 64; p++) for (let c = 0; c < 3; c++) data[p * 3 + c] = [125, 45, 75][c] * 257;
+      const image = await photoshop.imaging.createImageDataFromBuffer(data, { width: 96, height: 64, components: 3, colorSpace: 'RGB', colorProfile: ADOBE_RGB, fullRange: true });
+      try { await photoshop.imaging.putPixels({ documentID: reference.id, layerID: reference.layers[0].id, imageData: image, replace: true }); }
+      finally { image.dispose(); }
+      const pilotAdapter = { ...adapter,
+        captureSource: async (...args) => { const value = await adapter.captureSource(...args); owned.add(value.documentId); return value; },
+        createPreview: async (...args) => { const value = await adapter.createPreview(...args); owned.add(value.documentId); return value; } };
+      const pilot = createPilotSession({ adapter: pilotAdapter });
+      await pilot.begin(source.id);
+      const previewDoc = Array.from(photoshop.app.documents).find(doc => doc.id === pilot.view().previewDocumentId);
+      await previewDoc.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
+      await pilot.useMask({ kind: 'selection' });
+      const target = { clientId: 'synthetic-client', colorId: 'wine', referenceId: 'crop', versionId: '1', colorName: 'Synthetic Wine', checksumSha256: '', filename: 'synthetic-reference' };
+      await pilot.chooseReference(target, reference.id);
+      await reference.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
+      await pilot.sampleReference();
+      await pilot.preview('AUTO');
+      await pilot.update({ lightness: 2 });
+      const savedSettings = pilot.view().recipe.parameters.lightness;
+      const wineKey = pilot.view().target.key;
+      await pilot.toggle(); // Apply must compare the After rendering.
+      const output = await pilot.apply();
+      assert(output.fullResolutionIntegrity.protectedPixelsChanged === 0, 'Pilot changed protected source pixels');
+      const file = await folder.createFile('integrated-pilot.psd', { overwrite: false });
+      await pilot.save(file, folder);
+      const savedIdentity = await fingerprintFile(file.url, require('fs'));
+      let overwriteRejected = false;
+      try { await pilot.save(file, folder); } catch (error) { overwriteRejected = /already exists/.test(error.message); }
+      const afterRejectedSave = await fingerprintFile(file.url, require('fs'));
+      assert(overwriteRejected && savedIdentity.sha256 === afterRejectedSave.sha256, 'Pilot overwrote an existing master');
+      const psb = await folder.createFile('integrated-pilot.psb', { overwrite: false });
+      await pilot.save(psb, folder);
+      const master = Array.from(photoshop.app.documents).find(doc => doc.id === output.documentId);
+      const expected = await adapter.readPixels(master.id);
+      await master.closeWithoutSaving(); owned.delete(master.id);
+      const reopened = await adapter.openDocument(file); owned.add(reopened.id);
+      const layers = adapter.nativeLayers(reopened.id);
+      assert(layers.some(layer => layer.name === 'Designer Final Touch-ups') && layers.some(layer => layer.name === 'Edge Corrections'), 'Pilot master lost editable structure');
+      assert(reopened.colorProfileName === ADOBE_RGB, 'Pilot master profile did not reopen as Adobe RGB');
+      const recolorGroup = layers.find(layer => layer.name.startsWith('AI Recolor'));
+      assert(Boolean(recolorGroup), 'Pilot recoloring group is missing');
+      const reopenedMask = await adapter.acquireMask(reopened.id, { kind: 'layerMask', layerId: recolorGroup.id });
+      assert(reopenedMask.data.some(value => value === 0) && reopenedMask.data.some(value => value === reopenedMask.maximum), 'Pilot lost editable material mask coverage');
+      const actual = await adapter.readPixels(reopened.id);
+      assert(actual.data.every((value, index) => Math.abs(value - expected.data[index]) <= 2), 'Pilot save/reopen changed rendering');
+      const reopenedPsb = await adapter.openDocument(psb); owned.add(reopenedPsb.id);
+      const actualPsb = await adapter.readPixels(reopenedPsb.id);
+      assert(reopenedPsb.colorProfileName === ADOBE_RGB && actualPsb.data.every((value, index) => Math.abs(value - expected.data[index]) <= 2), 'Pilot PSB profile or rendering did not survive reopening');
+      await pilot.newVariant();
+      await pilot.chooseReference({ ...target, colorId: 'royal', referenceId: 'full' }, reference.id);
+      await pilot.sampleReference(); await pilot.preview('C');
+      await pilot.selectTarget(wineKey);
+      assert(pilot.view().recipe.parameters.lightness === savedSettings, 'Target controls were not retained independently');
+      assert(JSON.stringify(sourceBefore) === JSON.stringify(adapter.inspectSource(source.id)), 'Pilot modified original source structure or history');
+      await pilot.end();
+      return { originalUnchanged: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB'], editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
+    });
     await run("Bounded UXP file verification matches an independently computed multi-chunk SHA-256", async () => {
       const bytes = new Uint8Array(2 * 1024 * 1024 + 71);
       for (let index = 0; index < bytes.length; index += 1) bytes[index] = (index * 31 + 17) % 256;

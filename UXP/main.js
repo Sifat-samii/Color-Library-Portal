@@ -32,6 +32,7 @@ let swatchCards = [];
 let searchTimer = 0;
 let swatchSearchTimer = 0;
 let copyHexTimer = 0;
+let recolorPilot = null;
 
 const settings = createStudioSettings({ storage: createSecretStorage(), namespace: config.storageNamespace });
 function portalWebview() {
@@ -167,7 +168,13 @@ var EMPTY_ICONS = {
 
 function swatchColor(hex) {
   var value = String(hex || "").trim().replace(/^#/, "");
-  return /^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value) ? "#" + value : "";
+  if (!/^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value)) return "";
+  if (config.recolorPilot) {
+    if (value.length === 3) value = value.split('').map(function (digit) { return digit + digit; }).join('');
+    var rgb = [0, 2, 4].map(function (offset) { return parseInt(value.slice(offset, offset + 2), 16); });
+    return require('./recolor/color').adobeRgbToDisplay(rgb).hex;
+  }
+  return "#" + value;
 }
 
 function plural(count, word) {
@@ -921,11 +928,11 @@ function managedReferenceMarkup(ref) {
   var preview = id
     ? "<div class=\"reference-preview" + (src ? " has-preview" : " is-loading") + "\" data-preview-id=\"" + escapeHtml(id) + "\" aria-busy=\"" + (src ? "false" : "true") + "\">" + (src ? "<img src=\"" + escapeHtml(src) + "\" alt=\"\" decoding=\"async\" class=\"is-ready\">" : "") + "<div class=\"thumb-spinner\" aria-hidden=\"true\"></div><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>"
     : "<div class=\"reference-preview is-file\"><div class=\"thumb-fallback\">" + escapeHtml(format) + "</div><span class=\"open-hint\">Open</span></div>";
-  return "<article class=\"reference-item\" tabindex=\"0\" role=\"button\" aria-label=\"Open " + escapeHtml(ref.baseName) + "\">" + preview +
+  return "<article class=\"reference-item\"" + (recolorPilot ? ' role="group"' : ' tabindex="0" role="button"') + " aria-label=\"Open " + escapeHtml(ref.baseName) + "\">" + preview +
     "<div class=\"reference-info\"><div class=\"reference-topline\"><span class=\"reference-type\">" + escapeHtml(typeName) + "</span><span class=\"file-format\">" + escapeHtml(format) + "</span></div>" +
     "<div class=\"reference-file\" title=\"" + escapeHtml(ref.relativePath) + "\">" + escapeHtml(ref.baseName) + "</div>" +
     "<div class=\"reference-meta\">v" + escapeHtml(ref.versionNumber || 1) + " · " + formatBytes(ref.size) + " · " + escapeHtml(approval) + "</div>" +
-    "</div></article>";
+    "</div>" + (recolorPilot ? '<div class="reference-actions"><button class="secondary-button" type="button">Open Reference</button><button class="reference-recolor primary-button" type="button">Apply Color</button></div>' : '') + "</article>";
 }
 
 function showManagedDetails(id) {
@@ -955,9 +962,17 @@ function showManagedDetails(id) {
   fillPreviews($("#referenceList"));
   Array.prototype.forEach.call($("#referenceList").querySelectorAll(".reference-item"), function (item, index) {
     function open() { openReference(group.refs[index]); }
-    item.addEventListener("click", open);
+    item.addEventListener("click", function (event) {
+      if (controlFromEvent(event, 'reference-recolor')) {
+        event.preventDefault(); event.stopPropagation();
+        recolorPilot.chooseReference(group, group.refs[index], current.selectedClient && current.selectedClient.id);
+        return;
+      }
+      open();
+    });
     item.addEventListener("keydown", function (event) {
       if (event.key !== "Enter" && event.key !== " ") return;
+      if (event.target !== item) return;
       event.preventDefault();
       open();
     });
@@ -1010,6 +1025,7 @@ async function openReference(ref) {
     await core.executeAsModal(async function () {
       await app.open(entry);
     }, { commandName: "Open approved color reference" });
+    if (recolorPilot && app.activeDocument) recolorPilot.registerReferenceDocument(app.activeDocument.id);
   } catch (error) {
     showError("Photoshop could not open this reference. " + error.message);
   } finally {
@@ -1510,6 +1526,28 @@ function bindEvents() {
 }
 
 async function initialize() {
+  if (config.recolorPilot) {
+    try {
+      recolorPilot = require('./recolor/pilot-panel').mountRecolorPilot({
+        document: document, photoshop: require('photoshop'), storage: storage,
+        getReferenceFile: function (ref) { return ref.entry ? Promise.resolve(ref.entry) : openPortalFile(ref); },
+        referenceIsCurrent: function (reference) {
+          if (!current.selectedClient || current.selectedClient.id !== reference.clientId) return false;
+          var group = (current.catalog || []).find(function (value) { return value.id === reference.colorId; });
+          return Boolean(group && group.refs.some(function (ref) {
+            return ref.portalReferenceId === reference.referenceId && ref.versionId === reference.versionId
+              && (ref.checksumSha256 || '') === (reference.checksumSha256 || '');
+          }));
+        }
+      });
+    } catch (error) {
+      console.error('Recolor pilot could not initialize', error);
+      var recolorError = document.createElement('p');
+      recolorError.className = 'recolor-start-error'; recolorError.setAttribute('role', 'alert');
+      recolorError.textContent = 'Recolor pilot could not start: ' + error.message;
+      $('.app-shell').insertBefore(recolorError, $('#librarySwitch'));
+    }
+  }
   bindEvents();
   var previewsReady = previewFileMap();
   var savedPromise = settings.read();

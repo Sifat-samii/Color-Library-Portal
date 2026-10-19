@@ -1,5 +1,7 @@
 # Pixofix Color Library — Photoshop UXP panel v0.5.15
 
+An integrated **0.6.0 recoloring pilot** is now available through `npm run recolor:pilot` from the repository root. It adds Apply Color and guided native recoloring to this same panel, using Photoshop 25.3+ and API v2. See [the pilot workflow and loading instructions](../docs/recoloring/PRODUCT_PILOT.md). The regular release manifest/package described below retains its current behavior; rebuilding/loading that older manifest does not enable the pilot.
+
 Last updated: 2026-10-08
 
 The panel is the read-only designer surface for Pixofix Color Library. Client access, folders, approvals, versions, and instructions are controlled by the shared web portal. Floor computers install this panel and do not run the portal. Catalog colors may include `collection` (`CORE` / `SEASONAL`) and `editRequest` from `GET /api/plugin/clients/:id/catalog`; the panel ignores both and does not unlock or surface edit-request state. Personal portal saves (`saved` on `GET /api/client/colors`) are not included on the plugin catalog route. The shared Explore swatch library is a separate Swatches view from `GET /api/plugin/swatches`; it does not include personal saves. Panel star favorites are local to the plugin only.

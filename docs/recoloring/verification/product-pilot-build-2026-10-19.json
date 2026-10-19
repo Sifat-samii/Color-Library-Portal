@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-19",
+  "baselineCheckpoint": "352be7063fd6357f0b6d8871b9b022553b2b8820",
+  "version": "0.6.0",
+  "pluginId": "com.pixofix.color-library",
+  "artifact": "storage/recolor-dev/pilot-VlepQ6/pixofix-color-library-recolor-pilot-0.6.0.ccx",
+  "ccxSha256": "b60cb91b65b65e8f09fdccbd03bf8d08ac6cae3f9414d3500a4cd81ff71e13eb",
+  "manifest": "storage/recolor-dev/pilot-VlepQ6/plugin/manifest.json",
+  "nativeEvidence": "product-pilot-25.3.1.json",
+  "nativeTestedBundleSha256": "dbec248094829b7561d521f2c11cd3dc74fd4b903733aa3e2a3f8da297488174",
+  "nativePassed": 26,
+  "nativeFailed": 0,
+  "initialDocumentsPreserved": true,
+  "unexpectedNewDocumentIds": [],
+  "repositoryRegressionSuitePassed": true,
+  "pilotSessionTestsPassed": 8,
+  "pilotPackageTestPassed": true,
+  "panelInteractiveValidation": "PENDING",
+  "liveCatalogReferenceIntegrationValidation": "PENDING",
+  "productionQualified": false,
+  "deployment": "LOCAL_ARTIFACT_BUILT_NOT_INSTALLED",
+  "regularReleaseManifestUnchanged": true
+}

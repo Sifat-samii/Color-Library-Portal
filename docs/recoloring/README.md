@@ -1,8 +1,10 @@
 # Photoshop recoloring implementation
 
-Status: 16 October 2026 (Asia/Dhaka). **The [human-technique audit](HUMAN_TECHNIQUE_AUDIT.md) and [revised source/engine plan](SOURCE_AND_ENGINE_PLAN.md) now govern further development.** The owner requires the underlying original product appearance with essential base retouch retained. The earlier 20-case runs used saved Royal/Desert Taupe appearances; they remain technical smoke evidence and do not qualify the correct-source workload. Stage 1A and the experimental engine exist, but original-source feasibility and the complete production workflow remain incomplete.
+Status: 19 October 2026 (Asia/Dhaka). The [integrated product pilot](PRODUCT_PILOT.md) now adds source binding, material selection, approved-reference sampling, preview, editable Apply Color, independent variants and master saving to the existing Color Library panel through `npm run recolor:pilot`. This follows the owner's product-first direction; extensive historical PSD review is not a prerequisite for using the pilot. Real product quality and the complete production workflow remain unqualified.
 
-The production Color Library, its manifest, portal routes, database, approvals, reference opening, synchronization and favorites remain unchanged. Experimental modules are excluded from the production CCX packager. No GPU, model download, server service or installed npm dependency is required. Bounded file hashing uses a pinned MIT-licensed source file documented in [source recovery](SOURCE_RECOVERY.md).
+The [human-technique audit](HUMAN_TECHNIQUE_AUDIT.md) and [source/engine plan](SOURCE_AND_ENGINE_PLAN.md) still inform engine development and fair benchmarking. Benchmark input must be the original product appearance with essential base retouch retained. The earlier 20-case Royal/Desert Taupe saved-state runs remain technical smoke evidence, not qualified original-source results. Ambiguous historical sources remain flagged without blocking the pilot.
+
+Portal routes, database, approvals and catalog transport remain unchanged. The regular library manifest/config and production packager retain their current release behavior; `recolor:pilot` builds an explicit integrated 0.6.0 pilot with API v2 and Photoshop 25.3+. Installing/loading that build is required to see the new controls. No GPU, model download, server service or installed npm dependency is required. Bounded file hashing uses a pinned MIT-licensed source file documented in [source recovery](SOURCE_RECOVERY.md).
 
 The [16 October implementation audit](IMPLEMENTATION_AUDIT_2026-10-16.md) and [checkpoint](CHECKPOINT_2026-10-16.md) record the current implemented/pending state, corrected identity finding and source-integrity verification.
 
@@ -61,7 +63,7 @@ Frames contain typed RGB/RGBA data, explicit profile/maximum and full-document c
 
 The default optimizer compares all A/B/C seeds equally, then refines lightness and two chromatic offsets on its strongest candidate. Explicit `includeTintedBlackWhite: true` also evaluates D with a separately versioned recipe and gamma refinement; at least five evaluations are required. See [post-audit progress](NATIVE_ENGINE_PROGRESS.md) for actual native evidence and remaining limits. It penalizes clipping/detail loss but does not yet enforce calibrated texture thresholds, use target highlight/shadow descriptors for material-aware tonal fitting, or provide held-out human-gold statistics. Full-resolution protected-pixel verification is implemented; the detail proxy does not establish visual texture fidelity. Candidate limits are experimental safeguards, not proven production limits.
 
-## Current gate: the supplied CBI feasibility set
+## Benchmark qualification pending: the supplied CBI feasibility set
 
 Reviewed sources can now be saved and restored using the lab's **Save reviewed source recovery checkpoint** and **Restore reviewed source checkpoint** controls. Keep the generated PSB and final JSON together. Recovery verifies file integrity and creates a new working source; masks, targets and edited variants still require session setup. See [source recovery](SOURCE_RECOVERY.md) for authority, cancellation and limits.
 

@@ -1,0 +1,127 @@
+{
+  "startedAt": "2026-10-19T13:48:59.926Z",
+  "build": {
+    "directory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-uIomCR",
+    "artifactPluginDirectory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-uIomCR\\plugin",
+    "artifactManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-uIomCR\\plugin\\manifest.json",
+    "pluginDirectory": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin",
+    "manifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "pluginId": "com.pixofix.color-library",
+    "version": "0.6.8",
+    "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-uIomCR\\pixofix-color-library-recolor-pilot-0.6.8.ccx",
+    "ccxSha256": "b252e42507bcbe22a115dba27857803880ab4a79936a67da30f76ae56c529d8a",
+    "productionQualified": false
+  },
+  "checks": [
+    "Recolor and Browse library respond",
+    "Use active product captures the bound source through actual plugin modal scopes",
+    "Material selection is read and retained in the live panel",
+    "Target selection survives collapsible sections in the actual UXP panel",
+    "Approved-library Apply Color opens and samples a verified temporary reference",
+    "Preview color fits actual Photoshop adjustments from panel events",
+    "Fine-tune intensity updates native adjustments through the serialized UI queue",
+    "Before/after and editable Apply Color respond in the loaded panel",
+    "Live Auto creates editable adjustment layers without any Solid Color fill",
+    "New variant starts separately and retains the committed document",
+    "Original source history preserved",
+    "End source session releases only its frozen working source"
+  ],
+  "productionQualified": false,
+  "cleanup": {
+    "state": "complete",
+    "results": [
+      {
+        "id": 59,
+        "closed": true
+      },
+      {
+        "id": 65,
+        "closed": true
+      },
+      {
+        "id": 79,
+        "closed": true
+      },
+      {
+        "id": 73,
+        "closed": true
+      },
+      {
+        "id": 128,
+        "closed": true
+      }
+    ]
+  },
+  "registration": {
+    "checkedAt": "2026-10-19T13:48:59.944Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.8",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.8",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 46,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "pluginSessionId": "e2224142-869c-41ba-b4ec-9eb5583acf47",
+  "stage": "rendered preview and apply",
+  "fixture": {
+    "id": 59,
+    "name": "Recolor live test 1792417740711",
+    "historyId": 60
+  },
+  "adjustmentOnlyLayers": [
+    {
+      "id": 94,
+      "name": "Designer Final Touch-ups",
+      "kind": "group"
+    },
+    {
+      "id": 88,
+      "name": "AI Recolor — WINE — native-experimental-1 [mvfb8uh7-7]",
+      "kind": "group"
+    },
+    {
+      "id": 93,
+      "name": "Edge Corrections",
+      "kind": "pixel"
+    },
+    {
+      "id": 92,
+      "name": "Highlight & Shadow Adjustments",
+      "kind": "curves"
+    },
+    {
+      "id": 91,
+      "name": "Target Color Adjustments",
+      "kind": "gradientMap"
+    },
+    {
+      "id": 90,
+      "name": "Material Tone Adjustments",
+      "kind": "curves"
+    },
+    {
+      "id": 1,
+      "name": "Background",
+      "kind": "pixel"
+    }
+  ],
+  "referenceSampling": "Provisional center region for technical UI validation; not color accuracy qualification",
+  "passed": true,
+  "finishedAt": "2026-10-19T13:49:14.261Z",
+  "runtimeContexts": [
+    {
+      "id": 1,
+      "origin": "",
+      "name": "Pixofix Color Library",
+      "uniqueId": "8537314216242658420.-4486162148572894266",
+      "auxData": {
+        "frameId": "aafa1557-4b7d-4833-9ad4-847536b8c9d0",
+        "isDefault": true
+      }
+    }
+  ]
+}

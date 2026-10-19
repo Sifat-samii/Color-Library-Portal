@@ -51,13 +51,13 @@ async function run() {
     report.libraryBefore = await waitFor(false);
     await click('recolorShow');
     report.recolor = await waitFor(true);
-    report.stepRows = await evaluate(`(()=>{const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height};};return Array.from(document.querySelectorAll('[data-recolor-toggle]')).map(e=>({number:e.getAttribute('data-recolor-toggle'),header:rect(e),numberBox:rect(e.querySelector('.recolor-step-number')),title:rect(e.querySelector('.recolor-step-copy strong')),summary:rect(e.querySelector('.recolor-step-copy > span')),badge:rect(e.querySelector('.recolor-step-badge')),chevron:rect(e.querySelector('.recolor-step-chevron'))}));})()`);
+    report.stepRows = await evaluate(`(()=>{const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height};};return Array.from(document.querySelectorAll('[data-recolor-toggle]')).map(e=>({number:e.getAttribute('data-recolor-toggle'),header:rect(e),numberBox:rect(e.querySelector('.recolor-step-number')),title:rect(e.querySelector('.recolor-step-copy strong')),summary:rect(e.querySelector('.recolor-step-copy > span')),badge:rect(e.querySelector('.recolor-step-badge')),badgeVisible:getComputedStyle(e.querySelector('.recolor-step-badge')).visibility!=='hidden'&&getComputedStyle(e.querySelector('.recolor-step-badge')).display!=='none',chevron:rect(e.querySelector('.recolor-step-chevron'))}));})()`);
     for (const row of report.stepRows) {
       assert.ok(row.title.width > 0 && row.summary.height > 0, 'Step ' + row.number + ' flattens its title and summary into native button text');
       assert.ok(row.summary.y >= row.title.y + row.title.height - 1, 'Step ' + row.number + ' summary must sit below its title');
       assert.ok(row.title.x >= row.numberBox.x + row.numberBox.width + 6, 'Step ' + row.number + ' title crowds its number');
       assert.ok(row.summary.x + row.summary.width <= row.chevron.x - 4, 'Step ' + row.number + ' summary crowds its disclosure control');
-      if (row.badge.width > 0) assert.ok(row.title.x + row.title.width <= row.badge.x - 4, 'Step ' + row.number + ' status overlaps its title');
+      if (row.badgeVisible && row.badge.width > 0) assert.ok(row.title.x + row.title.width <= row.badge.x - 4, 'Step ' + row.number + ' status overlaps its title');
     }
     report.checks.push('All four step rows separate number, stacked title/summary, status and disclosure');
     assert.ok(report.recolor.browse.width > 0 && report.recolor.browse.height > 0, 'Browse library must occupy a visible hit area');

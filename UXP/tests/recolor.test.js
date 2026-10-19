@@ -135,6 +135,47 @@ test("opt-in fitting renders all four candidates and reserves a winner verificat
   assert.deepEqual(rendered, []);
 });
 
+test('adjustment-only method selection excludes fill candidates while retaining legacy recipe support', () => {
+  const { createCandidates, ADJUSTMENT_METHODS } = require('../recolor/recipes');
+  const { layerDescriptors } = require('../recolor/native-descriptors');
+  const source = { diffuseLab: [60, -20, 20] };
+  const target = { id: 'reference', material: 'MATTE', measurementSpace: 'CIELAB D50 2deg', diffuseLab: [40, 25, 0] };
+  const options = { methods: ADJUSTMENT_METHODS, includeTintedBlackWhite: true };
+  const recipes = createCandidates(source, target, options);
+  assert.deepEqual(recipes.map(recipe => recipe.method), ['B', 'C', 'D']);
+  for (const recipe of recipes) {
+    const layers = layerDescriptors(recipe).layers;
+    assert.ok(layers.length >= 3);
+    assert.ok(layers.every(layer => layer.command.using._obj === 'adjustmentLayer'));
+  }
+  assert.equal(createCandidates(source, target)[0].method, 'A', 'Legacy benchmark recipes remain readable');
+  for (const methods of [[], ['A', 'A'], ['UNKNOWN'], ['D']]) {
+    assert.throws(() => createCandidates(source, target, { methods }), /eligible/);
+  }
+});
+
+test('comparison refines each adjustment method before choosing a winner and fits hue beyond the initial seed', async () => {
+  const { createCandidates, ADJUSTMENT_METHODS } = require('../recolor/recipes');
+  const { fit } = require('../recolor/fitting');
+  const source = { diffuseLab: [60, -20, 20] };
+  const target = { id: 'reference', material: 'MATTE', measurementSpace: 'CIELAB D50 2deg', diffuseLab: [40, 25, 0] };
+  const options = { methods: ADJUSTMENT_METHODS, includeTintedBlackWhite: true, refineAllCandidates: true, maxEvaluations: 40 };
+  const seedHue = createCandidates(source, target, options)[0].parameters.hue;
+  const rendered = [];
+  const result = await fit(source, target, async recipe => {
+    rendered.push(recipe);
+    return { available: true, integrity: { critical: false }, status: 'DESIGNER_REVIEW_REQUIRED',
+      score: recipe.method === 'B' ? Math.abs(recipe.parameters.hue - seedHue - 12) + 0.1 : recipe.method === 'C' ? 2 : 3 };
+  }, options);
+  assert.equal(result.recipe.method, 'B', 'The weaker starting seed must be allowed to beat the initial best method');
+  assert.equal(result.recipe.parameters.hue, seedHue + 12);
+  assert.ok(rendered.every(recipe => recipe.method !== 'A'));
+  for (const method of ADJUSTMENT_METHODS) assert.ok(rendered.filter(recipe => recipe.method === method).length > 1);
+  assert.deepEqual(rendered.at(-1), result.recipe);
+  assert.ok(result.evaluations <= 40);
+  assert.deepEqual(result.comparison.map(value => value.method), ADJUSTMENT_METHODS);
+});
+
 test("rapid preview requests coalesce without overlapping Photoshop transactions", async () => {
   const { latestQueue } = require("../recolor/fitting");
   let finishFirst, active = 0, overlap = false;

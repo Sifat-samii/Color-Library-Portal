@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.8",
+  "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-uIomCR\\pixofix-color-library-recolor-pilot-0.6.8.ccx",
+  "ccxSha256": "b252e42507bcbe22a115dba27857803880ab4a79936a67da30f76ae56c529d8a",
+  "repositoryRegressionsPassed": true,
+  "pilotSessionChecksPassed": 15,
+  "nativeEvidence": "product-pilot-adjustment-only-native-25.3.1.json",
+  "nativePassed": 30,
+  "nativeFailed": 0,
+  "panelEvidence": "product-pilot-adjustment-only-panel-25.3.1.json",
+  "panelPassed": true,
+  "panelChecks": [
+    "Recolor and Browse library respond",
+    "Use active product captures the bound source through actual plugin modal scopes",
+    "Material selection is read and retained in the live panel",
+    "Target selection survives collapsible sections in the actual UXP panel",
+    "Approved-library Apply Color opens and samples a verified temporary reference",
+    "Preview color fits actual Photoshop adjustments from panel events",
+    "Fine-tune intensity updates native adjustments through the serialized UI queue",
+    "Before/after and editable Apply Color respond in the loaded panel",
+    "Live Auto creates editable adjustment layers without any Solid Color fill",
+    "New variant starts separately and retains the committed document",
+    "Original source history preserved",
+    "End source session releases only its frozen working source"
+  ],
+  "layout": {
+    "passed": true,
+    "checks": [
+      "All four step rows separate number, stacked title/summary, status and disclosure",
+      "Output actions stay below the scrolling workflow and inside the panel",
+      "Library native widgets are hidden when Recolor opens",
+      "Collapsed steps hide native selectors, including after disclosure changes",
+      "Enter and Space toggle the disclosure rows in UXP",
+      "Native dropdown choices survive disclosure and keyboard changes",
+      "Browse library restores the previous library view"
+    ],
+    "fullLocalReport": "storage/recolor-dev/panel-layout-check-1792417788211.json",
+    "fullLocalReportSha256": "6da9ba9430005087540ae70b7053adf510c70548ead458baee9f216762243f7c"
+  },
+  "registration": {
+    "checkedAt": "2026-10-19T13:48:59.944Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.8",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.8",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 46,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "policy": {
+    "methods": [
+      "B",
+      "C",
+      "D"
+    ],
+    "solidColorFill": false,
+    "autoEvaluationLimit": 40,
+    "manualMethodEvaluationLimit": 24,
+    "eachEligibleMethodRefined": true,
+    "manualMethodsFitted": true,
+    "legacyRecipeSupportPreserved": true,
+    "masters": "Editable Adobe RGB (1998) PSD/PSB",
+    "jpeg": "sRGB IEC61966-2.1"
+  },
+  "syntheticComparison": {
+    "legacyMethod": "D",
+    "legacyEvaluations": 18,
+    "legacyAnchorDeltaE00": 1.6728236926839433,
+    "currentMethod": "B",
+    "currentEvaluations": 40,
+    "currentAnchorDeltaE00": 0.6413679506156088,
+    "normalizedDetailRatio": 1.0011211888323097,
+    "protectedPixelsChanged": 0,
+    "addedTonalClippingFraction": 0,
+    "note": "Synthetic matte fixture. Both winners avoid Solid Color; improvement reflects fitting search and increased budget. Not a human-edit or production-garment claim."
+  },
+  "activation": "Complete 0.6.8 runtime loaded from the registered development folder; final attached panel workflow passed.",
+  "productionQualified": false
+}

@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-19T13:41:16.766Z",
+  "host": {
+    "uiLocale": "en_US",
+    "version": "25.3.1",
+    "name": "Photoshop"
+  },
+  "scope": "Stage 1A synthetic technical fixtures; not human-edit feasibility or production qualification",
+  "build": {
+    "testedBundleSha256": "7bd445f54ec0416aa540cdee22e8074137cc811e9ba033eb226001335a412c7f",
+    "generatedAt": "2026-10-19T13:41:16.464Z",
+    "entry": "UXP/recolor/host-tests.js"
+  },
+  "technicalGatePassed": true,
+  "passed": 30,
+  "failed": 0,
+  "initialDocumentsPreserved": true,
+  "unexpectedNewDocumentIds": [],
+  "cleanupErrors": [],
+  "productionQualified": false,
+  "fullLocalReport": "storage/recolor-dev/2026-10-19T13-41-16-458Z-bc505845/report.json",
+  "fullLocalReportSha256": "8ce7f96e2bde1a9112051c2d50e764a9fddbcb477a8e3df4db0960b973d6b7ac",
+  "cases": [
+    {
+      "name": "Changed internal source recovers from the unchanged original and restores an inspectable soft selection",
+      "status": "PASS",
+      "milliseconds": 327
+    },
+    {
+      "name": "Integrated pilot samples an approved image, fits independent variants and reopens an editable master",
+      "status": "PASS",
+      "milliseconds": 9876,
+      "details": {
+        "originalUnchanged": true,
+        "solidColorFill": false,
+        "method": "D",
+        "protectedPixelsChanged": 0,
+        "reopenedEditable": true,
+        "reopenedFormats": [
+          "PSD",
+          "PSB",
+          "JPEG"
+        ],
+        "jpeg": {
+          "path": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\2026-10-19T13-41-16-458Z-bc505845\\integrated-pilot.jpg",
+          "format": "jpg",
+          "profile": "sRGB IEC61966-2.1",
+          "depth": 8,
+          "width": 96,
+          "height": 64,
+          "resolution": 72,
+          "quality": 12,
+          "matte": "WHITE",
+          "verified": true
+        },
+        "jpegDiffuseDeltaE00": 0.12024069719022898,
+        "masterUnchangedByExport": true,
+        "editableMask": true,
+        "overwriteRefused": true,
+        "profile": "Adobe RGB (1998)",
+        "independentVariants": true,
+        "settingsRetained": true
+      }
+    },
+    {
+      "name": "Independent JPEG saving needs no PSD, and independent PSD saving creates no additional JPEG",
+      "status": "PASS",
+      "milliseconds": 908
+    },
+    {
+      "name": "Paired exports matte transparency white, preserve 8/16-bit sources, and refuse JPEG collisions before writing a master",
+      "status": "PASS",
+      "milliseconds": 2239
+    },
+    {
+      "name": "Bounded UXP file verification matches an independently computed multi-chunk SHA-256",
+      "status": "PASS",
+      "milliseconds": 59
+    },
+    {
+      "name": "A pinned frozen-source checkpoint recovers a fresh editable source across adapter instances",
+      "status": "PASS",
+      "milliseconds": 1083
+    },
+    {
+      "name": "Recovery refuses altered files, altered manifests and already-open artifacts; cancellation retains its journal",
+      "status": "PASS",
+      "milliseconds": 772
+    },
+    {
+      "name": "Reviewed source preparation preserves base retouch and places recoloring below finishing layers",
+      "status": "PASS",
+      "milliseconds": 995
+    },
+    {
+      "name": "Pending, unresolved and stale source reviews are rejected before document creation",
+      "status": "PASS",
+      "milliseconds": 143
+    },
+    {
+      "name": "Duplicate layer names use reviewed structural locations and retain independent visibility",
+      "status": "PASS",
+      "milliseconds": 493
+    },
+    {
+      "name": "Different hidden human recipes cannot influence independent source-driven fitting",
+      "status": "PASS",
+      "milliseconds": 3747
+    },
+    {
+      "name": "8-bit layered source supports reduced native-depth pixel reads without modification",
+      "status": "PASS",
+      "milliseconds": 354
+    },
+    {
+      "name": "Rendering reads native document dimensions a bounded number of times",
+      "status": "PASS",
+      "milliseconds": 627
+    },
+    {
+      "name": "8-bit sRGB source normalizes to a layered 16-bit Adobe RGB duplicate",
+      "status": "PASS",
+      "milliseconds": 401
+    },
+    {
+      "name": "Method A creates native adjustments and preserves protected pixels",
+      "status": "PASS",
+      "milliseconds": 251
+    },
+    {
+      "name": "Method B creates native adjustments and preserves protected pixels",
+      "status": "PASS",
+      "milliseconds": 376
+    },
+    {
+      "name": "Method C creates native adjustments and preserves protected pixels",
+      "status": "PASS",
+      "milliseconds": 330
+    },
+    {
+      "name": "Opt-in tinted Black & White and Levels remain masked, live-editable and native after PSD/PSB reopening",
+      "status": "PASS",
+      "milliseconds": 1420
+    },
+    {
+      "name": "Live native parameter changes update an existing provisional group",
+      "status": "PASS",
+      "milliseconds": 95
+    },
+    {
+      "name": "A shared soft group mask is applied once, and masks differ from layer transparency",
+      "status": "PASS",
+      "milliseconds": 95
+    },
+    {
+      "name": "A failed native transaction rolls back only its own edits",
+      "status": "PASS",
+      "milliseconds": 49
+    },
+    {
+      "name": "Nondefault mask density is not silently interpreted as full coverage",
+      "status": "PASS",
+      "milliseconds": 294
+    },
+    {
+      "name": "Offset 16-bit mask coverage is retained without 8-bit quantization",
+      "status": "PASS",
+      "milliseconds": 292
+    },
+    {
+      "name": "Reduced pixel reads retain full-document coordinate bounds",
+      "status": "PASS",
+      "milliseconds": 223
+    },
+    {
+      "name": "Committed PSD and PSB reopen with native controls, masks and Adobe RGB",
+      "status": "PASS",
+      "milliseconds": 1357
+    },
+    {
+      "name": "Manual Photoshop changes prevent destructive reapplication and cancellation",
+      "status": "PASS",
+      "milliseconds": 350
+    },
+    {
+      "name": "Independent variants do not recolor the preceding variant",
+      "status": "PASS",
+      "milliseconds": 640
+    },
+    {
+      "name": "Existing selections, saved alpha channels and vector paths are reusable",
+      "status": "PASS",
+      "milliseconds": 156
+    },
+    {
+      "name": "Opt-in bounded fitting evaluates A/B/C/D Photoshop composites and restores its winner",
+      "status": "PASS",
+      "milliseconds": 1762
+    },
+    {
+      "name": "Adjustment-only comparison fits B/C/D against legacy Auto and preserves native detail without a Solid Color fill",
+      "status": "PASS",
+      "milliseconds": 9093,
+      "details": {
+        "legacy": {
+          "method": "D",
+          "quality": {
+            "evaluationVersion": "diffuse-tone-clipping-2",
+            "available": true,
+            "measurement": {
+              "available": true,
+              "measurementSpace": "CIELAB D50 2deg",
+              "sampleCount": 3080,
+              "diffuseLab": [
+                31.671085960820243,
+                44.23772799757167,
+                0.9299277503916681
+              ],
+              "lightness": {
+                "shadow": 27.246716630243412,
+                "median": 31.671085960820243,
+                "highlight": 36.441286562288816
+              },
+              "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+            },
+            "integrity": {
+              "protectedPixelsChanged": 0,
+              "protectedPixelsCompared": 2976,
+              "protectedCheckAvailable": true,
+              "requiresFullResolutionCheck": false,
+              "resampledProtectedDifferences": null,
+              "interiorSamples": 3080,
+              "addedClippingFraction": 0,
+              "addedChannelClippingFraction": 0,
+              "clippingDefinition": "Tonal: all RGB channels near black or white; single-channel gamut boundaries are diagnostic",
+              "normalizedDetailRatio": 0.9998690458296862,
+              "critical": false,
+              "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+            },
+            "anchorDeltaE00": 1.6728236926839433,
+            "score": 1.6728236926839433,
+            "status": "DESIGNER_REVIEW_REQUIRED"
+          },
+          "evaluations": 18
+        },
+        "adjustmentOnly": {
+          "method": "B",
+          "quality": {
+            "evaluationVersion": "diffuse-tone-clipping-2",
+            "available": true,
+            "measurement": {
+              "available": true,
+              "measurementSpace": "CIELAB D50 2deg",
+              "sampleCount": 3080,
+              "diffuseLab": [
+                30.175172341483453,
+                45.35369665682229,
+                1.6773940819216904
+              ],
+              "lightness": {
+                "shadow": 23.450823948093728,
+                "median": 30.175172341483453,
+                "highlight": 37.493857629747644
+              },
+              "method": "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
+            },
+            "integrity": {
+              "protectedPixelsChanged": 0,
+              "protectedPixelsCompared": 2976,
+              "protectedCheckAvailable": true,
+              "requiresFullResolutionCheck": false,
+              "resampledProtectedDifferences": null,
+              "interiorSamples": 3080,
+              "addedClippingFraction": 0,
+              "addedChannelClippingFraction": 0,
+              "clippingDefinition": "Tonal: all RGB channels near black or white; single-channel gamut boundaries are diagnostic",
+              "normalizedDetailRatio": 1.0011211888323097,
+              "critical": false,
+              "note": "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
+            },
+            "anchorDeltaE00": 0.6413679506156088,
+            "score": 0.6413679506156088,
+            "status": "DESIGNER_REVIEW_REQUIRED"
+          },
+          "evaluations": 40,
+          "comparison": [
+            {
+              "method": "B",
+              "available": true,
+              "score": 0.6413679506156088,
+              "anchorDeltaE00": 0.6413679506156088
+            },
+            {
+              "method": "C",
+              "available": true,
+              "score": 2.0593947571091133,
+              "anchorDeltaE00": 2.0593947571091133
+            },
+            {
+              "method": "D",
+              "available": true,
+              "score": 1.663066803598686,
+              "anchorDeltaE00": 1.663066803598686
+            }
+          ]
+        },
+        "layers": [
+          {
+            "id": 109,
+            "name": "AI Recolor — Synthetic Wine — native-experimental-1 [mvfazh70-1n]",
+            "kind": "group"
+          },
+          {
+            "id": 114,
+            "name": "Highlight & Shadow Adjustments",
+            "kind": "curves"
+          },
+          {
+            "id": 113,
+            "name": "Undertone Corrections",
+            "kind": "selectiveColor"
+          },
+          {
+            "id": 112,
+            "name": "Target Color Adjustments",
+            "kind": "hueSaturation"
+          },
+          {
+            "id": 111,
+            "name": "Material Tone Adjustments",
+            "kind": "curves"
+          },
+          {
+            "id": 3,
+            "name": "Original source notes",
+            "kind": "group"
+          },
+          {
+            "id": 5,
+            "name": "Original label layer",
+            "kind": "pixel"
+          },
+          {
+            "id": 2,
+            "name": "Layer 1",
+            "kind": "pixel"
+          }
+        ],
+        "scope": "Synthetic anchor/detail comparison; not a garment or human-edit benchmark"
+      }
+    }
+  ]
+}

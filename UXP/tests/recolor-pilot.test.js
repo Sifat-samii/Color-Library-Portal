@@ -76,7 +76,7 @@ function workstation() {
 
 test('pilot binds the product while references become active; soft mask and frozen source survive target changes', async () => {
   const w = workstation(), original = new Uint16Array(w.docs.get(w.sourceId).frame.data);
-  await w.ready(); await w.session.preview('A'); await w.session.update({ lightness: 6 });
+  await w.ready(); await w.session.preview('B'); await w.session.update({ lightness: 6 });
   const wine = w.session.view().target.key;
   const other = { ...w.reference, colorId: 'royal', colorName: 'Royal', referenceId: 'full' };
   await w.session.chooseReference(other, w.referenceId); await w.session.sampleReference(); await w.session.preview('C');
@@ -112,7 +112,7 @@ test('withdrawal blocks further fitting or apply without altering a completed va
 });
 
 test('manual preview edits survive new variant and end; frozen source is not a recolored result', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A');
+  const w = workstation(); await w.ready(); await w.session.preview('B');
   const edited = w.session.view().previewDocumentId; w.docs.get(edited).edited = true;
   await w.session.newVariant();
   assert.equal(w.docs.has(edited), true);
@@ -141,8 +141,27 @@ test('cancel matching stops later renders and leaves source and preview availabl
   assert.equal(w.docs.has(w.sourceId), true); assert.equal(w.docs.has(w.session.view().previewDocumentId), true);
 });
 
+test('automatic and explicit pilot fitting use only editable adjustment methods and reject fill without replacing an applied result', async () => {
+  const w = workstation(); await w.ready();
+  const methods = [], render = w.adapter.render;
+  w.adapter.render = async (preview, recipe, ...rest) => { methods.push(recipe.method); return render(preview, recipe, ...rest); };
+  await w.session.preview();
+  assert.deepEqual([...new Set(methods)], ['B', 'C', 'D']);
+  assert.equal(w.session.view().quality.matching.solidColorFill, false);
+  const applied = await w.session.apply(), documentId = applied.documentId;
+  await assert.rejects(() => w.session.preview('A'), /Solid Color fill/);
+  assert.equal(w.session.view().previewDocumentId, documentId);
+  assert.equal(w.session.view().committed, true);
+  assert.equal(w.docs.has(documentId), true);
+  methods.length = 0;
+  await w.session.preview('C');
+  assert.ok(methods.length > 1, 'An explicit method must also be fitted and restored');
+  assert.deepEqual([...new Set(methods)], ['C']);
+  assert.notEqual(w.session.view().previewDocumentId, documentId);
+});
+
 test('a saved master remains recorded when session-record storage fails', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
   const folder = { async createFile() { throw new Error('disk full'); } };
   await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder), /Master saved at C:\/retained.psd.*disk full/);
   assert.equal(w.session.view().outputs[0].savedPath, 'C:/retained.psd');
@@ -150,7 +169,7 @@ test('a saved master remains recorded when session-record storage fails', async 
 });
 
 test('paired saving records the editable master and JPEG in one output manifest', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
   const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
   const result = await w.session.save({ nativePath: 'C:/result.psd' }, folder, { jpegFile: { nativePath: 'C:/result.jpg' } });
   assert.equal(w.saved.length, 1); assert.equal(w.deliveries.length, 1);
@@ -160,7 +179,7 @@ test('paired saving records the editable master and JPEG in one output manifest'
 });
 
 test('JPEG saving works before a PSD save and creates no editable master', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
   const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
   const record = await w.session.saveJpeg({ nativePath: 'C:/standalone.jpg' }, folder);
   assert.equal(w.saved.length, 0); assert.equal(w.deliveries.length, 1);
@@ -172,7 +191,7 @@ test('JPEG saving works before a PSD save and creates no editable master', async
 });
 
 test('separate JPEG failures retain any completed PSD and create no extra master', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
   const folder = { async createFile() { return { async write() {} }; } };
   await w.session.save({ nativePath: 'C:/retained.psd' }, folder);
   w.adapter.saveJpeg = async () => { throw new Error('JPEG disk full'); };
@@ -182,7 +201,7 @@ test('separate JPEG failures retain any completed PSD and create no extra master
 });
 
 test('JPEG failure retains a saved master and reports its path without claiming paired success', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('A'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
   w.adapter.saveOutputs = async () => { throw Object.assign(new Error('Master saved at C:/retained.psd, but JPEG export failed: disk full'), { savedMaster: { path: 'C:/retained.psd' } }); };
   const folder = { async createFile() { throw new Error('Unexpected completed manifest'); } };
   await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder, { jpegFile: { nativePath: 'C:/retained.jpg' } }), /JPEG export failed/);

@@ -20,7 +20,7 @@ function panelMarkup(version) {
         <p id="recolorTuneHint" class="recolor-help">Create a preview to compare the result and fine-tune it.</p>
         <details id="recolorFineTune" class="recolor-tuning"><summary>Fine-tune color & tone</summary>
           ${[['intensity', 'Color intensity', 0, 100, 100], ['lightness', 'Brightness', -60, 60, 0], ['contrast', 'Contrast', -40, 40, 0], ['shadows', 'Shadows', -25, 25, 0], ['highlights', 'Highlights', -25, 25, 0]].map(([key, label, min, max, value]) => `<label class="recolor-slider"><span class="recolor-slider-label">${label}</span><input aria-label="${label}" data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span class="recolor-slider-value">${value}</span></label>`).join('')}
-          <div class="recolor-method"><div class="recolor-field-label">Recoloring method</div><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic comparison</option><option value="A">Color and curves</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select><p class="recolor-help">Method changes take effect on the next preview.</p></div>
+          <div class="recolor-method"><div class="recolor-field-label">Recoloring method</div><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic (no Solid Color fill)</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select><p class="recolor-help">Uses editable adjustment layers without a Solid Color fill. Method changes take effect on the next preview.</p></div>
         </details><p id="recolorMeasurement" class="recolor-measurement"></p>`)}
     </div>
     <div class="recolor-footer"><div id="recolorApplyArea"><button id="recolorApply" class="primary-button recolor-full" type="button">Apply Color</button><p id="recolorApplyHint" class="recolor-footer-hint">Complete the steps above to create a preview.</p></div>
@@ -158,6 +158,7 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
       $('recolorStepSummary' + i).textContent = summaries[i - 1];
       $('recolorStepSummary' + i).setAttribute('title', summaries[i - 1]);
       $('recolorStepBadge' + i).textContent = badges[i - 1];
+      visible('recolorStepBadge' + i, Boolean(badges[i - 1]));
       pane.querySelector('[data-recolor-step="' + i + '"]').classList.toggle('is-current', phase === i);
     }
     const title = opening ? 'Opening approved reference' : state.fitting ? 'Matching color' : busy ? 'Working in Photoshop' : !state.source ? 'Start with your product' : !state.hasMask ? 'Select the material' : !state.target ? 'Choose your target color' : !state.target.sampled ? 'Sample the reference' : state.committed ? 'Ready to save' : state.rendered ? 'Review your preview' : 'Create your preview';

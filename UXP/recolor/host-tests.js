@@ -1,5 +1,5 @@
 const { ADOBE_RGB, SRGB, rgbToLab } = require("./color");
-const { createCandidates, adjustRecipe } = require("./recipes");
+const { ADJUSTMENT_METHODS, createCandidates, adjustRecipe } = require("./recipes");
 const { fit } = require("./fitting");
 const { measureMaterial, compareFrames, evaluateRender } = require("./quality");
 const { createPhotoshopAdapter, executeChecked } = require("./photoshop-adapter");
@@ -189,6 +189,7 @@ async function runHostTests(photoshop, uxp, folder) {
       await reference.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
       await pilot.sampleReference();
       await pilot.preview('AUTO');
+      assert(pilot.view().quality.matching.methods.map(value => value.method).join(',') === 'B,C,D', 'Pilot Auto included a fill candidate');
       await pilot.update({ lightness: 2 });
       const savedSettings = pilot.view().recipe.parameters.lightness;
       const wineKey = pilot.view().target.key;
@@ -223,6 +224,7 @@ async function runHostTests(photoshop, uxp, folder) {
       await master.closeWithoutSaving(); owned.delete(master.id);
       const reopened = await adapter.openDocument(file); owned.add(reopened.id);
       const layers = adapter.nativeLayers(reopened.id);
+      assert(!layers.some(layer => String(layer.kind).toLowerCase().includes('solidcolor')), 'Adjustment-only pilot master contains a Solid Color fill');
       assert(layers.some(layer => layer.name === 'Designer Final Touch-ups') && layers.some(layer => layer.name === 'Edge Corrections'), 'Pilot master lost editable structure');
       assert(reopened.colorProfileName === ADOBE_RGB, 'Pilot master profile did not reopen as Adobe RGB');
       const recolorGroup = layers.find(layer => layer.name.startsWith('AI Recolor'));
@@ -241,7 +243,7 @@ async function runHostTests(photoshop, uxp, folder) {
       assert(pilot.view().recipe.parameters.lightness === savedSettings, 'Target controls were not retained independently');
       assert(JSON.stringify(sourceBefore) === JSON.stringify(adapter.inspectSource(source.id)), 'Pilot modified original source structure or history');
       await pilot.end();
-      return { originalUnchanged: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
+      return { originalUnchanged: true, solidColorFill: false, method: output.recipe.method, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
     });
     await run('Independent JPEG saving needs no PSD, and independent PSD saving creates no additional JPEG', async () => {
       const source = await fixture();
@@ -726,6 +728,30 @@ async function runHostTests(photoshop, uxp, folder) {
       assert(Math.abs(actual.score - result.quality.score) < 0.001, "Visible preview is not the fitted winner");
       return { method: result.recipe.method, anchorDeltaE00: result.quality.anchorDeltaE00, evaluations: result.evaluations,
         candidateMethods: result.history.slice(0, 4).map(value => value.method) };
+    });
+    await run('Adjustment-only comparison fits B/C/D against legacy Auto and preserves native detail without a Solid Color fill', async () => {
+      const measured = measureMaterial(baseline, mask), target = candidates[0].target;
+      const preview = await adapter.createPreview(snapshot); owned.add(preview.documentId);
+      const evaluate = async recipe => {
+        await adapter.render(preview, recipe, mask);
+        return evaluateRender(baseline, await adapter.readPixels(preview.documentId), mask, target);
+      };
+      const legacy = await fit(measured, target, evaluate, { includeTintedBlackWhite: true, maxEvaluations: 18 });
+      const result = await fit(measured, target, evaluate, { methods: ADJUSTMENT_METHODS,
+        includeTintedBlackWhite: true, refineAllCandidates: true, maxEvaluations: 40 });
+      assert(result.history.every(entry => entry.method !== 'A'), 'A fill candidate entered adjustment-only fitting');
+      assert(result.comparison.map(entry => entry.method).join(',') === 'B,C,D', 'An adjustment family was not compared');
+      assert(result.quality.score <= legacy.quality.score + 0.25, 'Adjustment-only matching regressed versus legacy Auto: ' + JSON.stringify({ legacy: legacy.quality, current: result.quality }));
+      assert(result.quality.integrity.protectedPixelsChanged === 0, 'No-fill result changed protected pixels');
+      assert(result.quality.integrity.normalizedDetailRatio > 0.5, 'No-fill result lost critical fixture detail');
+      assert(result.quality.integrity.addedClippingFraction < 0.02, 'No-fill result clipped fixture tones');
+      const layers = adapter.nativeLayers(preview.documentId);
+      assert(!layers.some(layer => String(layer.kind).toLowerCase().includes('solidcolor')), 'No-fill comparison left a Solid Color layer');
+      const actual = evaluateRender(baseline, await adapter.readPixels(preview.documentId), mask, target);
+      assert(Math.abs(actual.score - result.quality.score) < 0.001, 'Comparison did not restore the measured winner');
+      return { legacy: { method: legacy.recipe.method, quality: legacy.quality, evaluations: legacy.evaluations },
+        adjustmentOnly: { method: result.recipe.method, quality: result.quality, evaluations: result.evaluations, comparison: result.comparison },
+        layers, scope: 'Synthetic anchor/detail comparison; not a garment or human-edit benchmark' };
     });
   } finally {
     const cleanupErrors = [];

@@ -161,6 +161,11 @@ async function run() {
       await until(async () => { const value = await evaluate(`({ready:!document.getElementById('recolorSave').disabled,status:document.getElementById('recolorStatus').textContent})`); if (/Cannot compare|modal scope/.test(value.status)) throw new Error(value.status); return value.ready; }, 'editable Apply Color');
       await track(); report.checks.push('Before/after and editable Apply Color respond in the loaded panel');
       const committedId = (await state()).previewId;
+      const methodOptions = await evaluate(`Array.from(document.getElementById('recolorMethod').querySelectorAll('option')).map(option=>option.value)`);
+      assert.deepEqual(methodOptions, ['AUTO', 'B', 'C', 'D'], 'The product workflow must offer only adjustment-only methods');
+      report.adjustmentOnlyLayers = await evaluate(`require('./recolor/photoshop-adapter').createPhotoshopAdapter(require('photoshop')).nativeLayers(${committedId})`);
+      assert.ok(!report.adjustmentOnlyLayers.some(layer => String(layer.kind).toLowerCase().includes('solidcolor')), 'The live panel added a Solid Color fill');
+      report.checks.push('Live Auto creates editable adjustment layers without any Solid Color fill');
       await click('recolorNew');
       await until(async () => { const value = await state(); if (value.previewId !== committedId) await track(); return value.previewId !== committedId && !value.maskDisabled; }, 'new independent variant');
       await track();

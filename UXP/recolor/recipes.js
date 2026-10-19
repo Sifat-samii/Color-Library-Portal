@@ -2,6 +2,7 @@ const { ADOBE_RGB, labToRgb } = require("./color");
 
 const ENGINE_VERSION = "native-experimental-1";
 const TINTED_ENGINE_VERSION = "native-tinted-bw-experimental-1";
+const ADJUSTMENT_METHODS = Object.freeze(["B", "C", "D"]);
 const LIMITS = {
   lightness: [-60, 60], chromaA: [-35, 35], chromaB: [-35, 35],
   hue: [-180, 180], saturation: [-100, 100], contrast: [-40, 40],
@@ -28,7 +29,10 @@ function createCandidates(source, target, options = {}) {
   let hue = b[0] - a[0];
   if (hue > 180) hue -= 360;
   if (hue < -180) hue += 360;
-  const methods = options.includeTintedBlackWhite === true ? ["A", "B", "C", "D"] : ["A", "B", "C"];
+  const eligible = options.includeTintedBlackWhite === true ? ["A", "B", "C", "D"] : ["A", "B", "C"];
+  const methods = options.methods == null ? eligible : options.methods;
+  if (!Array.isArray(methods) || !methods.length || new Set(methods).size !== methods.length
+    || methods.some(method => !eligible.includes(method))) throw new Error("Choose eligible native recoloring methods");
   return methods.map(method => ({
     schemaVersion: 1, engineVersion: method === "D" ? TINTED_ENGINE_VERSION : ENGINE_VERSION, method, status: "EXPERIMENTAL",
     sourceAnchor: source.diffuseLab.slice(), target: JSON.parse(JSON.stringify(target)),
@@ -60,4 +64,4 @@ function adjustRecipe(recipe, key, delta) {
   return copy;
 }
 
-module.exports = { ENGINE_VERSION, LIMITS, createCandidates, validateRecipe, adjustRecipe };
+module.exports = { ENGINE_VERSION, LIMITS, ADJUSTMENT_METHODS, createCandidates, validateRecipe, adjustRecipe };

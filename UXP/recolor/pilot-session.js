@@ -1,5 +1,5 @@
 const { measureMaterial, evaluateRender, compareFrames } = require('./quality');
-const { createCandidates, validateRecipe } = require('./recipes');
+const { ADJUSTMENT_METHODS, validateRecipe } = require('./recipes');
 const { fit } = require('./fitting');
 const sha256 = require('./vendor/sha256');
 const { saveOutput } = require('./output-save');
@@ -72,6 +72,7 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
     }
   }
   async function render(target, recipe) {
+    if (!ADJUSTMENT_METHODS.includes(recipe.method)) throw new Error('This workflow uses adjustment layers without a Solid Color fill. Create a new preview with an adjustment-only method.');
     const native = await adapter.render(preview, recipe, mask);
     const quality = evaluateRender(baseline, await adapter.readPixels(preview.documentId, 640), mask, recipe.target);
     quality.targetGamutClipped = native.targetGamutClipped;
@@ -169,22 +170,22 @@ function createPilotSession({ adapter, referenceIsCurrent = () => true, onChange
     }),
     preview: (method = 'AUTO') => task(async () => {
       const target = targetForRender();
+      if (method !== 'AUTO' && !ADJUSTMENT_METHODS.includes(method)) throw new Error('Choose an adjustment-only recoloring method. Solid Color fill is not used in this workflow.');
       if (preview.committed) await freshPreview();
-      if (method === 'AUTO' && target.recipe && !preview.recipe) {
+      if (method === 'AUTO' && target.recipe && ADJUSTMENT_METHODS.includes(target.recipe.method) && !preview.recipe) {
         await render(target, target.recipe);
-      } else if (method === 'AUTO') {
+      } else {
         signal = { aborted: false }; emit();
         try {
           const result = await fit(sourceStats, target.measurement, recipe => render(target, recipe), {
-            includeTintedBlackWhite: true, maxEvaluations: 18, signal,
+            methods: method === 'AUTO' ? ADJUSTMENT_METHODS : [method],
+            includeTintedBlackWhite: true, refineAllCandidates: true, maxEvaluations: method === 'AUTO' ? 40 : 24, signal,
             onProgress: p => emit('Matching color in Photoshop: ' + p.evaluations + '/' + p.budget + '. Cancel is available.')
           });
           target.recipe = clone(result.recipe); target.quality = result.quality;
+          target.quality.matching = { version: 'adjustment-only-comparison-1', solidColorFill: false,
+            evaluations: result.evaluations, methods: result.comparison };
         } finally { signal = null; }
-      } else {
-        const recipe = createCandidates(sourceStats, target.measurement, { includeTintedBlackWhite: true }).find(v => v.method === method);
-        if (!recipe) throw new Error('Choose a supported recoloring method.');
-        await render(target, recipe);
       }
       emit('Preview ready. Inspect color, fabric detail and edges, then Apply Color to keep an editable result.');
       return view();

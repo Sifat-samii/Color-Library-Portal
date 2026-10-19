@@ -1,0 +1,550 @@
+{
+  "startedAt": "2026-10-19T09:58:30.325Z",
+  "passed": true,
+  "sourceOperationsRun": false,
+  "checks": [
+    "Output actions stay below the scrolling workflow and inside the panel",
+    "Library native widgets are hidden when Recolor opens",
+    "Collapsed steps hide native selectors, including after disclosure changes",
+    "Browse library restores the previous library view"
+  ],
+  "registration": {
+    "checkedAt": "2026-10-19T09:58:30.355Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.6",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.6",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 46,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "libraryBefore": {
+    "version": "0.6.6",
+    "paneOpen": false,
+    "browse": {
+      "x": 270,
+      "y": 16,
+      "width": 136,
+      "height": 40
+    },
+    "pane": {
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 760
+    },
+    "content": {
+      "x": 0,
+      "y": 221,
+      "width": 420,
+      "height": 409
+    },
+    "footer": {
+      "x": 0,
+      "y": 631,
+      "width": 420,
+      "height": 129
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "nativeRecolorWidgets": [
+      {
+        "id": "recolorMaskSource",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorTarget",
+        "visibility": "hidden"
+      },
+      {
+        "id": "intensity",
+        "visibility": "hidden"
+      },
+      {
+        "id": "lightness",
+        "visibility": "hidden"
+      },
+      {
+        "id": "contrast",
+        "visibility": "hidden"
+      },
+      {
+        "id": "shadows",
+        "visibility": "hidden"
+      },
+      {
+        "id": "highlights",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorMethod",
+        "visibility": "hidden"
+      }
+    ],
+    "status": "Source fixed: Recolor preview mvf2tpjh-c. In the preview, select only the garment or material."
+  },
+  "recolor": {
+    "version": "0.6.6",
+    "paneOpen": true,
+    "browse": {
+      "x": 270,
+      "y": 16,
+      "width": 136,
+      "height": 40
+    },
+    "pane": {
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 760
+    },
+    "content": {
+      "x": 0,
+      "y": 221,
+      "width": 420,
+      "height": 409
+    },
+    "footer": {
+      "x": 0,
+      "y": 631,
+      "width": 420,
+      "height": 129
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "nativeRecolorWidgets": [
+      {
+        "id": "recolorMaskSource",
+        "visibility": "visible"
+      },
+      {
+        "id": "recolorTarget",
+        "visibility": "hidden"
+      },
+      {
+        "id": "intensity",
+        "visibility": "hidden"
+      },
+      {
+        "id": "lightness",
+        "visibility": "hidden"
+      },
+      {
+        "id": "contrast",
+        "visibility": "hidden"
+      },
+      {
+        "id": "shadows",
+        "visibility": "hidden"
+      },
+      {
+        "id": "highlights",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorMethod",
+        "visibility": "hidden"
+      }
+    ],
+    "status": "Source fixed: Recolor preview mvf2tpjh-c. In the preview, select only the garment or material."
+  },
+  "materialOpen": {
+    "version": "0.6.6",
+    "paneOpen": true,
+    "browse": {
+      "x": 270,
+      "y": 16,
+      "width": 136,
+      "height": 40
+    },
+    "pane": {
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 760
+    },
+    "content": {
+      "x": 0,
+      "y": 221,
+      "width": 420,
+      "height": 409
+    },
+    "footer": {
+      "x": 0,
+      "y": 631,
+      "width": 420,
+      "height": 129
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "nativeRecolorWidgets": [
+      {
+        "id": "recolorMaskSource",
+        "visibility": "visible"
+      },
+      {
+        "id": "recolorTarget",
+        "visibility": "hidden"
+      },
+      {
+        "id": "intensity",
+        "visibility": "hidden"
+      },
+      {
+        "id": "lightness",
+        "visibility": "hidden"
+      },
+      {
+        "id": "contrast",
+        "visibility": "hidden"
+      },
+      {
+        "id": "shadows",
+        "visibility": "hidden"
+      },
+      {
+        "id": "highlights",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorMethod",
+        "visibility": "hidden"
+      }
+    ],
+    "status": "Source fixed: Recolor preview mvf2tpjh-c. In the preview, select only the garment or material."
+  },
+  "targetOpen": {
+    "version": "0.6.6",
+    "paneOpen": true,
+    "browse": {
+      "x": 270,
+      "y": 16,
+      "width": 136,
+      "height": 40
+    },
+    "pane": {
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 760
+    },
+    "content": {
+      "x": 0,
+      "y": 221,
+      "width": 420,
+      "height": 409
+    },
+    "footer": {
+      "x": 0,
+      "y": 631,
+      "width": 420,
+      "height": 129
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "hidden",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "hidden",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "hidden",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "nativeRecolorWidgets": [
+      {
+        "id": "recolorMaskSource",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorTarget",
+        "visibility": "hidden"
+      },
+      {
+        "id": "intensity",
+        "visibility": "hidden"
+      },
+      {
+        "id": "lightness",
+        "visibility": "hidden"
+      },
+      {
+        "id": "contrast",
+        "visibility": "hidden"
+      },
+      {
+        "id": "shadows",
+        "visibility": "hidden"
+      },
+      {
+        "id": "highlights",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorMethod",
+        "visibility": "hidden"
+      }
+    ],
+    "status": "Source fixed: Recolor preview mvf2tpjh-c. In the preview, select only the garment or material."
+  },
+  "libraryAfter": {
+    "version": "0.6.6",
+    "paneOpen": false,
+    "browse": {
+      "x": 270,
+      "y": 16,
+      "width": 136,
+      "height": 40
+    },
+    "pane": {
+      "x": 0,
+      "y": 0,
+      "width": 420,
+      "height": 760
+    },
+    "content": {
+      "x": 0,
+      "y": 221,
+      "width": 420,
+      "height": 409
+    },
+    "footer": {
+      "x": 0,
+      "y": 631,
+      "width": 420,
+      "height": 129
+    },
+    "widgets": [
+      {
+        "id": "clientSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 211,
+          "width": 392,
+          "height": 32
+        }
+      },
+      {
+        "id": "searchInput",
+        "visibility": "visible",
+        "rect": {
+          "x": 14,
+          "y": 268,
+          "width": 286,
+          "height": 32
+        }
+      },
+      {
+        "id": "swatchSearch",
+        "visibility": "visible",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      {
+        "id": "sortSelect",
+        "visibility": "visible",
+        "rect": {
+          "x": 310,
+          "y": 268,
+          "width": 96,
+          "height": 34
+        }
+      }
+    ],
+    "nativeRecolorWidgets": [
+      {
+        "id": "recolorMaskSource",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorTarget",
+        "visibility": "hidden"
+      },
+      {
+        "id": "intensity",
+        "visibility": "hidden"
+      },
+      {
+        "id": "lightness",
+        "visibility": "hidden"
+      },
+      {
+        "id": "contrast",
+        "visibility": "hidden"
+      },
+      {
+        "id": "shadows",
+        "visibility": "hidden"
+      },
+      {
+        "id": "highlights",
+        "visibility": "hidden"
+      },
+      {
+        "id": "recolorMethod",
+        "visibility": "hidden"
+      }
+    ],
+    "status": "Source fixed: Recolor preview mvf2tpjh-c. In the preview, select only the garment or material."
+  },
+  "finishedAt": "2026-10-19T09:58:31.264Z"
+}

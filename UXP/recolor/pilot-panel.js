@@ -2,6 +2,7 @@ const { createPhotoshopAdapter } = require('./photoshop-adapter');
 const { createPilotSession } = require('./pilot-session');
 const { fingerprintFile } = require('./file-identity');
 const { latestQueue } = require('./fitting');
+const { createPanelView } = require('./panel-view');
 
 function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, getReferenceFile }) {
   const adapter = createPhotoshopAdapter(photoshop), fs = storage.localFileSystem;
@@ -10,28 +11,8 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   toolbar.innerHTML = '<button id="recolorShow" type="button">Recolor <span>Pilot ' + require('../package.json').version + '</span></button><span id="recolorBinding">Select your product in Photoshop</span>';
   shell.insertBefore(toolbar, document.getElementById('librarySwitch'));
   const pane = document.createElement('aside'); pane.className = 'recolor-panel is-hidden'; pane.setAttribute('aria-label', 'Product recoloring');
-  pane.innerHTML = `
-    <div class="recolor-heading"><div><span class="eyebrow">RECOLOR PILOT</span><h2>Apply approved color</h2></div><button id="recolorClose" class="secondary-button" type="button">Browse library</button></div>
-    <p class="recolor-help">Matte fabrics and solid surfaces. Review the result before delivery.</p>
-    <p id="recolorStatus" role="status" aria-live="polite"></p>
-    <div class="recolor-content">
-    <section><h3>1. Product</h3><p id="recolorSource">Activate the original product image. Its current appearance will be the source.</p>
-      <div class="recolor-row"><button id="recolorBegin" class="primary-button" type="button">Use active product</button><button id="recolorProduct" class="secondary-button" type="button">Go to preview</button></div>
-      <p class="recolor-help">Work uses a layered duplicate in Adobe RGB. Prepare any existing recoloring visibility yourself before starting.</p></section>
-    <section><h3>2. Material</h3><p class="recolor-help">Select the fabric in the product preview, or reuse a mask, saved selection or path.</p>
-      <select id="recolorMaskSource" aria-label="Material mask source"></select><button id="recolorMask" class="secondary-button" type="button">Use material selection</button><p id="recolorMaskStatus" role="status" aria-live="polite"></p></section>
-    <section><h3>3. Approved target</h3><p id="recolorReference">Browse an approved color and choose Apply Color on its reference.</p>
-      <select id="recolorTarget" aria-label="Recolor target"></select><button id="recolorSample" class="secondary-button" type="button">Sample reference</button>
-      <p class="recolor-help">On the opened reference, select diffuse fabric without deep shadows or bright reflections. No HEX is required.</p></section>
-    <section><h3>4. Preview and apply</h3><div class="recolor-row"><button id="recolorPreview" class="primary-button" type="button">Preview color</button><button id="recolorBefore" class="secondary-button" type="button">Show original</button></div>
-      <button id="recolorCancel" class="secondary-button is-hidden" type="button">Cancel matching</button>
-      <details><summary>Fine-tune color and tone</summary><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic comparison</option><option value="A">Color and curves</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select>
-      ${[['intensity','Color intensity',0,100,100],['lightness','Brightness',-60,60,0],['contrast','Contrast',-40,40,0],['shadows','Shadows',-25,25,0],['highlights','Highlights',-25,25,0]].map(([key,label,min,max,value]) => `<label class="recolor-slider">${label}<input data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span>${value}</span></label>`).join('')}</details>
-      <p id="recolorMeasurement" class="recolor-help"></p><button id="recolorApply" class="primary-button" type="button">Apply Color</button>
-      <div class="recolor-row"><button id="recolorSave" class="secondary-button" type="button">Save PSD/PSB</button><button id="recolorSaveJpeg" class="secondary-button" type="button">Save JPEG</button></div>
-      <p class="recolor-help">Save the editable Adobe RGB master or a full-resolution sRGB JPEG separately. JPEG transparency uses white.</p>
-      <button id="recolorNew" class="secondary-button" type="button">New variant</button></section>
-    <button id="recolorEnd" class="secondary-button" type="button">End source session</button></div>`;
+  const browse = () => { pane.classList.add('is-hidden'); shell.classList.remove('is-recolor'); };
+  const panelView = createPanelView({ document, pane, version: require('../package.json').version, onBrowse: browse });
   shell.appendChild(pane);
   const $ = id => document.getElementById(id);
   let pending = null, opening = false, deferredUpdates = false, queuedUpdates = 0, latestView;
@@ -73,10 +54,11 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
       slider.disabled = (busy && !deferredUpdates) || !state.rendered || state.committed;
       if (state.recipe && !deferredUpdates) { slider.value = state.recipe.parameters[slider.getAttribute('data-recolor-parameter')]; slider.nextElementSibling.textContent = slider.value; }
     }
+    panelView.paint(state, { opening, pending });
   }
   async function run(work) {
     try { await work(); }
-    catch (error) { $('recolorStatus').textContent = error.message || String(error); console.error('Recolor operation failed', error); }
+    catch (error) { panelView.error(error.message || String(error)); console.error('Recolor operation failed', error); }
   }
   async function refreshMasks() {
     const choices = await session.maskSources(), select = $('recolorMaskSource'); select.innerHTML = '';
@@ -91,7 +73,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
   async function openPendingReference() {
     if (!pending || !session.view().source || opening) return;
     opening = true; paint(session.view());
-    $('recolorStatus').textContent = 'Loading and checking the approved reference. Photoshop remains available.';
+    panelView.loading('Loading and checking the approved reference. Photoshop remains available.');
     const chosen = pending;
     try {
       const entry = await getReferenceFile(chosen.ref);
@@ -108,7 +90,7 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     } finally { opening = false; paint(session.view()); }
   }
   $('recolorShow').addEventListener('click', show);
-  $('recolorClose').addEventListener('click', () => { pane.classList.add('is-hidden'); shell.classList.remove('is-recolor'); });
+  $('recolorClose').addEventListener('click', browse);
   $('recolorBegin').addEventListener('click', () => run(async () => { await session.begin(adapter.inspect().id); await refreshMasks(); await openPendingReference(); }));
   $('recolorProduct').addEventListener('click', () => run(() => adapter.activateDocument(session.view().previewDocumentId)));
   $('recolorMask').addEventListener('click', () => run(async () => { await session.useMask(JSON.parse($('recolorMaskSource').value)); await refreshMasks(); }));
@@ -138,7 +120,11 @@ function mountRecolorPilot({ document, photoshop, storage, referenceIsCurrent, g
     for (const control of pane.querySelectorAll('[data-recolor-parameter]')) { parameters[control.getAttribute('data-recolor-parameter')] = Number(control.value); control.nextElementSibling.textContent = control.value; }
     deferredUpdates = true;
     queuedUpdates++;
-    update(parameters).catch(error => { $('recolorStatus').textContent = error.message; }).finally(() => { queuedUpdates--; deferredUpdates = queuedUpdates > 0; paint(session.view()); });
+    let updateError;
+    update(parameters).catch(error => { updateError = error.message; }).finally(() => {
+      queuedUpdates--; deferredUpdates = queuedUpdates > 0; paint(session.view());
+      if (updateError) panelView.error(updateError);
+    });
   });
   paint(session.view());
   return {

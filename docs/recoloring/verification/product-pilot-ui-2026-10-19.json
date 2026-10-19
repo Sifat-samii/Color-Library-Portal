@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-19",
+  "version": "0.6.6",
+  "ccxPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-eFxZah\\pixofix-color-library-recolor-pilot-0.6.6.ccx",
+  "ccxSha256": "18d5b29392c8c44c304dea65fdbcac960dc67e92671e2fa967c436e759990808",
+  "repositoryRegressionsPassed": true,
+  "pilotSessionChecksPassed": 14,
+  "nativeLayoutPassed": true,
+  "nativeLayoutEvidence": "product-pilot-ui-layout-25.3.1.json",
+  "nativeLayoutPhotoshopVersion": "25.3.1",
+  "nativeLayoutViewport": {
+    "width": 420,
+    "height": 760
+  },
+  "nativeLayoutSourceOperationsRun": false,
+  "nativeLayoutScope": [
+    "Library and Recolor native-widget isolation",
+    "Collapsed step selector visibility",
+    "Output footer inside panel and below scroll area",
+    "Previous library view restoration"
+  ],
+  "browserVisualInspection": {
+    "viewports": [
+      {
+        "width": 380,
+        "height": 760
+      },
+      {
+        "width": 280,
+        "height": 420
+      }
+    ],
+    "scope": "Rendered layout inspection; not native Photoshop or physical-pointer evidence"
+  },
+  "registration": {
+    "checkedAt": "2026-10-19T10:04:49.794Z",
+    "workspacePath": "C:\\Users\\Designer-TUUO\\AppData\\Roaming\\Adobe\\Adobe UXP Developer Tool\\plugins_workspace.json",
+    "registeredManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-VlepQ6\\plugin\\manifest.json",
+    "registeredVersion": "0.6.6",
+    "expectedManifestPath": "D:\\Sifat_Project Coordinator\\Color Library Portal\\storage\\recolor-dev\\pilot-current\\plugin\\manifest.json",
+    "expectedVersion": "0.6.6",
+    "usingStablePath": false,
+    "runtimeMatchesLatestBuild": true,
+    "comparedFiles": 46,
+    "differentFiles": [],
+    "note": "Read-only on-disk registration check. Confirm the visible panel version after UDT Load/Reload; an already loaded runtime can retain older code."
+  },
+  "liveSession": {
+    "loadedVersion": "0.6.6",
+    "activeUserSessionPreserved": true,
+    "finalRefinements": "Source-change mask-source reset and slider-error notice persistence were packaged after the native layout check. They take effect on the next normal reload. No reload was forced during the active user session."
+  },
+  "changes": [
+    "Four collapsible workflow cards with readiness summaries",
+    "Pinned product context and next-action/progress/error status",
+    "Target-library action and hidden empty target selector",
+    "Before/after state and collapsed full-width fine-tuning controls",
+    "Fixed Apply or independent PSD/PSB and JPEG output area",
+    "Explicit native-widget hiding and dropdown restoration after disclosure changes"
+  ],
+  "unchangedImplementation": [
+    "Photoshop adapter",
+    "Reference-driven fitting engine",
+    "Pilot session and source preservation",
+    "Independent master and JPEG save/export"
+  ],
+  "fullNativeWorkflowRerun": false,
+  "fullNativeWorkflowReason": "Presentation-only update; owner was using an active recoloring session. Preserve that session instead of creating workflow fixtures or reloading it.",
+  "priorEngineExportEvidence": "product-pilot-separate-save-2026-10-19.json",
+  "physicalPointerLayoutConfirmation": "Owner confirmed panel visible; full workflow through the new layout not yet recorded.",
+  "productionQualified": false
+}

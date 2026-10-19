@@ -1,0 +1,94 @@
+/* Recolor occupies its own flex view. No native inputs sit beneath an overlay. */
+.app-shell.is-recolor .app-header { display: none !important; visibility: hidden; }
+.recolor-panel { padding: 0; background: var(--bg); }
+.recolor-panel.is-hidden { visibility: hidden; }
+.recolor-panel .is-hidden { display: none !important; visibility: hidden; }
+.recolor-heading { flex: none; padding: 16px 14px 12px; align-items: flex-start; border-bottom: 1px solid var(--border-soft); }
+.recolor-title { flex: 1; min-width: 0; }
+.recolor-title-line { display: flex; align-items: center; }
+.recolor-heading h2 { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -.4px; }
+.recolor-build { margin-left: 8px; padding: 3px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 9px; color: var(--muted); }
+.recolor-title p { margin: 5px 0 0; font-size: 10px; color: var(--muted); }
+.recolor-panel .recolor-library-button { flex: none; margin: 0 0 0 10px; min-height: 30px; padding: 6px 9px; font-size: 10px; }
+.recolor-context { flex: none; display: flex; align-items: center; padding: 10px 14px 0; }
+.recolor-context-copy { flex: 1; min-width: 0; }
+.recolor-caption { display: block; font-size: 9px; color: var(--subtle); letter-spacing: 1px; }
+.recolor-context-copy strong { display: block; margin-top: 3px; font-size: 11px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recolor-context button { flex: none; margin: 0 0 0 10px; padding: 5px 8px; min-height: 28px; font-size: 10px; }
+.recolor-notice { flex: none; margin: 12px 14px; padding: 10px 11px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.recolor-notice-heading { display: flex; align-items: center; }
+.recolor-notice-heading strong { font-size: 11px; font-weight: 600; }
+.recolor-status-dot { flex: none; width: 6px; height: 6px; margin-right: 7px; background: var(--brand); border-radius: 3px; }
+.recolor-panel #recolorStatus { padding: 0; margin: 5px 0 0; background: transparent; color: var(--muted); border-radius: 0; font-size: 10px; line-height: 1.5; }
+.recolor-notice.is-error { border-color: var(--danger); }
+.recolor-notice.is-error .recolor-status-dot { background: var(--danger); }
+.recolor-notice.is-error #recolorStatus { color: var(--danger); }
+.recolor-notice.is-success .recolor-status-dot { background: var(--success); }
+.recolor-notice.is-busy .recolor-status-dot { background: var(--warning); }
+.recolor-content { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 0 14px 8px; }
+.recolor-panel .recolor-step { padding: 0; margin-bottom: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.recolor-panel .recolor-step.is-current { border-color: var(--border-strong); }
+.recolor-panel .recolor-step-toggle { display: flex; width: 100%; align-items: center; padding: 11px 10px; margin: 0; border: none; border-radius: 7px; background: transparent; color: var(--text); text-align: left; }
+.recolor-step-number { display: flex; flex: none; align-items: center; justify-content: center; width: 24px; height: 24px; margin-right: 9px; border-radius: 6px; border: 1px solid var(--border-strong); color: var(--muted); font-size: 11px; }
+.is-current > .recolor-step-toggle .recolor-step-number { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+.recolor-step-copy { flex: 1; min-width: 0; }
+.recolor-step-copy strong { display: block; font-size: 12px; font-weight: 600; }
+.recolor-step-copy > span { display: block; margin-top: 3px; font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recolor-step-badge { flex: none; margin-left: 5px; color: var(--success); font-size: 9px; }
+.recolor-step-chevron { flex: none; margin-left: 8px; color: var(--subtle); font-size: 15px; width: 10px; text-align: center; }
+.recolor-step-body { padding: 0 11px 12px; border-top: 1px solid var(--border-soft); }
+.recolor-step.is-collapsed .recolor-step-body { display: none; visibility: hidden; }
+.recolor-panel .recolor-step-body p { margin: 9px 0; }
+.recolor-help { font-size: 10px; color: var(--muted); line-height: 1.5; }
+.recolor-panel button { font-size: 11px; border-radius: 6px; }
+.recolor-panel button:disabled { opacity: .38; }
+.recolor-panel button:focus-visible, .recolor-panel select:focus-visible, .recolor-panel summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.recolor-panel .recolor-full { display: block; width: 100%; min-height: 34px; }
+.recolor-field-label { margin: 11px 0 4px; font-size: 10px; color: var(--muted); }
+.recolor-panel select { display: block; width: 100%; min-height: 32px; margin: 0 0 8px; padding: 6px 8px; font-size: 11px; background: var(--surface-raised); border-color: var(--border-strong); }
+.recolor-profile-note { margin-top: 10px; font-size: 10px; color: var(--muted); }
+.recolor-profile-note span { margin-left: 8px; color: var(--subtle); }
+.recolor-panel #recolorSource { color: var(--text); font-size: 11px; }
+.recolor-panel #recolorMaskStatus { margin: 9px 0 0; padding: 8px 9px; border-left-width: 2px; background: var(--surface-raised); font-size: 10px; }
+.recolor-reference { font-size: 10px; color: var(--muted); }
+.recolor-preview-actions > button { flex: 1; min-width: 0; }
+.recolor-preview-actions > button + button { margin-left: 6px; }
+.recolor-compare-state { padding: 7px 0 1px; font-size: 10px; color: var(--muted); }
+.recolor-panel .recolor-tuning { margin-top: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); }
+.recolor-tuning summary { font-size: 11px; font-weight: 500; color: var(--text); cursor: pointer; }
+.recolor-tuning:not([open]) > :not(summary) { display: none; visibility: hidden; }
+.recolor-slider { position: relative; display: block; margin-top: 14px; padding-top: 20px; }
+.recolor-slider-label { position: absolute; left: 0; top: 0; width: auto !important; color: var(--muted); font-size: 10px; text-align: left !important; }
+.recolor-slider input { display: block; width: 100%; min-width: 0; margin: 0; }
+.recolor-slider .recolor-slider-value { position: absolute; right: 0; top: -2px; width: auto; min-width: 28px; padding: 2px 5px; border-radius: 4px; background: var(--surface-raised); color: var(--text); font-size: 10px; text-align: center; }
+.recolor-method { margin-top: 16px; padding-top: 2px; border-top: 1px solid var(--border); }
+.recolor-panel .recolor-measurement { margin-top: 10px; font-size: 10px; color: var(--subtle); }
+.recolor-footer { flex: none; padding: 11px 14px 8px; border-top: 1px solid var(--border); background: var(--bg); }
+.recolor-panel .recolor-footer button { margin-top: 0; margin-bottom: 0; }
+.recolor-footer .recolor-full { min-height: 36px; font-weight: 600; }
+.recolor-panel .recolor-footer-hint { margin: 6px 0 0; font-size: 9px; text-align: center; color: var(--subtle); }
+.recolor-save-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.recolor-save-heading strong { font-size: 11px; font-weight: 600; }
+.recolor-save-heading > span { color: var(--success); font-size: 9px; }
+.recolor-save-actions > div { flex: 1; min-width: 0; text-align: center; }
+.recolor-save-actions > div + div { margin-left: 7px; }
+.recolor-save-actions button { display: block; width: 100%; min-height: 34px; }
+.recolor-save-actions > div > span { display: block; margin-top: 5px; color: var(--subtle); font-size: 9px; }
+.recolor-session-actions { margin-top: 9px; padding-top: 7px; border-top: 1px solid var(--border-soft); }
+.recolor-panel .recolor-text-button { min-height: 25px; padding: 3px 0; color: var(--muted); background: transparent; border: none; font-size: 10px; }
+@media (max-width: 320px) {
+  .recolor-heading { padding: 12px 10px 10px; }
+  .recolor-title p { max-width: 138px; }
+  .recolor-content { padding-left: 10px; padding-right: 10px; }
+  .recolor-context { padding-left: 10px; padding-right: 10px; }
+  .recolor-notice { margin-left: 10px; margin-right: 10px; }
+  .recolor-footer { padding-left: 10px; padding-right: 10px; }
+  .recolor-step-badge { display: none; }
+}
+@media (max-height: 560px) {
+  .recolor-heading { padding-top: 10px; padding-bottom: 8px; }
+  .recolor-title p { display: none; }
+  .recolor-context { padding-top: 7px; }
+  .recolor-notice { margin-top: 8px; margin-bottom: 8px; padding-top: 7px; padding-bottom: 7px; }
+  .recolor-footer { padding-top: 8px; padding-bottom: 5px; }
+}

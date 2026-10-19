@@ -129,7 +129,7 @@ async function run() {
       await click('recolorClose');
       await inPanel(`(()=>{const cards=Array.from(document.querySelectorAll('#colorGrid .color-card'));const card=cards.find(c=>/^WINE$/i.test(c.querySelector('.color-name').textContent))||cards[0];if(!card)throw new Error('Select a client with approved colors before this test');card.dispatchEvent(new Event('click',{bubbles:true}));return true;})()`);
       await inPanel(`(()=>{const button=document.querySelector('#referenceList .reference-recolor');if(!button)throw new Error('No approved reference Apply Color action');button.dispatchEvent(new Event('click',{bubbles:true}));return true;})()`);
-      await until(async () => evaluate(`!document.getElementById('recolorSample').disabled&&document.getElementById('recolorReference').textContent.includes('select fabric')`), 'approved reference opening', 60000);
+      await until(async () => evaluate(`!document.getElementById('recolorSample').disabled&&/select fabric|sample required/.test(document.getElementById('recolorReference').textContent)`), 'approved reference opening', 60000);
       await track();
       const reference = await evaluate(`(()=>{const d=require('photoshop').app.activeDocument;return{id:d.id,path:String(d.path),width:d.width,height:d.height};})()`);
       assert.ok(!initialIds.includes(reference.id) && /recolor-reference-/.test(reference.path), 'Only a fresh temporary reference may be selected');
@@ -139,11 +139,19 @@ async function run() {
       await click('recolorSample');
       await until(() => evaluate(`!document.getElementById('recolorPreview').disabled`), 'approved reference sampling');
       assert.equal(await evaluate(`document.getElementById('recolorTarget').selectedIndex`), 0, 'Sampled target must remain selected');
+      if (await evaluate(`!!document.getElementById('recolorStepBody3')`)) {
+        await inPanel(`(()=>{const button=document.querySelector('[data-recolor-toggle="3"]');if(button.getAttribute('aria-expanded')!=='true')button.dispatchEvent(new Event('click',{bubbles:true}));return true;})()`);
+        await pause(100);
+        assert.equal(await evaluate(`document.getElementById('recolorTarget').selectedIndex`), 0, 'Opening the target section lost its native selection');
+        await inPanel(`(()=>{const button=document.querySelector('[data-recolor-toggle="4"]');if(button.getAttribute('aria-expanded')!=='true')button.dispatchEvent(new Event('click',{bubbles:true}));return true;})()`);
+        report.checks.push('Target selection survives collapsible sections in the actual UXP panel');
+      }
       report.checks.push('Approved-library Apply Color opens and samples a verified temporary reference');
       report.stage = 'rendered preview and apply';
       await click('recolorPreview');
       await until(() => evaluate(`!document.getElementById('recolorApply').disabled`), 'native preview fitting', 60000);
       await track(); report.checks.push('Preview color fits actual Photoshop adjustments from panel events');
+      await inPanel(`(()=>{const tuning=document.getElementById('recolorFineTune');if(tuning)tuning.setAttribute('open','');return true;})()`);
       await inPanel(`(()=>{const slider=document.querySelector('[data-recolor-parameter="intensity"]');if(slider.disabled)throw new Error('Intensity control disabled');slider.value=85;slider.dispatchEvent(new Event('input',{bubbles:true}));return true;})()`);
       await until(() => evaluate(`!document.getElementById('recolorApply').disabled&&Number(document.querySelector('[data-recolor-parameter="intensity"]').value)===85`), 'native intensity update');
       await track(); report.checks.push('Fine-tune intensity updates native adjustments through the serialized UI queue');

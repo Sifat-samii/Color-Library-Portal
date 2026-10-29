@@ -112,4 +112,22 @@ function deltaE00(lab1, lab2) {
   return Math.sqrt(Math.max(0, dl * dl + dc * dc + dH * dH + rt * dc * dH));
 }
 
-module.exports = { ADOBE_RGB, SRGB, D50, rgbToLab, labToRgb, adobeRgbToDisplay, deltaE00 };
+// Photometric analysis must use decoded light, never weighted RGB code values.
+function decodeChannel(value, profile) {
+  validateProfile(profile);
+  return profile === ADOBE_RGB ? value ** (563 / 256)
+    : value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+function encodeChannel(value, profile) {
+  validateProfile(profile);
+  return profile === ADOBE_RGB ? Math.max(0, value) ** (256 / 563)
+    : value <= 0.0031308 ? 12.92 * value : 1.055 * value ** (1 / 2.4) - 0.055;
+}
+function linearLuminance(rgb, profile) {
+  validateProfile(profile);
+  const row = (profile === ADOBE_RGB ? ADOBE_MATRIX : SRGB_MATRIX)[1];
+  return rgb.reduce((sum, value, index) => sum + row[index] * decodeChannel(value / 255, profile), 0);
+}
+
+module.exports = { ADOBE_RGB, SRGB, D50, rgbToLab, labToRgb, adobeRgbToDisplay, deltaE00,
+  decodeChannel, encodeChannel, linearLuminance };

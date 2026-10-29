@@ -5,6 +5,7 @@ const { fit } = require("./fitting");
 
 // Instrumented feasibility runs on local copies, never the production library.
 async function runBenchmark(photoshop, uxp, folder, job) {
+  if (job.engineVersion === 'native-fabric-1') return require('./fabric-benchmark').runBenchmark(photoshop, uxp, folder, job);
   const context = uxp.script.executionContext;
   let currentEntry;
   const adapter = createPhotoshopAdapter(photoshop, { executionContext: context, onOperation(name) {
@@ -63,6 +64,7 @@ async function runBenchmark(photoshop, uxp, folder, job) {
       if (!targetMeasurement.available) throw new Error("Reference region could not be measured");
       const target = { id: input.referenceId, name: input.target, material: "MATTE", revision: 1,
         measurementSpace: "CIELAB D50 2deg", diffuseLab: targetMeasurement.diffuseLab, lightness: targetMeasurement.lightness,
+        zones: targetMeasurement.zones,
         preparationStatus: "PROVISIONAL_ROI_REQUIRES_RETOUCHER_REVIEW" };
       entry.reference = { path: input.reference, region: r, measurement: targetMeasurement };
       await thumbnail(reference.id, directory, "reference.jpg");

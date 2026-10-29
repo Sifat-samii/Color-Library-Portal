@@ -103,7 +103,7 @@ async function runDimensionReadTest(photoshop, executionContext) {
 
 // These are real Photoshop tests, not a Photoshop simulator. They operate
 // solely on owned synthetic documents and never open client files.
-async function runHostTests(photoshop, uxp, folder) {
+async function runHostTests(photoshop, uxp, folder, options = {}) {
   const context = uxp.script.executionContext;
   const adapter = createPhotoshopAdapter(photoshop, { executionContext: context });
   const owned = new Set(), cases = [];
@@ -114,6 +114,8 @@ async function runHostTests(photoshop, uxp, folder) {
     productionQualified: false, initialDocumentIds: Array.from(initialDocumentIds), cases };
   const assert = (value, message) => { if (!value) throw new Error(message); };
   async function run(name, work) {
+    if (options.caseNames && !options.caseNames.includes(name)) return;
+    require('fs').writeFileSync(folder.url + '/progress.json', JSON.stringify({ current: name, completed: cases.map(({ name, status, milliseconds }) => ({ name, status, milliseconds })) }));
     const start = Date.now();
     try { const details = await work(); cases.push({ name, status: "PASS", milliseconds: Date.now() - start, details }); }
     catch (error) { cases.push({ name, status: "FAIL", milliseconds: Date.now() - start, error: error.message, stack: error.stack }); }
@@ -139,6 +141,89 @@ async function runHostTests(photoshop, uxp, folder) {
   const mask = { width: 96, height: 64, left: 0, top: 0, data: maskData, maximum: 255 };
   let source, snapshot, session, baseline, candidates;
   try {
+    await run('Rendering targets RGB when an alpha channel is selected in an owned preview', async () => {
+      const doc = await fixture();
+      const group = await doc.createLayerGroup({ name: 'Owned source notes' });
+      const note = await doc.createPixelLayer({ name: 'Owned note' });
+      await note.move(group, photoshop.constants.ElementPlacement.PLACEINSIDE);
+      await doc.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
+      await doc.selection.save('Owned alpha context');
+      const source = await adapter.captureSource(doc.id); owned.add(source.documentId);
+      const baseline = await adapter.readPixels(source.documentId);
+      const preview = await adapter.createPreview(source); owned.add(preview.documentId);
+      await executeChecked(photoshop, [{ _obj: 'select', _target: [{ _ref: 'channel', _name: 'Owned alpha context' }] }]);
+      preview.expectedToken = JSON.stringify(adapter.inspect(preview.documentId));
+      const recipe = createCandidates(measureMaterial(baseline, mask), { id: 'alpha-context', material: 'MATTE', measurementSpace: 'CIELAB D50 2deg', diffuseLab: [60, 10, -10] })[0];
+      await adapter.render(preview, recipe, mask);
+      assert(compareFrames(baseline, await adapter.readPixels(preview.documentId), mask).protectedPixelsChanged === 0, 'Alpha context changed protected material');
+      return { alphaContextHandled: true };
+    });
+    await run('Transparent canvas margins receive complete native tile and master verification', async () => {
+      const { analyze } = require('./fabric-analysis'), fabric = require('./fabric-recipes');
+      const { evaluate } = require('./fabric-quality'), { createRecolorEngine } = require('./recolor-engine');
+      const doc = await addOwnedDocument(photoshop, { name: 'Owned transparent fabric canvas', width: 1320, height: 1120,
+        resolution: 72, mode: photoshop.constants.NewDocumentMode.RGB, fill: photoshop.constants.DocumentFill.TRANSPARENT, depth: 16, profile: ADOBE_RGB }, owned);
+      const data = new Uint16Array(64 * 64 * 3);
+      for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) for (let c = 0; c < 3; c++) data[(y * 64 + x) * 3 + c] = Math.round((80 + x / 4 + Math.sin(y) * 3) * 257);
+      const pixels = await photoshop.imaging.createImageDataFromBuffer(data, { width: 64, height: 64, components: 3, colorSpace: 'RGB', colorProfile: ADOBE_RGB, fullRange: true });
+      try { await photoshop.imaging.putPixels({ documentID: doc.id, layerID: doc.layers[0].id, imageData: pixels, replace: true, targetBounds: { left: 400, top: 400 } }); }
+      finally { pixels.dispose(); }
+      const original = adapter.inspect(doc.id), source = await adapter.captureSource(doc.id); owned.add(source.documentId);
+      const mask = { left: 400, top: 400, width: 64, height: 64, maximum: 255, data: new Uint8Array(4096).fill(255) };
+      const before = await adapter.readPixels(source.documentId, 1024), target = { id: 'transparent-fabric', material: 'MATTE', ...measureMaterial(before, mask) };
+      const analysis = analyze({ source: before, mask, target, canvasBounds: { left: 0, top: 0, right: 1320, bottom: 1120 } });
+      const preview = await adapter.createPreview(source); owned.add(preview.documentId);
+      const recipe = fabric.candidates(analysis, ['A'])[0];
+      await adapter.render(preview, recipe, mask);
+      const quality = evaluate(before, await adapter.readPixels(preview.documentId, 1024), mask, analysis);
+      const engine = createRecolorEngine({ sourceDocumentId: source.documentId, previewDocumentId: preview.documentId,
+        readPixels: (...args) => adapter.readPixels(...args), readRegion: (...args) => adapter.readRegion(...args), assertCurrent: () => adapter.assertCurrent(preview) });
+      const report = await engine.verify(analysis, { recipe, quality });
+      assert(report.metrics.protectedPixelsCompared === 1320 * 1120 - 4096, 'Transparent margins were omitted from verification');
+      assert(report.metrics.protectedPixelsChanged === 0, 'Transparent margin changed');
+      await adapter.commit(preview);
+      const saved = await adapter.saveMaster(preview.documentId, await folder.createFile('transparent-fabric-verified.psb', { overwrite: false }));
+      assert(saved.verification.pixelsCompared === 1320 * 1120, 'Master verification omitted transparent margins');
+      assert(JSON.stringify(adapter.inspect(doc.id)) === JSON.stringify(original), 'Transparent source changed');
+      return { tiles: report.metrics.tiles, protectedPixelsCompared: report.metrics.protectedPixelsCompared, master: saved };
+    });
+    for (const method of ['A', 'B', 'C', 'D']) await run('Fabric v2 ' + method + ' uses editable color/tone and local masks with verified master round trip', async () => {
+      const { analyze } = require('./fabric-analysis');
+      const fabric = require('./fabric-recipes');
+      const doc = await fixture(), original = adapter.inspect(doc.id);
+      const frozen = await adapter.captureSource(doc.id); owned.add(frozen.documentId);
+      const before = await adapter.readPixels(frozen.documentId, 1024);
+      const target = { id: 'synthetic-fabric-aqua', name: 'Synthetic aqua', measurementSpace: 'CIELAB D50 2deg', material: 'MATTE', diffuseLab: [86, -16, -8] };
+      const analysis = analyze({ source: before, mask, target }), recipe = fabric.candidates(analysis, [method])[0];
+      const preview = await adapter.createPreview(frozen); owned.add(preview.documentId);
+      const local = fabric.zoneMasks(analysis);
+      await adapter.render(preview, recipe, mask, local);
+      adapter.assertCurrent(preview);
+      const first = await adapter.readPixels(preview.documentId);
+      assert(compareFrames(before, first, mask).protectedPixelsChanged === 0, 'Fabric recipe changed protected pixels');
+      const groupId = preview.groupId;
+      let queuedRenders = 0;
+      const update = require('./fitting').latestQueue(async value => { queuedRenders++; await adapter.render(preview, adjustRecipe(recipe, 'lightness', value), mask, local); }, { delayMs: 180 });
+      const updates = [];
+      for (let i = 0; i < 500; i++) updates.push(update(i === 499 ? -2 : i % 5));
+      await Promise.all(updates);
+      assert(queuedRenders === 1, 'Rapid slider requests did not coalesce');
+      assert(preview.groupId === groupId, 'V2 live update rebuilt the group');
+      assert(adapter.nativeLayers(preview.documentId).some(layer => /colorBalance/i.test(layer.kind)), 'Missing editable undertone correction');
+      if (recipe.localCorrections.enabled) {
+        for (const role of ['shadowLocal', 'highlightLocal']) {
+          const actual = await adapter.acquireMask(preview.documentId, { kind: 'layerMask', layerId: preview.roles[role] });
+          assert(actual.data.some(value => value > 0) && actual.data.some(value => value < actual.maximum), 'Local correction mask has no tonal range');
+        }
+        // Mask inspection can change selection history. Preserve only our own verified fixture revision.
+        preview.expectedToken = JSON.stringify(adapter.inspect(preview.documentId));
+      }
+      await adapter.commit(preview);
+      const saved = await adapter.saveMaster(preview.documentId, await folder.createFile('fabric-v2-' + method + '.psd', { overwrite: false }));
+      assert(saved.verified && saved.verification.fullResolution, 'Master was not verified at full resolution');
+      assert(JSON.stringify(adapter.inspect(doc.id)) === JSON.stringify(original), 'Original fixture changed');
+      return { method, schemaVersion: 2, protectedPixelsChanged: 0, sliderEvents: 500, queuedRenders, localCorrections: recipe.localCorrections.enabled, master: saved };
+    });
     await run('Changed internal source recovers from the unchanged original and restores an inspectable soft selection', async () => {
       const source = await fixture(), original = adapter.inspect(source.id);
       const snapshot = await adapter.captureSource(source.id); owned.add(snapshot.documentId);
@@ -168,6 +253,52 @@ async function runHostTests(photoshop, uxp, folder) {
       return { editedCopyRetained: true, originalPreserved: true, protectedPixelsChanged: pixels.protectedPixelsChanged,
         selectionCoordinatesPreserved: true, softSelectionPreservedWithin: '1/255 native selection precision', changedOriginalRejected: true };
     });
+    await run('Large dark-to-light and light-to-dark pilot transitions compare real renders and apply the current manual recipe', async () => {
+      const results = [];
+      for (const [sourceLevel, targetLevel, direction] of [[35, 220, 'DARK_TO_LIGHT'], [220, 35, 'LIGHT_TO_DARK']]) {
+        const source = await fixture(), reference = await fixture();
+        for (const [doc, level] of [[source, sourceLevel], [reference, targetLevel]]) {
+          const data = new Uint16Array(96 * 64 * 3);
+          for (let y = 0; y < 64; y++) for (let x = 0; x < 96; x++) {
+            const shade = 0.68 + x / 96 * 0.28 + 0.025 * Math.sin(x * 2) * Math.cos(y * 2);
+            for (let c = 0; c < 3; c++) data[(y * 96 + x) * 3 + c] = Math.round(level * shade / 255 * 65535);
+          }
+          const image = await photoshop.imaging.createImageDataFromBuffer(data, { width: 96, height: 64, components: 3,
+            colorSpace: 'RGB', colorProfile: ADOBE_RGB, fullRange: true });
+          try { await photoshop.imaging.putPixels({ documentID: doc.id, layerID: doc.layers[0].id, imageData: image, replace: true }); }
+          finally { image.dispose(); }
+        }
+        const pilotAdapter = { ...adapter,
+          captureSource: async (...args) => { const value = await adapter.captureSource(...args); owned.add(value.documentId); return value; },
+          createPreview: async (...args) => { const value = await adapter.createPreview(...args); owned.add(value.documentId); return value; } };
+        const pilot = createPilotSession({ adapter: pilotAdapter });
+        await pilot.begin(source.id);
+        const product = Array.from(photoshop.app.documents).find(doc => doc.id === pilot.view().previewDocumentId);
+        await product.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
+        await pilot.useMask({ kind: 'selection' });
+        await pilot.chooseReference({ clientId: 'synthetic', colorId: direction, referenceId: 'stress', versionId: '1', colorName: direction }, reference.id);
+        await reference.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
+        await pilot.sampleReference(); await pilot.preview();
+        const automatic = pilot.view();
+        assert(automatic.previewReview.transition.direction === direction, 'Incorrect lightness transition');
+        assert(automatic.quality.matching.budget === 160, 'Extreme transition did not receive extended fitting');
+        assert(automatic.quality.matching.methods.map(entry => entry.method).sort().join(',') === 'A,B,C,D', 'Extreme transition skipped a method');
+        assert(Number.isFinite(automatic.quality.score), 'Extreme transition was not measured');
+        assert(automatic.quality.anchorDeltaE00 < 3, 'Extreme transition did not reach the target color: ' + automatic.quality.anchorDeltaE00);
+        assert(automatic.quality.integrity.normalizedDetailRatio > 0.75, 'Extreme transition lost source detail');
+        assert(automatic.quality.integrity.addedClippingFraction < 0.01, 'Extreme transition clipped source tones');
+        await pilot.update({ lightness: automatic.recipe.parameters.lightness + (automatic.recipe.parameters.lightness < 59 ? 1 : -1), intensity: 95 });
+        const manual = pilot.view();
+        const output = await pilot.apply({ reviewOverride: true });
+        assert(JSON.stringify(output.recipe) === JSON.stringify(manual.recipe), 'Apply changed the current manual recipe');
+        assert(output.previewReview.manuallyAdjusted && output.previewReview.requestedMethod === 'AUTO', 'Apply lost automatic/manual attribution');
+        assert(output.fullResolutionIntegrity.protectedPixelsChanged === 0, 'Extreme transition escaped the material mask');
+        results.push({ direction, automatic: { method: automatic.recipe.method, quality: automatic.quality }, manual: manual.quality,
+          appliedRecipeMatches: true, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged });
+        await pilot.end();
+      }
+      return results;
+    });
     await run('Integrated pilot samples an approved image, fits independent variants and reopens an editable master', async () => {
       const source = await fixture(), sourceBefore = adapter.inspectSource(source.id);
       const reference = await fixture();
@@ -189,12 +320,12 @@ async function runHostTests(photoshop, uxp, folder) {
       await reference.selection.selectRectangle({ left: 12, top: 10, right: 84, bottom: 54 });
       await pilot.sampleReference();
       await pilot.preview('AUTO');
-      assert(pilot.view().quality.matching.methods.map(value => value.method).join(',') === 'B,C,D', 'Pilot Auto included a fill candidate');
+      assert(pilot.view().quality.matching.methods.map(value => value.method).sort().join(',') === 'A,B,C,D', 'Pilot Auto skipped a fabric candidate');
       await pilot.update({ lightness: 2 });
       const savedSettings = pilot.view().recipe.parameters.lightness;
       const wineKey = pilot.view().target.key;
       await pilot.toggle(); // Apply must compare the After rendering.
-      const output = await pilot.apply();
+      const output = await pilot.apply({ reviewOverride: true });
       assert(output.fullResolutionIntegrity.protectedPixelsChanged === 0, 'Pilot changed protected source pixels');
       const file = await folder.createFile('integrated-pilot.psd', { overwrite: false });
       const pair = await chooseOutputFiles({ getFileForSaving: async () => file,
@@ -224,7 +355,7 @@ async function runHostTests(photoshop, uxp, folder) {
       await master.closeWithoutSaving(); owned.delete(master.id);
       const reopened = await adapter.openDocument(file); owned.add(reopened.id);
       const layers = adapter.nativeLayers(reopened.id);
-      assert(!layers.some(layer => String(layer.kind).toLowerCase().includes('solidcolor')), 'Adjustment-only pilot master contains a Solid Color fill');
+      assert(layers.some(layer => String(layer.kind).toLowerCase().includes('solidcolor')) === (output.recipe.method === 'A'), 'Reopened native layers differ from the selected method');
       assert(layers.some(layer => layer.name === 'Designer Final Touch-ups') && layers.some(layer => layer.name === 'Edge Corrections'), 'Pilot master lost editable structure');
       assert(reopened.colorProfileName === ADOBE_RGB, 'Pilot master profile did not reopen as Adobe RGB');
       const recolorGroup = layers.find(layer => layer.name.startsWith('AI Recolor'));
@@ -243,7 +374,7 @@ async function runHostTests(photoshop, uxp, folder) {
       assert(pilot.view().recipe.parameters.lightness === savedSettings, 'Target controls were not retained independently');
       assert(JSON.stringify(sourceBefore) === JSON.stringify(adapter.inspectSource(source.id)), 'Pilot modified original source structure or history');
       await pilot.end();
-      return { originalUnchanged: true, solidColorFill: false, method: output.recipe.method, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
+      return { originalUnchanged: true, solidColorFill: output.recipe.method === 'A', method: output.recipe.method, protectedPixelsChanged: output.fullResolutionIntegrity.protectedPixelsChanged, reopenedEditable: true, reopenedFormats: ['PSD', 'PSB', 'JPEG'], jpeg: savedPair.jpeg, jpegDiffuseDeltaE00: jpegDifference, masterUnchangedByExport: true, editableMask: true, overwriteRefused: true, profile: reopened.colorProfileName, independentVariants: true, settingsRetained: true };
     });
     await run('Independent JPEG saving needs no PSD, and independent PSD saving creates no additional JPEG', async () => {
       const source = await fixture();
@@ -516,10 +647,12 @@ async function runHostTests(photoshop, uxp, folder) {
     }
     await run("Opt-in tinted Black & White and Levels remain masked, live-editable and native after PSD/PSB reopening", async () => {
       const preview = await adapter.createPreview(snapshot); owned.add(preview.documentId);
-      const recipe = createCandidates(measureMaterial(baseline, mask), candidates[0].target, { includeTintedBlackWhite: true }).find(v => v.method === "D");
+      const measuredTarget = measureMaterial(baseline, mask);
+      const calibratedTarget = { ...candidates[0].target, lightness: measuredTarget.lightness, zones: measuredTarget.zones };
+      const recipe = createCandidates(measuredTarget, calibratedTarget, { includeTintedBlackWhite: true }).find(v => v.method === "D");
       await adapter.render(preview, recipe, mask);
       const layers = adapter.nativeLayers(preview.documentId);
-      for (const kind of ["blackAndWhite", "levels"]) assert(layers.some(layer => layer.kind === kind), "Missing native " + kind + " in candidate D");
+      for (const kind of ["blackAndWhite", "levels", "hueSaturation", "colorBalance"]) assert(layers.some(layer => layer.kind === kind), "Missing native " + kind + " in calibrated candidate D");
       const initialPixels = await adapter.readPixels(preview.documentId), groupId = preview.groupId;
       assert(compareFrames(baseline, initialPixels, mask).protectedPixelsChanged === 0, "Tinted candidate escaped its mask");
       const tuned = adjustRecipe(recipe, "gamma", 0.2);
@@ -771,8 +904,132 @@ async function runHostTests(photoshop, uxp, folder) {
   report.finishedAt = new Date().toISOString();
   report.passed = cases.filter(v => v.status === "PASS").length;
   report.failed = cases.filter(v => v.status === "FAIL").length;
-  report.technicalGatePassed = report.failed === 0 && report.cleanupErrors.length === 0 && report.initialDocumentsPreserved && report.unexpectedNewDocumentIds.length === 0;
+  report.technicalGatePassed = cases.length > 0 && report.failed === 0 && report.cleanupErrors.length === 0 && report.initialDocumentsPreserved && report.unexpectedNewDocumentIds.length === 0;
   return report;
 }
 
-module.exports = { runHostTests, runDimensionReadTest, runEightBitReadTest };
+// Modeless panel probe: unlike a standalone .psjs suite, every adapter call
+// enters/releases its own modal scope while slider input continues arriving.
+async function runSliderStress(photoshop, uxp, settings = {}) {
+  const owned = new Set(), initialIds = Array.from(photoshop.app.documents).map(doc => doc.id);
+  const prior = photoshop.app.documents.length ? photoshop.app.activeDocument.id : null;
+  const width = settings.width || 1300, height = settings.height || 2000;
+  const events = settings.events || 120, interval = settings.interval || 16;
+  let rendered = 0, pilot;
+  const base = createPhotoshopAdapter(photoshop);
+  const adapter = { ...base,
+    captureSource: async (...args) => { const value = await base.captureSource(...args); owned.add(value.documentId); return value; },
+    createPreview: async (...args) => { const value = await base.createPreview(...args); owned.add(value.documentId); return value; },
+    render: async (...args) => { const value = await base.render(...args); rendered++; return value; }
+  };
+  const progress = value => { if (settings.onProgress) settings.onProgress(value); };
+  try {
+    let source, reference;
+    await photoshop.core.executeAsModal(async () => {
+      for (const light of [false, true]) {
+        const doc = await addOwnedDocument(photoshop, { name: 'Owned slider crash probe ' + (light ? 'reference' : 'source'),
+          width, height, resolution: 72, mode: photoshop.constants.NewDocumentMode.RGB,
+          fill: photoshop.constants.DocumentFill.TRANSPARENT, depth: 16, profile: ADOBE_RGB }, owned);
+        const data = new Uint16Array(width * height * 3);
+        for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+          const shade = 0.35 + 0.6 * x / width + 0.04 * Math.sin(x * 0.4) * Math.cos(y * 0.4);
+          const color = light ? [215, 220, 225] : [30, 45, 60];
+          for (let c = 0; c < 3; c++) data[(y * width + x) * 3 + c] = Math.round(color[c] * shade / 255 * 65535);
+        }
+        const image = await photoshop.imaging.createImageDataFromBuffer(data, { width, height, components: 3,
+          colorSpace: 'RGB', colorProfile: ADOBE_RGB, fullRange: true });
+        try { await photoshop.imaging.putPixels({ documentID: doc.id, layerID: doc.layers[0].id, imageData: image, replace: true }); }
+        finally { image.dispose(); }
+        if (light) reference = doc; else source = doc;
+      }
+    }, { commandName: 'Prepare disposable slider stability images' });
+    pilot = createPilotSession({ adapter });
+    await pilot.begin(source.id);
+    const select = async id => photoshop.core.executeAsModal(async () => {
+      await executeChecked(photoshop, [{ _obj: 'select', _target: [{ _ref: 'document', _id: id }] }]);
+      const doc = Array.from(photoshop.app.documents).find(doc => doc.id === id);
+      await doc.selection.selectRectangle({ left: 100, top: 100, right: width - 100, bottom: height - 100 });
+    }, { commandName: 'Select owned probe material' });
+    await select(pilot.view().previewDocumentId); await pilot.useMask({ kind: 'selection' });
+    await pilot.chooseReference({ clientId: 'probe', colorId: 'light', referenceId: 'synthetic', versionId: '1', colorName: 'Synthetic light fabric' }, reference.id);
+    await select(reference.id); await pilot.sampleReference();
+    const cycles = [];
+    for (const method of settings.methods || ['C']) {
+      progress({ stage: 'fit', method, rendered });
+      const fitStart = rendered;
+      await pilot.preview(method);
+      const fittingRenders = rendered;
+      const update = require('./fitting').latestQueue(parameters => pilot.update(parameters), { delayMs: settings.delayMs || 0 });
+      const requests = [];
+      progress({ stage: 'sliders', method, events, rendered });
+      for (let index = 0; index < events; index++) {
+        requests.push(update({ lightness: (index % 21) - 10, shadows: (index % 13) - 6, highlights: 6 - (index % 13) }));
+        await new Promise(resolve => setTimeout(resolve, interval));
+      }
+      await Promise.all(requests);
+      if (!pilot.view().rendered) throw new Error('Slider updates lost the completed preview');
+      cycles.push({ method, events, nativeSliderRenders: rendered - fittingRenders, fittingRenders: fittingRenders - fitStart });
+    }
+    return { passed: true, width, height, cycles, rendered, initialDocumentIds: initialIds };
+  } finally {
+    if (pilot) await pilot.end().catch(() => {});
+    await photoshop.core.executeAsModal(async () => {
+      for (const id of owned) {
+        if (initialIds.includes(id)) throw new Error('Probe attempted cleanup of an original document');
+        const doc = Array.from(photoshop.app.documents).find(doc => doc.id === id);
+        if (doc) await doc.closeWithoutSaving();
+      }
+      if (prior && Array.from(photoshop.app.documents).some(doc => doc.id === prior)) {
+        await executeChecked(photoshop, [{ _obj: 'select', _target: [{ _ref: 'document', _id: prior }] }]);
+      }
+    }, { commandName: 'Close only owned slider probe images' });
+  }
+}
+
+async function compareMaterialLighting(photoshop, uxp, folder, sourceId, references) {
+  const initial = Array.from(photoshop.app.documents).map(doc => doc.id), owned = new Set();
+  const prior = photoshop.app.activeDocument.id, adapter = createPhotoshopAdapter(photoshop);
+  const reports = [];
+  let snapshot;
+  try {
+    snapshot = await adapter.captureSource(sourceId); owned.add(snapshot.documentId);
+    const baseline = await adapter.readPixels(snapshot.documentId, 640);
+    // Deliberately an interior test patch, not an inferred garment mask.
+    const mask = {left:450,top:850,width:370,height:620,maximum:255,data:new Uint8Array(370*620).fill(255)};
+    const source = measureMaterial(baseline, mask);
+    for (const reference of references) {
+      const file = await uxp.storage.localFileSystem.getEntryWithUrl(reference.url);
+      const document = await adapter.openDocument(file); owned.add(document.id);
+      const targetMask = {left:620,top:600,width:280,height:400,maximum:255,data:new Uint8Array(280*400).fill(255)};
+      const measured = measureMaterial(await adapter.readPixels(document.id, 640), targetMask);
+      const target = {id:reference.name,name:reference.name,material:'MATTE',measurementSpace:measured.measurementSpace,
+        diffuseLab:measured.diffuseLab,lightness:measured.lightness,zones:measured.zones};
+      if (!source.available || !measured.available) throw new Error('Material patch was not measurable');
+      const comparisons = [];
+      for (const natural of [false, true]) {
+        const preview = await adapter.createPreview(snapshot); owned.add(preview.documentId);
+        const result = await fit(source, target, async recipe => {
+          await adapter.render(preview, recipe, mask);
+          return evaluateRender(baseline, await adapter.readPixels(preview.documentId, 640), mask, target, {preserveLighting:natural});
+        }, {methods:ADJUSTMENT_METHODS,includeTintedBlackWhite:true,refineAllCandidates:true,maxEvaluations:64,
+          demandingTransition:true,transitionAware:true,naturalLighting:natural});
+        const image = await folder.createFile(reference.name.replace(/[^a-z0-9]/gi,'-')+(natural?'-natural':'-previous')+'.jpg',{overwrite:false});
+        await adapter.saveJpeg(preview.documentId, image, [snapshot.original.path, file.nativePath]);
+        comparisons.push({natural,method:result.recipe.method,engine:result.recipe.engineVersion,quality:result.quality,path:image.nativePath});
+      }
+      reports.push({reference:reference.name,comparisons});
+    }
+    return {scope:'Interior fabric patch on an untouched-source duplicate; not a complete garment mask or approved delivery',reports};
+  } finally {
+    if (snapshot) await adapter.releaseSource(snapshot).catch(()=>{});
+    await photoshop.core.executeAsModal(async()=>{
+      for (const id of owned) {
+        if(initial.includes(id))throw new Error('Original document entered diagnostic cleanup');
+        const doc=Array.from(photoshop.app.documents).find(doc=>doc.id===id); if(doc)await doc.closeWithoutSaving();
+      }
+      if(Array.from(photoshop.app.documents).some(doc=>doc.id===prior))await executeChecked(photoshop,[{_obj:'select',_target:[{_ref:'document',_id:prior}]}]);
+    },{commandName:'Close owned lighting diagnostics'});
+  }
+}
+
+module.exports = { runHostTests, runDimensionReadTest, runEightBitReadTest, runSliderStress, compareMaterialLighting };

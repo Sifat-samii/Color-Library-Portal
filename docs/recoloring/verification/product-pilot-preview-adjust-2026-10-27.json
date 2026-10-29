@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Dhaka",
+  "pilotVersion": "0.6.10",
+  "productionQualified": false,
+  "changes": [
+    "Automatic first preview with measured per-method comparison",
+    "Source-anchored version-3 tone curves for lightness changes of at least 20 L*; version-1/2 rendering preserved",
+    "96/64 evaluation budgets for demanding automatic/explicit previews; 64/40 otherwise",
+    "Explicit method selection followed by Refresh, with a measured review of the rendered result",
+    "Button-controlled manual adjustments with fractional tone slider precision",
+    "Serialized/coalesced slider changes block Apply until the latest recipe is rendered",
+    "Cancellation restores the accepted preview; unaccepted trials cannot be applied",
+    "Apply records and commits the current recipe and automatic/manual attribution"
+  ],
+  "applicationTests": { "command": "npm test", "passed": true, "recolorTests": 21, "pilotTests": 23 },
+  "nativeUiTests": {
+    "command": "node scripts/test-recolor-adjustments-ui.js",
+    "passed": true,
+    "checks": 6,
+    "adapter": "in-memory images; real Photoshop UXP DOM, view, controller, session and fitting queue",
+    "photoshopDocumentsTouched": false
+  },
+  "photoshopFixtures": {
+    "hostVersion": "25.3.1",
+    "passed": 31,
+    "failed": 0,
+    "technicalGatePassed": true,
+    "initialDocumentsPreserved": true,
+    "unexpectedNewDocumentIds": [],
+    "cleanupErrors": [],
+    "invocation": "Bundled runHostTests via the loaded plugin debugger and Photoshop executeAsModal; the COM launcher reported busy after loading the panel",
+    "report": "storage/recolor-dev/2026-10-27T10-21-10-244Z-e0f62e61/panel-report.json"
+  },
+  "syntheticExtremeTransitions": [
+    { "direction": "DARK_TO_LIGHT", "previousAnchorDeltaE00": 8.985129904943387, "selectedMethod": "B", "anchorDeltaE00": 1.2161598639746354e-8, "normalizedDetailRatio": 1.0035115925516247, "addedClippingFraction": 0, "protectedPixelsChanged": 0 },
+    { "direction": "LIGHT_TO_DARK", "selectedMethod": "C", "anchorDeltaE00": 0.010760963957543354, "normalizedDetailRatio": 0.9975472273131297, "addedClippingFraction": 0, "protectedPixelsChanged": 0 }
+  ],
+  "limitations": "Synthetic color/tone/detail tests and native UI interactions do not certify real-garment quality. Visual inspection of folds, lighting, texture and edges at 100% remains necessary."
+}

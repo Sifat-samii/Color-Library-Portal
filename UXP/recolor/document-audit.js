@@ -9,27 +9,52 @@ async function auditDocuments(photoshop, uxp, folder, inputs) {
   const fs = uxp.storage.localFileSystem;
   const adapter = createPhotoshopAdapter(photoshop, { executionContext: uxp.script.executionContext });
   const write = () => require("fs").writeFileSync(folder.url + "/report.json", JSON.stringify(report, null, 2));
-  const flatten = layers => Array.from(layers).flatMap(layer => [layer].concat(layer.layers ? flatten(layer.layers) : []));
+  const normalizePath = value => String(value || "").replace(/\\/g, "/").toLowerCase();
+  const hierarchy = layers => {
+    const result = [];
+    function visit(collection, indices, names, parentId) {
+      Array.from(collection).forEach((layer, index) => {
+        const location = indices.concat(index), path = names.concat(layer.name);
+        result.push({ layer, indices: location, path, parentId });
+        if (layer.layers && layer.layers.length) visit(layer.layers, location, path, layer.id);
+      });
+    }
+    visit(layers, [], [], null);
+    return result;
+  };
   for (let index = 0; index < inputs.length; index += 1) {
     const input = inputs[index], start = Date.now();
     let doc, openedId;
     try {
       report.current = { index, label: input.label, status: "OPENING", startedAt: new Date().toISOString() }; write();
-      const file = await fs.getEntryWithUrl("file:/" + input.path.replace(/\\/g, "/"));
-      doc = await adapter.openDocument(file);
+      const existing = Array.from(photoshop.app.documents).find(value => normalizePath(adapter.inspect(value.id).path) === normalizePath(input.path));
+      if (existing) {
+        doc = existing;
+        await executeChecked(photoshop, [{ _obj: "select", _target: [{ _ref: "document", _id: doc.id }] }]);
+      } else {
+        const file = await fs.getEntryWithUrl("file:/" + input.path.replace(/\\/g, "/"));
+        doc = await adapter.openDocument(file);
+      }
       openedId = doc.id;
-      const layers = flatten(doc.layers);
+      const records = hierarchy(doc.layers), layers = records.map(record => record.layer);
       const descriptors = await executeChecked(photoshop, layers.map(layer => ({ _obj: "get",
         _target: [{ _ref: "layer", _id: layer.id }, { _ref: "document", _id: doc.id }] })));
-      const entry = { label: input.label, path: input.path, id: doc.id, name: doc.name,
+      const entry = { label: input.label, path: input.path, sourceFile: {
+          bytes: input.bytes || null, modifiedAt: input.modifiedAt || null, sha256: input.sha256 || null
+        }, id: doc.id, name: doc.name,
         width: doc.width, height: doc.height, depth: doc.bitsPerChannel, mode: doc.mode, profile: doc.colorProfileName,
+        reusedOpenDocument: Boolean(existing),
         channels: Array.from(doc.channels).map(channel => ({ name: channel.name, kind: channel.kind })),
         paths: Array.from(doc.pathItems).map(path => ({ name: path.name, kind: path.kind })),
-        layers: layers.map((layer, n) => ({ id: layer.id, name: layer.name, kind: layer.kind,
+        layers: layers.map((layer, n) => ({ id: layer.id, name: layer.name, path: records[n].path,
+          indices: records[n].indices, parentId: records[n].parentId, kind: layer.kind,
           visible: layer.visible, opacity: layer.opacity, blendMode: layer.blendMode,
           bounds: layer.boundsNoEffects, hasUserMask: !!descriptors[n].hasUserMask,
           maskEnabled: descriptors[n].userMaskEnabled, density: layer.layerMaskDensity,
           feather: layer.layerMaskFeather, hasVectorMask: !!descriptors[n].hasVectorMask,
+          fillOpacity: descriptors[n].fillOpacity,
+          clippedToPrevious: Boolean(descriptors[n].group),
+          layerSection: descriptors[n].layerSection,
           adjustment: descriptors[n].adjustment || null })), status: "INSPECTED" };
       const pixels = await photoshop.imaging.getPixels({ documentID: doc.id, targetSize: { height: 600 },
         colorSpace: "RGB", colorProfile: "sRGB IEC61966-2.1", componentSize: 8, applyAlpha: true });

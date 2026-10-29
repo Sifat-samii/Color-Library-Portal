@@ -3,7 +3,8 @@
 // Tinted Black & White/Levels forms also match the read-only human audit;
 // their creation, updates and saved editability are verified in Photoshop.
 const { ADOBE_RGB, labToRgb } = require("./color");
-const { validateRecipe } = require("./recipes");
+const { TINTED_ENGINE_VERSION, ENGINE_VERSION, TRANSITION_ENGINE_VERSION, TRANSITION_TINTED_ENGINE_VERSION, LIGHTING_ENGINE_VERSION, LIGHTING_TINTED_ENGINE_VERSION, validateRecipe } = require("./recipes");
+const { calibratedToneCurve, transitionToneCurve, naturalLightingCurve } = require("./training-standards");
 
 function rgbColor(rgb) { return { _obj: "RGBColor", red: rgb[0], grain: rgb[1], blue: rgb[2] }; }
 function curves(points) {
@@ -19,6 +20,7 @@ function adjustment(name, type, mode) {
 function gray(lightness) { return labToRgb([Math.max(0, Math.min(100, lightness)), 0, 0], ADOBE_RGB).rgb[0]; }
 
 function layerDescriptors(recipe) {
+  if (recipe && recipe.schemaVersion === 2) return require('./fabric-recipes').descriptors(recipe);
   validateRecipe(recipe);
   const p = recipe.parameters, target = recipe.target.diffuseLab;
   const targetLab = [target[0], target[1] + p.chromaA, target[2] + p.chromaB];
@@ -26,8 +28,17 @@ function layerDescriptors(recipe) {
   const list = [];
   const sourceMid = Math.max(8, Math.min(247, gray(recipe.sourceAnchor[0])));
   const targetMid = Math.max(3, Math.min(252, gray(target[0] + p.lightness)));
-  const tone = recipe.method === "C" ? [[0, 0], [128, Math.max(3, Math.min(252, 128 + p.lightness * 2))], [255, 255]]
-    : [[0, 0], [sourceMid, targetMid], [255, 255]];
+  const naturalLighting = recipe.engineVersion === LIGHTING_ENGINE_VERSION || recipe.engineVersion === LIGHTING_TINTED_ENGINE_VERSION;
+  const transitionAware = naturalLighting || recipe.engineVersion === TRANSITION_ENGINE_VERSION || recipe.engineVersion === TRANSITION_TINTED_ENGINE_VERSION;
+  const calibrated = transitionAware || recipe.engineVersion === ENGINE_VERSION || recipe.engineVersion === TINTED_ENGINE_VERSION;
+  // A Gradient Map supplies its own target lightness at the midpoint. Feed it
+  // a normalized source midpoint; B/D instead need the target tone directly.
+  const tone = naturalLighting ? naturalLightingCurve(sourceMid, recipe.method === 'C' ? 128 + p.lightness * 2 : targetMid)
+    : transitionAware ? transitionToneCurve(sourceMid, recipe.method === 'C' ? 128 + p.lightness * 2 : targetMid,
+    recipe.method === 'C' ? 58 : target[0] + p.lightness)
+    : calibrated ? calibratedToneCurve(sourceMid, targetMid, target[0] + p.lightness)
+    : recipe.method === "C" ? [[0, 0], [128, Math.max(3, Math.min(252, 128 + p.lightness * 2))], [255, 255]]
+      : [[0, 0], [sourceMid, targetMid], [255, 255]];
   list.push({ role: "tone", command: adjustment("Material Tone Adjustments", curves(tone), recipe.method === "D" ? "normal" : "luminosity") });
   if (recipe.method === "A") {
     list.push({ role: "target", command: { _obj: "make", _target: [{ _ref: "contentLayer" }], using: {
@@ -50,11 +61,20 @@ function layerDescriptors(recipe) {
         channel: { _ref: "channel", _enum: "channel", _value: "composite" },
         input: [0, 255], gamma: p.gamma, output: [0, 255] }]
     }, "normal") });
+    if (calibrated) list.push({ role: "neutralize", command: adjustment("Source Color Neutralization", {
+      _obj: "hueSaturation", colorize: false,
+      adjustment: [{ _obj: "hueSatAdjustmentV2", hue: 0, saturation: -100, lightness: 0 }]
+    }, "normal") });
     // Standard channel weights are independent of any target's human stack.
     // Only the prepared reference supplies the tint; fitting measures Photoshop.
     list.push({ role: "target", command: adjustment("Target Color Adjustments", {
       _obj: "blackAndWhite", red: 40, yellow: 60, grain: 40, cyan: 60, blue: 20, magenta: 80,
       useTint: true, tintColor: rgbColor(targetRgb.rgb)
+    }, "normal") });
+    if (calibrated) list.push({ role: "balance", command: adjustment("Tonal Color Balance", {
+      _obj: "colorBalance", shadowLevels: [0, 0, 0],
+      midtoneLevels: [Math.round(p.balanceCyanRed), Math.round(p.balanceMagentaGreen), Math.round(p.balanceYellowBlue)],
+      highlightLevels: [0, 0, 0], preserveLuminosity: true
     }, "normal") });
   } else {
     const stops = [[0, -35, 0.55], [1024, -18, 0.85], [2048, 0, 1], [3072, 18, 0.7], [4096, 35, 0.3]];

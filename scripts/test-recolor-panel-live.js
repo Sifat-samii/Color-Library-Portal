@@ -104,6 +104,11 @@ async function run() {
       }
       return false;
     }, 'panel startup');
+    if (process.argv.includes('--load-only')) {
+      report.checks.push('Loaded pilot ' + build.version + ' without operating Photoshop documents');
+      report.passed = true;
+      return;
+    }
     await click('recolorShow');
     assert.equal(await evaluate(`document.querySelector('.recolor-panel').classList.contains('is-hidden')`), false);
     await click('recolorClose');

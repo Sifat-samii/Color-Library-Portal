@@ -4,7 +4,7 @@ const { spawnSync } = require('node:child_process');
 const crypto = require('node:crypto');
 
 const root = path.resolve(__dirname, '..');
-const excluded = new Set(['tests', 'recolor-harness', 'CSXS', 'plugin-host.js', 'node-http.js', 'host-tests.js', 'harness-panel.js', 'document-audit.js', 'benchmark.js']);
+const excluded = new Set(['tests', 'recolor-harness', 'CSXS', 'plugin-host.js', 'node-http.js', 'host-tests.js', 'harness-panel.js', 'document-audit.js', 'benchmark.js', 'fabric-benchmark.js', 'benchmark-input.js']);
 function copyRuntime(from, to) {
   fs.mkdirSync(to, { recursive: true });
   for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
@@ -18,7 +18,7 @@ function stagePilot(pluginDirectory) {
   copyRuntime(path.join(root, 'UXP'), pluginDirectory);
   const manifestPath = path.join(pluginDirectory, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  manifest.version = '0.6.8';
+  manifest.version = '0.7.0';
   manifest.host.minVersion = '25.3.0';
   manifest.host.data = { ...manifest.host.data, apiVersion: 2 };
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');

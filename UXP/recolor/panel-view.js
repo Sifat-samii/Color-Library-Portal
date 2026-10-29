@@ -1,6 +1,8 @@
+const { previewPresentation } = require('./preview-review');
+
 const controlIds = ['recolorClose', 'recolorBegin', 'recolorProduct', 'recolorMaskSource', 'recolorMask',
   'recolorTarget', 'recolorSample', 'recolorPreview', 'recolorBefore', 'recolorCancel', 'recolorMethod',
-  'recolorApply', 'recolorSave', 'recolorSaveJpeg', 'recolorNew', 'recolorEnd'];
+  'recolorTuneToggle', 'recolorApply', 'recolorSave', 'recolorSaveJpeg', 'recolorNew', 'recolorEnd', 'recolorMaterial', 'recolorDraftOverride', 'recolorFeedbackOutcome', 'recolorFeedbackNote', 'recolorFeedbackSave'];
 
 function panelMarkup(version) {
   const step = (number, title, body) => `<section class="recolor-step" data-recolor-step="${number}">
@@ -14,16 +16,23 @@ function panelMarkup(version) {
     <div id="recolorNotice" class="recolor-notice"><div class="recolor-notice-heading"><span class="recolor-status-dot"></span><strong id="recolorStatusTitle">Start with your product</strong></div><p id="recolorStatus" role="status" aria-live="polite"></p></div>
     <div class="recolor-content">
       ${step(1, 'Product image', `<p id="recolorSource"></p><button id="recolorBegin" class="primary-button recolor-full" type="button">Use active product</button><p id="recolorSourceHint" class="recolor-help">Open the original product tab first. A layered working copy keeps your source intact.</p><div class="recolor-profile-note">Adobe RGB master <span>16-bit working copy</span></div>`)}
-      ${step(2, 'Material selection', `<p class="recolor-help">In the preview, select only the fabric or surface you want to recolor.</p><div class="recolor-field-label">Use a selection, mask or path</div><select id="recolorMaskSource" aria-label="Material mask source"><option value='{"kind":"selection"}'>Current Photoshop selection</option></select><button id="recolorMask" class="secondary-button recolor-full" type="button">Use material selection</button><p id="recolorMaskStatus" role="status" aria-live="polite"></p>`)}
+      ${step(2, 'Material selection', `<p class="recolor-help">In the preview, select only one fabric. Exclude prints, labels, skin and hardware.</p><label class="recolor-field-label" for="recolorMaterial">Fabric appearance</label><select id="recolorMaterial"><option value="MATTE">Matte woven or knit</option><option value="SATIN">Shiny or satin</option><option value="VELVET">Velvet</option><option value="PATTERNED">Patterned or heather</option><option value="TRANSLUCENT">Translucent</option><option value="MIXED">Mixed or unsure</option></select><div class="recolor-field-label">Use a selection, mask or path</div><select id="recolorMaskSource" aria-label="Material mask source"><option value='{"kind":"selection"}'>Current Photoshop selection</option></select><button id="recolorMask" class="secondary-button recolor-full" type="button">Use material selection</button><p id="recolorMaskStatus" role="status" aria-live="polite"></p>`)}
       ${step(3, 'Target color', `<button id="recolorBrowseTarget" class="secondary-button recolor-full" type="button">Choose approved color</button><div id="recolorTargetField"><div class="recolor-field-label">Selected color</div><select id="recolorTarget" aria-label="Recolor target"></select></div><p id="recolorReference" class="recolor-reference"></p><div id="recolorSampleArea"><p class="recolor-help">On the reference image, select an evenly lit fabric patch. Avoid shadows, shine and background.</p><button id="recolorSample" class="secondary-button recolor-full" type="button">Sample reference</button></div>`)}
       ${step(4, 'Preview & adjust', `<div class="recolor-row recolor-preview-actions"><button id="recolorPreview" class="primary-button" type="button">Preview color</button><button id="recolorBefore" class="secondary-button" type="button">Show original</button></div><div id="recolorCompareState" class="recolor-compare-state"></div><button id="recolorCancel" class="secondary-button recolor-full is-hidden" type="button">Cancel matching</button>
-        <p id="recolorTuneHint" class="recolor-help">Create a preview to compare the result and fine-tune it.</p>
-        <details id="recolorFineTune" class="recolor-tuning"><summary>Fine-tune color & tone</summary>
-          ${[['intensity', 'Color intensity', 0, 100, 100], ['lightness', 'Brightness', -60, 60, 0], ['contrast', 'Contrast', -40, 40, 0], ['shadows', 'Shadows', -25, 25, 0], ['highlights', 'Highlights', -25, 25, 0]].map(([key, label, min, max, value]) => `<label class="recolor-slider"><span class="recolor-slider-label">${label}</span><input aria-label="${label}" data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" value="${value}"><span class="recolor-slider-value">${value}</span></label>`).join('')}
-          <div class="recolor-method"><div class="recolor-field-label">Recoloring method</div><select id="recolorMethod" aria-label="Recoloring method"><option value="AUTO">Automatic (no Solid Color fill)</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select><p class="recolor-help">Uses editable adjustment layers without a Solid Color fill. Method changes take effect on the next preview.</p></div>
-        </details><p id="recolorMeasurement" class="recolor-measurement"></p>`)}
+        <p id="recolorTuneHint" class="recolor-help">Preview color automatically compares the editable methods and keeps the strongest rendered result.</p>
+        <div id="recolorReviewControls" class="recolor-review-controls is-hidden">
+          <div class="recolor-method"><label class="recolor-field-label" for="recolorMethod">Try a recoloring method</label><select id="recolorMethod" aria-label="Preview method"><option value="AUTO">Automatic — best match</option><option value="A">Solid color and tone</option><option value="B">Hue and selective color</option><option value="C">Gradient and tone</option><option value="D">Tint and levels</option></select><p id="recolorMethodHelp" class="recolor-help"></p><p id="recolorRefreshHint" class="recolor-help">Select a method, then Refresh preview. Refreshing fits it again and replaces manual adjustments.</p></div>
+          <div class="recolor-preview-review" aria-live="polite"><strong id="recolorCurrentMethod"></strong><span id="recolorTransition" class="recolor-transition"></span><p id="recolorMethodReview" class="recolor-method-review" role="status"></p></div>
+          <p id="recolorAnalysisSummary" class="recolor-help"></p><div id="recolorQcChecks" class="recolor-help" aria-label="Quality checks"></div>
+          <button id="recolorTuneToggle" class="secondary-button recolor-full recolor-tune-toggle" type="button" aria-expanded="false" aria-controls="recolorFineTune">Manual adjustments +</button>
+          <div id="recolorFineTune" class="recolor-tuning is-hidden" aria-hidden="true">
+            <p class="recolor-help">Preview updates when you pause dragging. Apply Color keeps the settings shown here.</p>
+            ${[['intensity', 'Color intensity', 0, 100, 100], ['lightness', 'Brightness', -60, 60, 0], ['contrast', 'Contrast', -40, 40, 0], ['shadows', 'Shadows', -25, 25, 0], ['highlights', 'Highlights', -25, 25, 0], ['chromaA', 'Green / magenta undertone', -35, 35, 0], ['chromaB', 'Blue / yellow undertone', -35, 35, 0]].map(([key, label, min, max, value]) => `<label class="recolor-slider"><span class="recolor-slider-label">${label}</span><input aria-label="${label}" data-recolor-parameter="${key}" type="range" min="${min}" max="${max}" step="${key === 'intensity' ? 1 : 0.25}" value="${value}"><span class="recolor-slider-value">${value}</span></label>`).join('')}
+          </div>
+          <div class="recolor-feedback"><label class="recolor-field-label" for="recolorFeedbackOutcome">Your review</label><select id="recolorFeedbackOutcome"><option value="ACCEPTED">Accept this result</option><option value="NEEDS_CORRECTION">Needs correction</option></select><input id="recolorFeedbackNote" type="text" placeholder="Color, lighting, texture or edge feedback" aria-label="Review notes"><button id="recolorFeedbackSave" class="secondary-button recolor-full" type="button">Record review locally</button></div>
+        </div><p id="recolorMeasurement" class="recolor-measurement"></p>`)}
     </div>
-    <div class="recolor-footer"><div id="recolorApplyArea"><button id="recolorApply" class="primary-button recolor-full" type="button">Apply Color</button><p id="recolorApplyHint" class="recolor-footer-hint">Complete the steps above to create a preview.</p></div>
+    <div class="recolor-footer"><div id="recolorApplyArea"><div id="recolorDraftArea" class="recolor-help is-hidden"><p>Unresolved checks remain. Apply will keep an editable draft.</p><button id="recolorDraftOverride" type="button" class="secondary-button recolor-full" aria-pressed="false">Acknowledge draft review</button></div><button id="recolorApply" class="primary-button recolor-full" type="button">Apply Color</button><p id="recolorApplyHint" class="recolor-footer-hint">Complete the steps above to create a preview.</p></div>
       <div id="recolorSaveArea"><div class="recolor-save-heading"><strong>Save your result</strong><span>Editable layers applied</span></div><div class="recolor-row recolor-save-actions"><div><button id="recolorSave" class="secondary-button" type="button">Save PSD/PSB</button><span>Editable · Adobe RGB</span></div><div><button id="recolorSaveJpeg" class="secondary-button" type="button">Save JPEG</button><span>Delivery · sRGB</span></div></div></div>
       <div id="recolorSessionActions" class="recolor-row recolor-session-actions"><button id="recolorNew" class="recolor-text-button" type="button">New variant</button><button id="recolorEnd" class="recolor-text-button" type="button" title="Choose another source; your open results stay in Photoshop">Change product</button></div>
     </div>`;
@@ -31,10 +40,13 @@ function panelMarkup(version) {
 
 // A presentation-only view. Preserving controls allows an active development
 // session to adopt the layout without replacing listeners, masks or documents.
-function createPanelView({ document, pane, version, onBrowse, preserveControls = false }) {
-  const selectIds = ['recolorMaskSource', 'recolorTarget', 'recolorMethod'], selections = new Map();
-  const rememberSelections = () => {
+function createPanelView({ document, pane, version, onBrowse, onMethodChange = () => {}, preserveControls = false }) {
+  const selectIds = ['recolorMaskSource', 'recolorTarget', 'recolorMethod', 'recolorMaterial', 'recolorFeedbackOutcome'], selections = new Map();
+  const rememberSelections = changedId => {
     for (const id of selectIds) {
+      // UXP can briefly report the old native method value after a visibility
+      // change. Only a user change event may replace our selected method.
+      if (id === 'recolorMethod' && selections.has(id) && changedId !== id) continue;
       const select = pane.querySelector('#' + id);
       if (select && select.selectedIndex >= 0 && select.value != null) selections.set(id, select.value);
     }
@@ -59,7 +71,7 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
   pane.innerHTML = '';
   while (content.firstChild) pane.appendChild(content.firstChild);
   const $ = id => pane.querySelector('#' + id);
-  let lastPhase = null, lastState, selectionTimer;
+  let lastPhase = null, lastState, selectionTimer, tuningOpen = false;
   function restoreSelections() {
     for (const id of selectIds) {
       const select = $(id), wanted = id === 'recolorTarget' && lastState && lastState.target ? lastState.target.key : selections.get(id);
@@ -74,7 +86,16 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
     // UXP recreates native select widgets after reparenting/visibility updates.
     selectionTimer = setTimeout(restoreSelections, 0);
   }
-  for (const id of selectIds) $(id).addEventListener('change', rememberSelections);
+  for (const id of selectIds) $(id).addEventListener('change', () => rememberSelections(id));
+  function setTuningOpen(open) {
+    tuningOpen = Boolean(open);
+    $('recolorFineTune').classList.toggle('is-hidden', !tuningOpen);
+    $('recolorFineTune').setAttribute('aria-hidden', String(!tuningOpen));
+    $('recolorTuneToggle').setAttribute('aria-expanded', String(tuningOpen));
+    $('recolorTuneToggle').textContent = tuningOpen ? 'Manual adjustments −' : 'Manual adjustments +';
+  }
+  $('recolorTuneToggle').addEventListener('click', () => setTuningOpen(!tuningOpen));
+  $('recolorMethod').addEventListener('change', onMethodChange);
   function scrollActive() {
     if (!lastPhase || pane.classList.contains('is-hidden')) return;
     const area = pane.querySelector('.recolor-content'), card = pane.querySelector('[data-recolor-step="' + lastPhase + '"]');
@@ -112,16 +133,24 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
     $('recolorNotice').className = 'recolor-notice' + (kind ? ' is-' + kind : '');
     $('recolorStatus').setAttribute('role', kind === 'error' ? 'alert' : 'status');
   }
-  function paint(state, { opening = false, pending = null } = {}) {
+  function paint(state, { opening = false, pending = null, updating = false } = {}) {
     rememberSelections();
+    const recipeChanged = !lastState || JSON.stringify(lastState.recipe) !== JSON.stringify(state.recipe);
+    const contextChanged = !lastState || lastState.previewDocumentId !== state.previewDocumentId
+      || (lastState.target && lastState.target.key) !== (state.target && state.target.key);
+    if (contextChanged) {
+      selections.set('recolorMethod', state.rendered && state.previewReview ? state.previewReview.requestedMethod : 'AUTO');
+      setTuningOpen(false);
+    }
     if (lastState && (lastState.source && lastState.source.id) !== (state.source && state.source.id)) {
       selections.delete('recolorMaskSource');
       const source = $('recolorMaskSource');
       if (source.querySelectorAll('option').length) source.selectedIndex = 0;
     }
     lastState = state;
+    if (contextChanged) restoreSelections();
     const phase = !state.source ? 1 : !state.hasMask ? 2 : !state.target || !state.target.sampled ? 3 : 4;
-    const busy = state.busy || opening;
+    const busy = state.busy || opening || updating;
     if (phase !== lastPhase) {
       openStep(phase); lastPhase = phase;
       setTimeout(scrollActive, 0);
@@ -142,16 +171,49 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
     $('recolorBrowseTarget').disabled = busy;
     $('recolorReference').textContent = state.target ? state.target.reference.filename + (state.target.sampled ? ' · sampled' : ' · sample required') : pending ? pending.reference.colorName + ' selected. Start with your product.' : 'Choose a client-approved reference from the library.';
     $('recolorReference').setAttribute('title', $('recolorReference').textContent);
-    visible('recolorFineTune', Boolean(state.rendered && !state.committed));
+    const canReview = Boolean(state.rendered && !state.committed);
+    visible('recolorReviewControls', canReview);
+    $('recolorReviewControls').setAttribute('aria-hidden', String(!canReview));
+    if (!canReview && tuningOpen) setTuningOpen(false);
     visible('recolorTuneHint', !state.rendered);
     visible('recolorCompareState', Boolean(state.rendered));
     $('recolorCompareState').textContent = state.committed ? 'Editable result applied. Continue normal Photoshop editing.' : state.showingAfter ? 'Viewing recolored preview' : 'Viewing original appearance';
     $('recolorPreview').textContent = state.rendered ? 'Refresh preview' : 'Preview color';
-    $('recolorMeasurement').classList.toggle('is-hidden', !state.rendered || !state.quality || !state.quality.available);
+    const presentation = previewPresentation(state, selections.get('recolorMethod') || 'AUTO');
+    const report = state.quality && state.quality.report;
+    if (recipeChanged || presentation.pending || contextChanged) $('recolorDraftOverride').setAttribute('aria-pressed', 'false');
+    const draftAcknowledged = $('recolorDraftOverride').getAttribute('aria-pressed') === 'true';
+    $('recolorDraftOverride').textContent = draftAcknowledged ? 'Draft review acknowledged' : 'Acknowledge draft review';
+    const needsReview = Boolean(report && report.verdict === 'NEEDS_REVIEW');
+    visible('recolorDraftArea', canReview && needsReview && !presentation.pending);
+    $('recolorDraftOverride').disabled = busy;
+    $('recolorMaterial').disabled = busy || !state.source || state.rendered || state.committed;
+    $('recolorAnalysisSummary').textContent = state.analysis ? state.analysis.risks.join('. ')
+      + (state.analysis.likelySpill ? ' Check surrounding reflected color separately; skin and background are protected.' : '') : '';
+    const checkLabels = { color: 'Color', lighting: 'Lighting', texture: 'Texture', noise: 'Noise', highlights: 'Highlights', shadows: 'Shadows', clipping: 'Clipping', halos: 'Halos', edges: 'Edges', protectedPixels: 'Protected details', nativeIntegrity: 'Editable layers' };
+    $('recolorQcChecks').textContent = report ? Object.keys(report.checks).map(key => checkLabels[key] + ': '
+      + (report.checks[key].status === 'PASS' ? 'passed' : report.checks[key].status === 'REVIEW' ? 'review' : 'unavailable')).join(' · ') : '';
+    $('recolorFeedbackOutcome').disabled = busy || !canReview;
+    $('recolorFeedbackNote').disabled = busy || !canReview;
+    $('recolorFeedbackSave').disabled = busy || !canReview || presentation.pending;
+    $('recolorMethodHelp').textContent = presentation.help;
+    $('recolorCurrentMethod').textContent = presentation.title;
+    $('recolorTransition').textContent = presentation.transition;
+    $('recolorMethodReview').textContent = presentation.review;
+    $('recolorMethodReview').classList.toggle('is-pending', presentation.pending);
+    $('recolorMethod').disabled = busy || !canReview;
+    $('recolorTuneToggle').disabled = busy || !canReview || presentation.pending;
+    $('recolorApply').disabled = busy || !canReview || presentation.pending || report && report.verdict === 'INTEGRITY_FAILURE' || needsReview && !draftAcknowledged;
+    for (const slider of pane.querySelectorAll('[data-recolor-parameter]')) {
+      slider.disabled = (busy && !updating) || !canReview || presentation.pending;
+    }
+    $('recolorMeasurement').classList.toggle('is-hidden', !state.rendered || state.committed);
+    $('recolorMeasurement').textContent = 'Preview measurements guide comparison. Final approval needs visual review.';
     visible('recolorApplyArea', !state.committed);
     visible('recolorSaveArea', state.committed);
     visible('recolorSessionActions', Boolean(state.source));
-    $('recolorApplyHint').textContent = state.rendered ? 'Keeps editable layers and the material mask.' : 'Create a preview before applying the color.';
+    $('recolorApplyHint').textContent = updating ? 'Updating manual adjustments…' : state.fitting ? 'Matching the selected method…'
+      : state.rendered ? presentation.applyHint : 'Create a preview before applying the color.';
     const summaries = [state.source ? state.source.name : 'Choose the original image', state.hasMask ? 'Material mask captured' : 'Isolate the fabric or surface', state.target ? state.target.reference.colorName : 'Choose an approved reference', state.committed ? 'Editable result applied' : state.rendered ? 'Preview ready for review' : 'Compare, adjust and apply'];
     const badges = [state.source ? 'Ready' : '', state.hasMask ? 'Ready' : '', state.target && state.target.sampled ? 'Sampled' : state.target ? 'Sample' : '', state.committed ? 'Applied' : state.rendered ? 'Ready' : ''];
     for (let i = 1; i <= 4; i++) {
@@ -167,6 +229,7 @@ function createPanelView({ document, pane, version, onBrowse, preserveControls =
   }
   return { paint, error: message => notice('Action needed', message, 'error'),
     loading: message => notice('Opening approved reference', message, 'busy'),
+    selectedMethod: () => selections.get('recolorMethod') || 'AUTO',
     state: () => lastState, destroy: () => { clearTimeout(selectionTimer); if (viewport && viewport.removeEventListener) viewport.removeEventListener('resize', resize); } };
 }
 

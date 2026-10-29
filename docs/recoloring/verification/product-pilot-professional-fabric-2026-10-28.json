@@ -1,0 +1,469 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28",
+  "scope": "Professional Fabric Recoloring Upgrade: development implementation, not production qualification",
+  "version": "0.7.0",
+  "engineVersion": "native-fabric-1",
+  "calibrationVersion": "fabric-development-1",
+  "productionQualified": false,
+  "delivery": {
+    "ccxPath": "storage/recolor-dev/pilot-rBSvs1/pixofix-color-library-recolor-pilot-0.7.0.ccx",
+    "ccxSha256": "bc09241687b0794d502db6d5832536a28f4f6a824a437bd73c26721fd53f9514",
+    "packageHashVerified": true,
+    "baselineSnapshot": "storage/recolor-dev/baseline-0.6.12-20261028",
+    "baselineInstaller": {
+      "Hash": "E42D87AFED630DDA8646CAE20C47EBBBB4BC3C24E051B934619C6536C5323073"
+    },
+    "registeredFilesCompared": 55,
+    "registeredFilesDifferent": 0,
+    "runtime": {
+      "checkedAt": "2026-10-28T12:55:41.599Z",
+      "passed": true,
+      "pluginSessionId": "9e7ac203-7cea-409c-85d6-3376d94e8f1e",
+      "panel": {
+        "source": "",
+        "busy": "false",
+        "version": "0.7.0",
+        "draftControl": "BUTTON",
+        "materialChoices": 6,
+        "advancedChromaControls": [
+          "chromaA",
+          "chromaB"
+        ]
+      }
+    }
+  },
+  "applicationSuite": {
+    "command": "npm test",
+    "status": "PASS",
+    "log": "storage/recolor-dev/fabric-upgrade-final-npm-test.log",
+    "focusedCounts": {
+      "legacyRecolor": 30,
+      "pilotSession": 29,
+      "modalAndTiledReads": 4,
+      "fabricEngine": 16,
+      "caseIndex": 2
+    },
+    "note": "The full application suite includes additional portal, library, recovery, packaging and dataset checks."
+  },
+  "nativeRuns": [
+    {
+      "report": "storage/recolor-dev/2026-10-28T11-28-36-999Z-25588bf0/report.json",
+      "host": {
+        "uiLocale": "en_US",
+        "version": "25.3.1",
+        "name": "Photoshop"
+      },
+      "passed": 33,
+      "failed": 2,
+      "testedBundleSha256": "e9f20da6ad7fd9504f3ac817821e7d332518f7d9ceaf99f64e9396e3f3e6c2cc",
+      "initialDocumentsPreserved": true,
+      "unexpectedNewDocumentIds": [],
+      "cleanupErrors": [],
+      "failedCases": [
+        {
+          "name": "Fabric v2 D uses editable color/tone and local masks with verified master round trip",
+          "status": "FAIL",
+          "error": "Missing editable undertone correction"
+        },
+        {
+          "name": "Integrated pilot samples an approved image, fits independent variants and reopens an editable master",
+          "status": "FAIL",
+          "error": "Adjustment-only pilot master contains a Solid Color fill"
+        }
+      ]
+    },
+    {
+      "report": "storage/recolor-dev/2026-10-28T11-36-02-536Z-695c6788/report.json",
+      "host": {
+        "uiLocale": "en_US",
+        "version": "25.3.1",
+        "name": "Photoshop"
+      },
+      "passed": 28,
+      "failed": 7,
+      "testedBundleSha256": "7e767473903e97a0eb8fb8b9f301c2d74f4a5c144b0a52ba11b7e0df7fd095d0",
+      "initialDocumentsPreserved": true,
+      "unexpectedNewDocumentIds": [
+        1874
+      ],
+      "cleanupErrors": [],
+      "failedCases": [
+        {
+          "name": "Nondefault mask density is not silently interpreted as full coverage",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Offset 16-bit mask coverage is retained without 8-bit quantization",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Committed PSD and PSB reopen with native controls, masks and Adobe RGB",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Manual Photoshop changes prevent destructive reapplication and cancellation",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Independent variants do not recolor the preceding variant",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Opt-in bounded fitting evaluates A/B/C/D Photoshop composites and restores its winner",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        },
+        {
+          "name": "Adjustment-only comparison fits B/C/D against legacy Auto and preserves native detail without a Solid Color fill",
+          "status": "FAIL",
+          "error": "run-host-tests.psjs: The command “Select” is not currently available."
+        }
+      ]
+    },
+    {
+      "report": "storage/recolor-dev/2026-10-28T11-49-54-972Z-c9aca1e0/report.json",
+      "host": {
+        "uiLocale": "en_US",
+        "version": "25.3.1",
+        "name": "Photoshop"
+      },
+      "passed": 36,
+      "failed": 0,
+      "testedBundleSha256": "8a7ad25f1f726a6767b78f014d7eb97080924081f0f4db6c3b1e36fc673a39c8",
+      "initialDocumentsPreserved": true,
+      "unexpectedNewDocumentIds": [],
+      "cleanupErrors": [],
+      "failedCases": []
+    },
+    {
+      "report": "storage/recolor-dev/native-saves-itMCKH/report.json",
+      "host": {
+        "uiLocale": "en_US",
+        "version": "25.3.1",
+        "name": "Photoshop"
+      },
+      "passed": 4,
+      "failed": 0,
+      "testedBundleSha256": "bf1c3b313ef924f6c84ec9274708d0ac98f20c234a0a84eb29f5ce21a88139bc",
+      "initialDocumentsPreserved": true,
+      "unexpectedNewDocumentIds": [],
+      "cleanupErrors": [],
+      "failedCases": []
+    },
+    {
+      "report": "storage/recolor-dev/native-transparency-akKxZ3/report.json",
+      "host": {
+        "uiLocale": "en_US",
+        "version": "25.3.1",
+        "name": "Photoshop"
+      },
+      "passed": 1,
+      "failed": 0,
+      "testedBundleSha256": "bf1c3b313ef924f6c84ec9274708d0ac98f20c234a0a84eb29f5ce21a88139bc",
+      "initialDocumentsPreserved": true,
+      "unexpectedNewDocumentIds": [],
+      "cleanupErrors": [],
+      "failedCases": []
+    }
+  ],
+  "nativeInterpretation": [
+    "The complete 36-case passing run preceded the final transparency canonicalization and panel refinements. Later focused native runs cover all four v2 saved masters and full-canvas transparency; the real UXP panel test covers final interaction code. These are not a single identical-bundle 41-case run.",
+    "Early failures were retained, not discarded: the first run exposed a diffuse-only D-layer omission and an outdated no-fill assertion; both were corrected. A subsequent run had transient native Select failures after rollback. Focused rollback and final complete checks passed, but the transient root cause and the previously reported user crash remain unproven.",
+    "Native save verification compares editable hierarchy, controls, exact masks and visible composite with a maximum one native Photoshop 0..32768 RGB unit; alpha is exact. Fully transparent hidden RGB is canonicalized in owned analysis buffers only.",
+    "The final transparent PSB fixture compares 1478400 full-canvas pixels across four tiles, including 1474304 protected pixels. Production-size multi-gigabyte PSD/PSB and sustained interactive sessions are not qualified by this fixture."
+  ],
+  "panelUI": {
+    "report": "storage/recolor-dev/adjustments-ui-check-1793191849190.json",
+    "passed": true,
+    "checks": [
+      "First preview compares all four methods, shows the winner and requires explicit unresolved-QC draft acknowledgement",
+      "Explicit feedback records the reviewed recipe and QC locally without changing calibration",
+      "Native button opens and closes all manual controls",
+      "Method change awaits Refresh, then shows its own measured review",
+      "Rapid slider changes block Apply until the final value is rendered and committed",
+      "New variant resets method selection and starts with a fresh automatic preview",
+      "Changing the approved target clears the pending method and restores automatic first-preview behavior"
+    ],
+    "photoshopDocumentsTouched": false
+  },
+  "caseIndex": {
+    "path": "storage/recolor-dev/fabric-case-index.json",
+    "historicalPairedCases": 176,
+    "heatherAshExclusions": 8,
+    "uniqueTiffRecipePriors": 32,
+    "designerObservations": 2,
+    "independentHoldout": false
+  },
+  "attemptedBenchmarks": [
+    {
+      "report": "storage/recolor-dev/benchmark-1793189576656-7acfc1c6/report.json",
+      "scoredBenchmarkEligible": false,
+      "productionQualified": false,
+      "cases": [
+        {
+          "id": "existing-dark-fabric-roi-0",
+          "target": "ARCTIC AQUA",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "A",
+          "verdict": "NEEDS_REVIEW",
+          "anchorDeltaE00": 0.21458107425727063,
+          "foldDepth": 0.01405666758876369,
+          "detailCorrelation": 0.058482203314547176,
+          "detailRetention": 0.024740247248085052,
+          "highlightDetailRetention": 0.0046328428929920526,
+          "newClippingPixels": 410,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        },
+        {
+          "id": "existing-dark-fabric-roi-1",
+          "target": "White Gardenia",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "A",
+          "verdict": "NEEDS_REVIEW",
+          "anchorDeltaE00": 0.2630891590865146,
+          "foldDepth": 0.012384022099774326,
+          "detailCorrelation": 0.050656436875049414,
+          "detailRetention": 0.023874706399845066,
+          "highlightDetailRetention": 0.003964985094329011,
+          "newClippingPixels": 257,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        }
+      ]
+    },
+    {
+      "report": "storage/recolor-dev/benchmark-1793189674960-b71bd455/report.json",
+      "scoredBenchmarkEligible": false,
+      "productionQualified": false,
+      "cases": [
+        {
+          "id": "sample-1/BLACK/01",
+          "target": "BLACK",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/WINE/02",
+          "target": "WINE",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/CEIL/03",
+          "target": "Ceil Blue",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/NAVY/04",
+          "target": "NAVY",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/PEWTER/05",
+          "target": "PEWTER",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/ROYAL/06",
+          "target": "ROYAL",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/Caribbean Blue/07",
+          "target": "Caribbean Blue",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/Teal Blue/08",
+          "target": "Teal Blue",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/WINE/01",
+          "target": "WINE",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-1/WINE/05",
+          "target": "WINE",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Black/01",
+          "target": "Black",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/White Gardenia/02",
+          "target": "White Gardenia",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Desert Taupe/03",
+          "target": "Desert Taupe",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Eggplant/04",
+          "target": "Eggplant",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Hunter/05",
+          "target": "Hunter Green",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Navy/06",
+          "target": "Navy",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Olive/07",
+          "target": "Olive",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Pink pearl/08",
+          "target": "Pink pearl",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Wine/01",
+          "target": "Wine",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        },
+        {
+          "id": "sample-2/Wine/05",
+          "target": "Wine",
+          "status": "EXCLUDED",
+          "reason": "REVIEWED_ORIGINAL_SOURCE_CHECKPOINT_REQUIRED"
+        }
+      ]
+    },
+    {
+      "report": "storage/recolor-dev/benchmark-1793189847770-767ed518/report.json",
+      "scoredBenchmarkEligible": false,
+      "productionQualified": false,
+      "cases": [
+        {
+          "id": "existing-dark-fabric-roi-0",
+          "target": "ARCTIC AQUA",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "A",
+          "verdict": "NEEDS_REVIEW",
+          "anchorDeltaE00": 0.0796827586929678,
+          "foldDepth": 0.8769728791763285,
+          "detailCorrelation": 0.055908129389798,
+          "detailRetention": 0.0259391903189381,
+          "highlightDetailRetention": 0.00395190903061051,
+          "newClippingPixels": 90,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        },
+        {
+          "id": "existing-dark-fabric-roi-1",
+          "target": "White Gardenia",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "D",
+          "verdict": "NEEDS_REVIEW",
+          "anchorDeltaE00": 0.05840047701503474,
+          "foldDepth": 0.8443541327234358,
+          "detailCorrelation": 0.042537748109599004,
+          "detailRetention": 0.024869043643739507,
+          "highlightDetailRetention": 0.003394209633476766,
+          "newClippingPixels": 27,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        }
+      ]
+    },
+    {
+      "report": "storage/recolor-dev/benchmark-1793190214172-8aed6e35/report.json",
+      "scoredBenchmarkEligible": false,
+      "productionQualified": false,
+      "cases": [
+        {
+          "id": "existing-dark-fabric-roi-0",
+          "target": "ARCTIC AQUA",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "A",
+          "verdict": "CHECKS_PASSED",
+          "anchorDeltaE00": 0.0796827586929678,
+          "foldDepth": 0.8714780019406223,
+          "detailCorrelation": 0.9586069631712295,
+          "detailRetention": 0.7956429309749558,
+          "highlightDetailRetention": 0.5175714623073243,
+          "newClippingPixels": 0,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        },
+        {
+          "id": "existing-dark-fabric-roi-1",
+          "target": "White Gardenia",
+          "status": "RENDERED_RETOUCHER_REVIEW_REQUIRED",
+          "method": "A",
+          "verdict": "CHECKS_PASSED",
+          "anchorDeltaE00": 0.221992425995864,
+          "foldDepth": 0.8270244447632727,
+          "detailCorrelation": 0.9515611981458102,
+          "detailRetention": 0.7547422571897937,
+          "highlightDetailRetention": 0.47700661160140045,
+          "newClippingPixels": 0,
+          "protectedPixelsChanged": 0,
+          "masterVerified": true,
+          "sourceQualification": "UNREVIEWED_VISIBLE_STATE"
+        }
+      ]
+    }
+  ],
+  "benchmarkInterpretation": [
+    "All 20 historical scored-job cases were explicitly excluded because reviewed original-source checkpoints were missing. None is counted as a passed benchmark.",
+    "Two earlier diagnostic masks crossed a bright background wedge and produced NEEDS_REVIEW. They are retained as invalid input diagnostics. A source-only ROI audit selected the final material-only right-thigh region before rerunning; no human gold was used by fitting.",
+    "The final two diagnostics use a reduced 585x900 original-appearance navigation JPEG and a 0.60/0.20/0.65/0.32 normalized material ROI (3240 measured material samples). Explicit sRGB interpretation applies only to a disposable copy. The source remains historically unqualified; reference ROIs are provisional.",
+    "Final Aqua and White Gardenia results passed implemented checks only on that limited region. They are not the user's exact Navy source, whole-garment acceptance, physical textile compliance, or an unseen-family evaluation.",
+    "Older raw diagnostic reports incorrectly retain a scored-policy heading at top level. Their per-case UNREVIEWED_VISIBLE_STATE and scoredBenchmarkEligible:false are authoritative; future runner headings have been corrected. This record does not relabel them as qualified."
+  ],
+  "remainingQualification": [
+    "Designer visual review of upgraded full garments, including the exact Navy to Arctic Aqua and Gardenia scenarios.",
+    "Formal human calibration, unseen source families, challenging materials and physical textile compliance.",
+    "Production-size documents, long-session/crash qualification and physical-pointer visual panel QA. Native DOM events were tested; native screenshots were unavailable."
+  ],
+  "integrity": {
+    "sourceAndReferenceInputsModified": false,
+    "goldUsedDuringFitting": false,
+    "silentSelfTraining": false,
+    "cloudImageTransfer": false,
+    "version1RenderingPreserved": true,
+    "existingDocument1874Preserved": "Pre-existing synthetic document from an earlier attempt was retained; no cleanup was inferred safe."
+  }
+}

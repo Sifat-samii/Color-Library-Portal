@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Dhaka",
+  "pilotVersion": "0.6.11",
+  "productionQualified": false,
+  "crash": {
+    "confirmed": true,
+    "time": "17:36:21 Bangladesh Standard Time",
+    "application": "Photoshop 25.3.1.241",
+    "exception": "0xc0000005 access violation reading 0x00000000ffffffff",
+    "faultOffset": "0x0000000000660848",
+    "reportedTrigger": "Moving a manual adjustment slider",
+    "nativeCauseConfirmed": false,
+    "status": "Mitigation implemented; shutdown not reproduced and not claimed resolved",
+    "evidence": "Windows Application events 1000/1001 and Adobe Photoshop_2026-10-27_173621_TUDB01.crash",
+    "selectionWarnings": "Repeated native SELECT-without-name warnings occurred before the crash and during successful probes; correlation is not causation"
+  },
+  "modelessSliderProbe": {
+    "commandBefore": "node scripts/probe-recolor-sliders.js",
+    "commandAfter": "node scripts/probe-recolor-sliders.js --settled",
+    "dimensions": [1300, 2000],
+    "eventsPerMethod": 120,
+    "methods": ["C", "B", "D"],
+    "nativeSliderRendersBefore": [35, 30, 32],
+    "nativeSliderRendersAfter": [1, 1, 1],
+    "hostSurvivedBoth": true,
+    "sourceDocumentPreserved": true,
+    "limitation": "Modeless session/adapter/event-queue probe, not physical pointer capture; original native shutdown remains unconfirmed as fixed"
+  },
+  "tests": {
+    "applicationSuitePassed": true,
+    "recolorUnitChecks": 25,
+    "pilotChecks": 24,
+    "nativePhotoshopFixturesPassed": 31,
+    "nativeUiChecksPassed": 6,
+    "manualExtremeDescriptorCombinations": 90,
+    "nativeReport": "storage/recolor-dev/2026-10-27T12-04-29-431Z-5977145b/panel-report.json"
+  },
+  "materialComparison": {
+    "source": "MC00032_NAVY.jpg",
+    "scope": "Interior test rectangle on a duplicate, not a complete garment mask or delivery",
+    "originalDocumentHistoryUnchanged": true,
+    "approvedReferences": ["CLOUD", "ARCTIC AQUA"],
+    "evaluationBudgetPerPipeline": 64,
+    "cloud": { "previousFoldDepthRatio": 0.24960153303981558, "newFoldDepthRatio": 1.0016086371970987, "newAnchorDeltaE00": 0.782904743652433, "addedClipping": 0 },
+    "arcticAqua": { "previousFoldDepthRatio": 0.19869913355984162, "newFoldDepthRatio": 0.9525773220545576, "newAnchorDeltaE00": 3.5377500711110366, "addedClipping": 0 },
+    "report": "storage/recolor-dev/2026-10-27T12-04-29-431Z-5977145b/material-lighting.json",
+    "limitations": "More retained lighting contrast is not a human-edit or final color approval. Arctic Aqua retains a visible color difference requiring review/tuning."
+  }
+}

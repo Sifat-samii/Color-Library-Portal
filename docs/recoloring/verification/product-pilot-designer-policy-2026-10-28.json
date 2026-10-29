@@ -1,0 +1,36 @@
+{
+  "verifiedDate": "2026-10-28",
+  "timezone": "Asia/Dhaka",
+  "pilotVersion": "0.6.12",
+  "policyId": "designer-lightening-2026-10-27-v1",
+  "productionQualified": false,
+  "evidence": {
+    "notes": "docs/recoloring/DESIGNER_METHOD_FEEDBACK.md",
+    "arcticAqua": "Designer preferred Tint and levels over Automatic's Hue/selective color result. Active D preview, native adjustments and material measurements were inspected read-only.",
+    "gardeniaWhite": "Designer reported washed-out D highlights, flat C lighting and a poor B result. This failed comparison was not captured; Gardenia reference was no longer open at inspection.",
+    "localSnapshot": "storage/recolor-dev/designer-review-1Xaoan/reviewed-tint-and-levels.png",
+    "localNativeEvidence": "storage/recolor-dev/designer-review-1Xaoan/review-evidence.json"
+  },
+  "behavior": {
+    "darkToLight": "Prefer D for measured source L* <=50, target L* >=60 and increase >=20, subject to fabric-preservation checks",
+    "nearWhite": "L* >=90, or L* >=85 and chroma <=12; conservative D seed plus local highlight-detail checks",
+    "nearWhiteFallback": "C before B only when preservation checks pass; a flat C result is not accepted merely for a closer average color",
+    "manualOverridePreserved": true,
+    "darkeningAndSmallChangesUnchanged": true,
+    "noNameOrHexLookup": true,
+    "neuralModelRetrainingPerformed": false
+  },
+  "checks": {
+    "applicationSuite": {"command":"npm test","passed":true},
+    "recolorUnitChecks": 30,
+    "pilotChecks": 25,
+    "scopedNativeUiChecks": {"command":"node scripts/test-recolor-adjustments-ui.js","passed":true,"checks":6,"photoshopDocumentsTouched":false},
+    "packageDependencyCheckPassed": true,
+    "registrationMatchesBuild": true,
+    "designerDocumentsModified": false,
+    "liveSessionReloaded": false,
+    "nativeFitOnDesignerImagesPerformed": false
+  },
+  "activation": "Build and registered development files are updated. Finish/save the active review before reloading 0.6.12; the existing session was preserved.",
+  "limitations": "Provisional designer-feedback rules and tests do not prove Gardenia White is visually resolved. Validate white-fabric highlights and fallback lighting on subsequent reviewed cases."
+}

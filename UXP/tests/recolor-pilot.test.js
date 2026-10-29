@@ -2,10 +2,24 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const { createPilotSession } = require('../recolor/pilot-session');
 const { ADOBE_RGB, labToRgb } = require('../recolor/color');
+const { panelMarkup } = require('../recolor/panel-view');
+const { previewPresentation } = require('../recolor/preview-review');
+const { createActionJournal } = require('../recolor/action-journal');
+
+test('crash journal retains bounded action values across reloads without image paths or storage errors escaping', async () => {
+  let saved = JSON.stringify({records:[{action:'previous',phase:'started'}]});
+  const file={async read(){return saved;},async write(text){saved=text;}};
+  const journal=createActionJournal({async getDataFolder(){return{async getEntry(){return file;}};}});
+  for(let i=0;i<30;i++)await journal.record('manual-adjustment','started',{recipe:{method:'C',parameters:{lightness:i}},source:{width:1300,height:2000,path:'private-source'}},{lightness:i});
+  const record=JSON.parse(saved);
+  assert.equal(record.records.length,24);assert.equal(record.records.at(-1).parameters.lightness,29);
+  assert.ok(!saved.includes('private-source'));
+  await createActionJournal({async getDataFolder(){throw new Error('disk unavailable');}}).record('preview','started',{});
+});
 
 // Adapter seam: session tests exercise real color/quality/fitting logic. Native
 // Photoshop fixtures separately establish actual rendering and PSD editability.
-function workstation() {
+function workstation(options = {}) {
   const docs = new Map(), marked = new Set(), saved = [], captures = [], deliveries = [];
   let next = 0, active = null, valid = true, rendered = 0, failRender = false;
   const copyFrame = f => ({ ...f, data: new Uint16Array(f.data) });
@@ -15,7 +29,7 @@ function workstation() {
     return { width: 32, height: 32, components: 3, maximum: 65535, profile: ADOBE_RGB, bounds: { left: 0, top: 0, right: 32, bottom: 32 }, data };
   }
   function add(rgb, name) { const id = ++next; docs.set(id, { id, name, path: 'C:/' + name, profile: ADOBE_RGB, historyId: 1, frame: image(rgb) }); active = id; return id; }
-  const sourceId = add([40, 90, 30], 'product.psd'), referenceId = add([125, 40, 70], 'reference.jpg');
+  const sourceId = add(options.sourceRgb || [40, 90, 30], 'product.psd'), referenceId = add(options.targetRgb || [125, 40, 70], 'reference.jpg');
   const mask = { left: 8, top: 8, width: 16, height: 16, maximum: 255, data: new Uint8Array(256).fill(255) };
   const inspect = id => { const { frame, ...binding } = docs.get(id == null ? active : id); return { ...binding }; };
   const adapter = {
@@ -63,7 +77,7 @@ function workstation() {
     async releaseSource(snapshot) { docs.delete(snapshot.documentId); }
   };
   const reference = { clientId: 'cbi', colorId: 'wine', referenceId: 'crop', versionId: 'v1', colorName: 'Wine', checksumSha256: '', filename: 'reference.jpg' };
-  const session = createPilotSession({ adapter, referenceIsCurrent: () => valid });
+  const session = createPilotSession({ adapter, referenceIsCurrent: () => valid, onChange: options.onChange });
   async function ready() {
     await session.begin(sourceId); await session.useMask({ kind: 'selection' });
     await session.chooseReference(reference, referenceId);
@@ -73,6 +87,170 @@ function workstation() {
     activate(id) { active = id; }, withdraw() { valid = false; }, get renders() { return rendered; },
     blockRender() { failRender = true; } };
 }
+
+test('preview controls stage automatic matching before method choice and manual adjustments', () => {
+  const markup = panelMarkup('test');
+  assert.ok(markup.indexOf('id="recolorPreview"') < markup.indexOf('id="recolorReviewControls"'));
+  assert.match(markup, /id="recolorReviewControls" class="[^"]*is-hidden/);
+  assert.match(markup, /id="recolorMethod"[^>]*>[\s\S]*Automatic[^<]*best match/);
+  assert.match(markup, /id="recolorTuneToggle"[^>]*aria-expanded="false"[^>]*>Manual adjustments/);
+  assert.match(markup, /id="recolorFineTune" class="[^"]*is-hidden/);
+  assert.doesNotMatch(markup, /<details|<summary/);
+  for (const parameter of ['intensity', 'lightness', 'contrast', 'shadows', 'highlights']) {
+    assert.match(markup, new RegExp('data-recolor-parameter="' + parameter + '"'));
+  }
+});
+
+test('apply commits the method and manual adjustments in the current preview', async () => {
+  const w = workstation(); await w.ready();
+  await w.session.preview('D');
+  await w.session.update({ intensity: 82, lightness: 9, contrast: -4, shadows: 3, highlights: -2 });
+  const applied = await w.session.apply({ reviewOverride: true });
+  assert.equal(applied.recipe.method, 'D');
+  assert.deepEqual({
+    intensity: applied.recipe.parameters.intensity,
+    lightness: applied.recipe.parameters.lightness,
+    contrast: applied.recipe.parameters.contrast,
+    shadows: applied.recipe.parameters.shadows,
+    highlights: applied.recipe.parameters.highlights
+  }, { intensity: 82, lightness: 9, contrast: -4, shadows: 3, highlights: -2 });
+  assert.equal(applied.previewReview.requestedMethod, 'D');
+  assert.equal(applied.previewReview.manuallyAdjusted, true);
+  assert.equal(applied.quality.matching.requestedMethod, 'D');
+});
+
+test('unresolved checks require an explicit draft override, which records the unresolved evidence', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A');
+  await assert.rejects(() => w.session.apply(), { code: 'REVIEW_OVERRIDE_REQUIRED' });
+  assert.equal(w.session.view().committed, false);
+  const applied = await w.session.apply({ reviewOverride: true });
+  assert.equal(applied.reviewOverride.explicit, true);
+  assert.ok(applied.reviewOverride.unresolved.length > 0);
+  assert.equal(applied.recipe.schemaVersion, 2);
+});
+
+test('draft override cannot authorize changed protected pixels discovered at Apply', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('A');
+  w.docs.get(w.session.view().previewDocumentId).frame.data[0]++;
+  await assert.rejects(() => w.session.apply({ reviewOverride: true }), /Protected pixels/);
+  assert.equal(w.session.view().committed, false);
+});
+
+test('fabric appearance changes invalidate cached analysis and require a new variant after rendering', async () => {
+  const w = workstation(); await w.ready(); await w.session.setMaterial('SATIN'); await w.session.preview('A');
+  assert.equal(w.session.view().analysis.material, 'SATIN');
+  assert.match(w.session.view().quality.report.risks.join(' '), /reflection/);
+  await assert.rejects(() => w.session.setMaterial('MATTE'), /New variant/);
+  await w.session.newVariant(); await w.session.setMaterial('MATTE');
+  assert.equal(w.session.view().recipe, null); assert.equal(w.session.view().analysis, null);
+});
+
+test('completed recipe crash breadcrumbs retain parameter evidence while omitting image paths', async () => {
+  let saved;
+  const file = {async write(value){saved=value;}};
+  const journal = createActionJournal({async getDataFolder(){return{async getEntry(){throw new Error('missing');},async createFile(){return file;}};}});
+  await journal.record('preview','completed',{recipe:{method:'A',parameters:{lightness:3},target:{approvedReference:{originalAssetPath:'private-image-path'}}}});
+  assert.ok(!saved.includes('private-image-path')); assert.equal(JSON.parse(saved).records[0].recipe.parameters.lightness,3);
+});
+
+test('large lightness changes receive extended comparison in either direction', async () => {
+  for (const [sourceRgb, targetRgb, direction] of [
+    [[20, 20, 20], [220, 220, 220], 'DARK_TO_LIGHT'],
+    [[220, 220, 220], [20, 20, 20], 'LIGHT_TO_DARK']
+  ]) {
+    const w = workstation({ sourceRgb, targetRgb }); await w.ready(); await w.session.preview();
+    const state = w.session.view(), matching = state.quality.matching;
+    assert.equal(state.previewReview.transition.direction, direction);
+    assert.equal(matching.budget, 160);
+    assert.deepEqual(matching.methods.map(item => item.method).sort(), ['A', 'B', 'C', 'D']);
+    assert.ok(matching.methods.every(item => item.quality && Number.isFinite(item.quality.score)));
+    assert.equal(state.previewReview.requestedMethod, 'AUTO');
+    assert.ok(matching.evaluations <= matching.budget);
+  }
+});
+
+test('a new automatic preview compares all methods even when the previous variant used an explicit method', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('D'); await w.session.newVariant();
+  const methods = [], render = w.adapter.render;
+  w.adapter.render = async (...args) => { methods.push(args[1].method); return render(...args); };
+  await w.session.preview();
+  assert.deepEqual([...new Set(methods)].sort(), ['A', 'B', 'C', 'D']);
+});
+
+test('pilot records constrained dark-to-light selection but preserves an explicit method override', async () => {
+  const w=workstation({sourceRgb:[20,20,35],targetRgb:[190,220,225]});await w.ready();await w.session.preview();
+  assert.equal(w.session.view().recipe.method,'D');
+  assert.equal(w.session.view().quality.matching.selection.version,'fabric-constrained-selection-1');
+  assert.match(previewPresentation(w.session.view(),'AUTO').review,/priors/);
+  await w.session.preview('B');assert.equal(w.session.view().recipe.method,'B');
+  assert.equal(w.session.view().quality.matching.selection.requestedMethod,'B');
+  assert.doesNotMatch(previewPresentation(w.session.view(),'B').review,/Designer feedback/);
+});
+
+test('review describes the rendered method until a new selection is refreshed and retains measured manual review', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('C');
+  const before = w.session.view();
+  const pending = previewPresentation(before, 'AUTO');
+  assert.equal(pending.pending, true);
+  assert.equal(pending.title, 'Preview: Gradient and tone');
+  assert.doesNotMatch(pending.title, /Automatic chose/);
+  assert.match(pending.review, /canvas still shows Gradient and tone/);
+  await w.session.update({ lightness: 7, shadows: -3 });
+  const after = w.session.view(), review = previewPresentation(after, 'C');
+  assert.equal(after.quality.matching.requestedMethod, 'C');
+  assert.equal(after.previewReview.manuallyAdjusted, true);
+  assert.match(review.title, /manually adjusted/);
+  assert.match(review.review, /ΔE00/);
+  assert.match(review.review, /Needs review|checks passed/);
+  assert.ok(after.quality.report.checks.clipping);
+  assert.deepEqual(after.methodReviews[0].quality, after.quality);
+  await w.session.preview('D');
+  assert.equal(w.session.view().previewReview.manuallyAdjusted, false);
+  assert.deepEqual(w.session.view().methodReviews.map(item => item.requestedMethod), ['C', 'D']);
+  assert.match(previewPresentation(w.session.view(), 'C').review, /Previous color difference/);
+});
+
+test('unfinished fitting trials never become an applicable first preview', async () => {
+  const states = [], w = workstation({ onChange: state => states.push(state) }); await w.ready();
+  const render = w.adapter.render;
+  w.adapter.render = async (...args) => { const result = await render(...args); w.session.cancelFit(); return result; };
+  await assert.rejects(() => w.session.preview(), /cancelled/);
+  assert.equal(w.session.view().rendered, false);
+  assert.ok(states.every(state => !state.rendered));
+  await assert.rejects(() => w.session.apply(), /Preview the selected color/);
+  await assert.rejects(() => w.session.update({ intensity: 80 }), /Preview a new variant/);
+});
+
+test('cancelled method refresh restores the exact last accepted manual preview and comparison visibility', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('C');
+  await w.session.update({ intensity: 81, lightness: 8 }); await w.session.toggle();
+  const previous = w.session.view(), render = w.adapter.render;
+  let trials = 0;
+  w.adapter.render = async (...args) => {
+    const result = await render(...args);
+    if (++trials === 1) w.session.cancelFit();
+    return result;
+  };
+  await assert.rejects(() => w.session.preview('D'), /cancelled/);
+  const restored = w.session.view();
+  assert.equal(restored.rendered, true);
+  assert.equal(restored.showingAfter, false);
+  assert.deepEqual(restored.recipe, previous.recipe);
+  assert.deepEqual(restored.quality, previous.quality);
+  assert.deepEqual((await w.session.apply({ reviewOverride: true })).recipe, previous.recipe);
+});
+
+test('failed refresh restoration disables Apply instead of committing an unreviewed trial', async () => {
+  const w = workstation(); await w.ready(); await w.session.preview('B');
+  const render = w.adapter.render;
+  w.adapter.render = async (...args) => {
+    const result = await render(...args);
+    w.session.cancelFit(); w.blockRender(); return result;
+  };
+  await assert.rejects(() => w.session.preview('D'), /cancelled/);
+  assert.equal(w.session.view().rendered, false);
+  await assert.rejects(() => w.session.apply(), /Preview the selected color/);
+});
 
 test('pilot binds the product while references become active; soft mask and frozen source survive target changes', async () => {
   const w = workstation(), original = new Uint16Array(w.docs.get(w.sourceId).frame.data);
@@ -102,7 +280,7 @@ test('a reference selection can change history; pixel edits and wrong-document s
 
 test('withdrawal blocks further fitting or apply without altering a completed variant', async () => {
   const w = workstation(); await w.ready(); await w.session.preview('AUTO');
-  const applied = await w.session.apply();
+  const applied = await w.session.apply({ reviewOverride: true });
   assert.equal(applied.fullResolutionIntegrity.protectedPixelsChanged, 0);
   await w.session.newVariant(); w.withdraw();
   await assert.rejects(() => w.session.preview(), /approved reference changed/);
@@ -124,7 +302,7 @@ test('manual preview edits survive new variant and end; frozen source is not a r
 });
 
 test('master saving carries approved-reference provenance and refuses a protected source path', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   const written = [], folder = { async createFile(name) { return { nativePath: 'C:/manifests/' + name, async write(text) { written.push(JSON.parse(text)); } }; } };
   await assert.rejects(() => w.session.save({ nativePath: 'C:/product.psd' }, folder), /protected/);
   await w.session.save({ nativePath: 'C:/result.psd' }, folder);
@@ -141,27 +319,27 @@ test('cancel matching stops later renders and leaves source and preview availabl
   assert.equal(w.docs.has(w.sourceId), true); assert.equal(w.docs.has(w.session.view().previewDocumentId), true);
 });
 
-test('automatic and explicit pilot fitting use only editable adjustment methods and reject fill without replacing an applied result', async () => {
+test('automatic fitting restores Solid Color and preserves applied results', async () => {
   const w = workstation(); await w.ready();
   const methods = [], render = w.adapter.render;
   w.adapter.render = async (preview, recipe, ...rest) => { methods.push(recipe.method); return render(preview, recipe, ...rest); };
   await w.session.preview();
-  assert.deepEqual([...new Set(methods)], ['B', 'C', 'D']);
-  assert.equal(w.session.view().quality.matching.solidColorFill, false);
-  const applied = await w.session.apply(), documentId = applied.documentId;
-  await assert.rejects(() => w.session.preview('A'), /Solid Color fill/);
+  assert.deepEqual([...new Set(methods)].sort(), ['A', 'B', 'C', 'D']);
+  assert.equal(w.session.view().quality.matching.solidColorFill, w.session.view().recipe.method === 'A');
+  const applied = await w.session.apply({ reviewOverride: true }), documentId = applied.documentId;
+  await assert.rejects(() => w.session.preview('Z'), /supported recoloring method/);
   assert.equal(w.session.view().previewDocumentId, documentId);
   assert.equal(w.session.view().committed, true);
   assert.equal(w.docs.has(documentId), true);
   methods.length = 0;
-  await w.session.preview('C');
+  await w.session.preview('A');
   assert.ok(methods.length > 1, 'An explicit method must also be fitted and restored');
-  assert.deepEqual([...new Set(methods)], ['C']);
+  assert.deepEqual([...new Set(methods)], ['A']);
   assert.notEqual(w.session.view().previewDocumentId, documentId);
 });
 
 test('a saved master remains recorded when session-record storage fails', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   const folder = { async createFile() { throw new Error('disk full'); } };
   await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder), /Master saved at C:\/retained.psd.*disk full/);
   assert.equal(w.session.view().outputs[0].savedPath, 'C:/retained.psd');
@@ -169,7 +347,7 @@ test('a saved master remains recorded when session-record storage fails', async 
 });
 
 test('paired saving records the editable master and JPEG in one output manifest', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
   const result = await w.session.save({ nativePath: 'C:/result.psd' }, folder, { jpegFile: { nativePath: 'C:/result.jpg' } });
   assert.equal(w.saved.length, 1); assert.equal(w.deliveries.length, 1);
@@ -179,7 +357,7 @@ test('paired saving records the editable master and JPEG in one output manifest'
 });
 
 test('JPEG saving works before a PSD save and creates no editable master', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   const written = [], folder = { async createFile() { return { async write(text) { written.push(JSON.parse(text)); } }; } };
   const record = await w.session.saveJpeg({ nativePath: 'C:/standalone.jpg' }, folder);
   assert.equal(w.saved.length, 0); assert.equal(w.deliveries.length, 1);
@@ -191,7 +369,7 @@ test('JPEG saving works before a PSD save and creates no editable master', async
 });
 
 test('separate JPEG failures retain any completed PSD and create no extra master', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   const folder = { async createFile() { return { async write() {} }; } };
   await w.session.save({ nativePath: 'C:/retained.psd' }, folder);
   w.adapter.saveJpeg = async () => { throw new Error('JPEG disk full'); };
@@ -201,7 +379,7 @@ test('separate JPEG failures retain any completed PSD and create no extra master
 });
 
 test('JPEG failure retains a saved master and reports its path without claiming paired success', async () => {
-  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply();
+  const w = workstation(); await w.ready(); await w.session.preview('B'); await w.session.apply({ reviewOverride: true });
   w.adapter.saveOutputs = async () => { throw Object.assign(new Error('Master saved at C:/retained.psd, but JPEG export failed: disk full'), { savedMaster: { path: 'C:/retained.psd' } }); };
   const folder = { async createFile() { throw new Error('Unexpected completed manifest'); } };
   await assert.rejects(() => w.session.save({ nativePath: 'C:/retained.psd' }, folder, { jpegFile: { nativePath: 'C:/retained.jpg' } }), /JPEG export failed/);

@@ -62,9 +62,12 @@ function measureMaterial(frame, mask, options = {}) {
   const lightness = samples.map(v => v[0]);
   const low = quantile(lightness, 0.25), high = quantile(lightness, 0.75);
   const diffuse = samples.filter(v => v[0] >= low && v[0] <= high);
+  const shadow = samples.filter(v => v[0] <= low), highlight = samples.filter(v => v[0] >= high);
+  const medianLab = values => [0, 1, 2].map(c => quantile(values.map(v => v[c]), 0.5));
   return {
     available: true, measurementSpace: "CIELAB D50 2deg", sampleCount: samples.length,
-    diffuseLab: [0, 1, 2].map(c => quantile(diffuse.map(v => v[c]), 0.5)),
+    diffuseLab: medianLab(diffuse),
+    zones: { shadowLab: medianLab(shadow), diffuseLab: medianLab(diffuse), highlightLab: medianLab(highlight) },
     lightness: { shadow: quantile(lightness, 0.1), median: quantile(lightness, 0.5), highlight: quantile(lightness, 0.9) },
     method: "Interior IQR diffuse anchor; not physical reflectance or per-pixel gold comparison"
   };
@@ -75,13 +78,13 @@ function sameGeometry(a, b) {
     && a.profile === b.profile && ["left", "top", "right", "bottom"].every(key => a.bounds[key] === b.bounds[key]);
 }
 
-function compareFrames(before, after, mask) {
+function compareFrames(before, after, mask, options = {}) {
   validateFrame(before); validateFrame(after); validateMask(mask);
   if (!sameGeometry(before, after)) throw new Error("Cannot compare frames with different geometry, depth, or profiles");
   let changed = 0, protectedCount = 0, interior = 0, clippedBefore = 0, clippedAfter = 0;
   let channelClippedBefore = 0, channelClippedAfter = 0;
   let detailBefore = 0, detailAfter = 0, detailPairs = 0;
-  const lumas = [];
+  const lumas = [], localDetails = [];
   const xScale = (before.bounds.right - before.bounds.left) / before.width;
   const yScale = (before.bounds.bottom - before.bounds.top) / before.height;
   const fullResolution = xScale === 1 && yScale === 1;
@@ -100,9 +103,9 @@ function compareFrames(before, after, mask) {
       const beforeOffset = index * before.components, afterOffset = index * after.components;
       const beforeAlpha = before.components === 4 ? before.data[beforeOffset + 3] : before.maximum;
       const afterAlpha = after.components === 4 ? after.data[afterOffset + 3] : after.maximum;
-      if (beforeAlpha !== afterAlpha || before.data[beforeOffset] !== after.data[afterOffset]
+      if (beforeAlpha !== afterAlpha || beforeAlpha > 0 && (before.data[beforeOffset] !== after.data[afterOffset]
         || before.data[beforeOffset + 1] !== after.data[afterOffset + 1]
-        || before.data[beforeOffset + 2] !== after.data[afterOffset + 2]) changed += 1;
+        || before.data[beforeOffset + 2] !== after.data[afterOffset + 2])) changed += 1;
     }
     if (index % stride !== 0 || alpha < 0.98 || !opaque(before, index)) continue;
     interior += 1;
@@ -118,8 +121,11 @@ function compareFrames(before, after, mask) {
     lumas.push([la, lb]);
     if (index % before.width > 0) {
       if (coverage(mask, x - xScale, y) >= 0.98 && opaque(before, index - 1)) {
-        detailBefore += Math.abs(la - luminance(rgb(before, index - 1)));
-        detailAfter += Math.abs(lb - luminance(rgb(after, index - 1)));
+        const beforeGradient = Math.abs(la - luminance(rgb(before, index - 1)));
+        const afterGradient = Math.abs(lb - luminance(rgb(after, index - 1)));
+        detailBefore += beforeGradient;
+        detailAfter += afterGradient;
+        if (options.highlightDetails) localDetails.push([la, beforeGradient, afterGradient]);
         detailPairs += 1;
       }
     }
@@ -128,6 +134,25 @@ function compareFrames(before, after, mask) {
   const normalizedBefore = lumas.length ? spread(0) : 0, normalizedAfter = lumas.length ? spread(1) : 0;
   const detailRatio = detailPairs && detailBefore > 0 && normalizedBefore > 1 && normalizedAfter > 1
     ? (detailAfter / normalizedAfter) / (detailBefore / normalizedBefore) : null;
+  const medianBefore = lumas.length ? quantile(lumas.map(v => v[0]), 0.5) : 0;
+  const medianAfter = lumas.length ? quantile(lumas.map(v => v[1]), 0.5) : 0;
+  const lightingAvailable = medianBefore > 1 && medianAfter > 1 && normalizedBefore > 1;
+  const relativeLightingSpread = lightingAvailable ? (normalizedAfter / medianAfter) / (normalizedBefore / medianBefore) : null;
+  const relativeLightingError = lightingAvailable ? Math.sqrt(lumas.reduce((sum, pair) => sum
+    + (pair[0] / medianBefore - pair[1] / medianAfter) ** 2, 0) / lumas.length) : null;
+  let highlightDetailRetention = null, highlightLossFraction = null;
+  if (options.highlightDetails && medianBefore > 1 && medianAfter > 1) {
+    const cutoff = quantile(lumas.map(pair => pair[0]), 0.75);
+    let highBefore = 0, highAfter = 0, lostDetail = 0, pairs = 0;
+    for (const [luma, a, b] of localDetails) if (luma >= cutoff) {
+      highBefore += a; highAfter += b; pairs++;
+      if (a > 0 && (b / medianAfter) / (a / medianBefore) < 0.15) lostDetail += a;
+    }
+    if (pairs >= 8 && highBefore > 0) {
+      highlightDetailRetention = (highAfter / medianAfter) / (highBefore / medianBefore);
+      highlightLossFraction = lostDetail / highBefore;
+    }
+  }
   return {
     protectedPixelsChanged: fullResolution ? changed : null, protectedPixelsCompared: fullResolution ? protectedCount : 0,
     protectedCheckAvailable: fullResolution && protectedCount > 0,
@@ -138,6 +163,8 @@ function compareFrames(before, after, mask) {
     addedChannelClippingFraction: interior ? Math.max(0, channelClippedAfter - channelClippedBefore) / interior : null,
     clippingDefinition: "Tonal: all RGB channels near black or white; single-channel gamut boundaries are diagnostic",
     normalizedDetailRatio: detailRatio,
+    relativeLightingSpread, relativeLightingError,
+    highlightDetailRetention, highlightLossFraction,
     critical: fullResolution && changed > 0,
     note: "Pixel checks precede export. Reduced frames do not certify full-resolution edges or texture."
   };
@@ -145,16 +172,39 @@ function compareFrames(before, after, mask) {
 
 function evaluateRender(before, after, mask, target, options = {}) {
   const measurement = measureMaterial(after, mask, options);
-  const integrity = compareFrames(before, after, mask);
+  const integrity = compareFrames(before, after, mask, {highlightDetails: options.protectHighlights});
   const validTarget = target && target.measurementSpace === "CIELAB D50 2deg"
     && Array.isArray(target.diffuseLab) && target.diffuseLab.length === 3 && target.diffuseLab.every(Number.isFinite);
   const difference = measurement.available && validTarget ? deltaE00(measurement.diffuseLab, target.diffuseLab) : null;
+  const validLightness = target && target.lightness && ['shadow', 'median', 'highlight'].every(key => Number.isFinite(target.lightness[key]));
+  const tone = measurement.available && validLightness ? {
+    shadowDelta: measurement.lightness.shadow - target.lightness.shadow,
+    medianDelta: measurement.lightness.median - target.lightness.median,
+    highlightDelta: measurement.lightness.highlight - target.lightness.highlight,
+    spreadDelta: (measurement.lightness.highlight - measurement.lightness.shadow) - (target.lightness.highlight - target.lightness.shadow)
+  } : null;
+  const validZones = target && target.zones && ['shadowLab', 'highlightLab'].every(key => Array.isArray(target.zones[key])
+    && target.zones[key].length === 3 && target.zones[key].every(Number.isFinite));
+  const zoneColor = measurement.available && validZones ? {
+    shadowDeltaE00: deltaE00(measurement.zones.shadowLab, target.zones.shadowLab),
+    highlightDeltaE00: deltaE00(measurement.zones.highlightLab, target.zones.highlightLab)
+  } : null;
+  const tonePenalty = tone ? 0.15 * Math.abs(tone.shadowDelta) + 0.15 * Math.abs(tone.highlightDelta)
+    + 0.1 * Math.abs(tone.spreadDelta) : 0;
+  const zonePenalty = zoneColor ? 0.08 * (zoneColor.shadowDeltaE00 + zoneColor.highlightDeltaE00) : 0;
+  const detailPenalty = integrity.normalizedDetailRatio === null ? 0
+    : 2 * Math.max(0, 0.8 - integrity.normalizedDetailRatio) + Math.max(0, integrity.normalizedDetailRatio - 1.35);
+  const lighting = options.preserveLighting && integrity.relativeLightingSpread !== null
+    ? { spreadRatio: integrity.relativeLightingSpread, relativeError: integrity.relativeLightingError } : null;
+  const lightingPenalty = lighting ? Math.min(35, 24 * Math.abs(Math.log(Math.max(0.01, lighting.spreadRatio)))) + 12 * lighting.relativeError : 0;
+  const highlightPenalty = options.protectHighlights && Number.isFinite(integrity.highlightDetailRetention)
+    ? 40 * Math.max(0, 0.4 - integrity.highlightDetailRetention) + 10 * Math.max(0, integrity.highlightLossFraction - 0.25) : 0;
   return {
-    evaluationVersion: "diffuse-tone-clipping-2",
-    available: difference !== null, measurement, integrity, anchorDeltaE00: difference,
+    evaluationVersion: options.protectHighlights ? 'highlight-aware-lighting-5' : options.preserveLighting ? "natural-lighting-4" : "tiff-trained-zonal-tone-3",
+    available: difference !== null, measurement, integrity, anchorDeltaE00: difference, tone, zoneColor, lighting,
     // This is an anchor difference, not the median or p95 of a gold-image comparison.
     score: difference === null || integrity.critical ? null
-      : difference + 50 * (integrity.addedClippingFraction || 0) + (integrity.normalizedDetailRatio === null ? 0 : 2 * Math.max(0, 0.8 - integrity.normalizedDetailRatio)),
+      : difference + tonePenalty + zonePenalty + 50 * (integrity.addedClippingFraction || 0) + detailPenalty + lightingPenalty + highlightPenalty,
     status: integrity.critical ? "INTEGRITY_FAILURE" : difference === null ? "NOT_EVALUATED" : "DESIGNER_REVIEW_REQUIRED"
   };
 }

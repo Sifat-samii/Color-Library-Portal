@@ -4,6 +4,7 @@ const { layerDescriptors } = require("./native-descriptors");
 const { resolveSourcePreparation } = require("./source-preparation");
 const { fingerprintFile } = require("./file-identity");
 const { sealCheckpoint, verifyCheckpoint } = require("./source-checkpoint");
+const sha256 = require('./vendor/sha256');
 
 async function executeChecked(photoshop, commands) {
   const results = await photoshop.action.batchPlay(commands, {});
@@ -248,7 +249,44 @@ function createPhotoshopAdapter(photoshop, options = {}) {
   }
 
   async function readPixels(documentId, maxEdge) {
-    return modal('Read recoloring pixels', async () => {
+    return modal('Read recoloring pixels', () => readPixelsInModal(documentId, maxEdge));
+  }
+
+  async function readRegion(documentId, bounds) {
+    if (!bounds || !['left', 'top', 'right', 'bottom'].every(key => Number.isInteger(bounds[key]))
+      || bounds.left < 0 || bounds.top < 0 || bounds.right <= bounds.left || bounds.bottom <= bounds.top
+      || bounds.right - bounds.left > 1024 || bounds.bottom - bounds.top > 1024) throw new Error('Pixel regions must be valid tiles of at most 1024 pixels per side');
+    return modal('Inspect full-resolution recoloring tile', async () => paddedRegion(await readPixelsInModal(documentId, undefined, bounds), bounds));
+  }
+
+  function paddedRegion(frame, bounds) {
+      if (['left', 'top', 'right', 'bottom'].every(key => frame.bounds[key] === bounds[key])) return frame;
+      const width = bounds.right - bounds.left, height = bounds.bottom - bounds.top;
+      const data = frame.maximum === 255 ? new Uint8Array(width * height * 4) : new Uint16Array(width * height * 4);
+      for (let y = 0; y < frame.height; y++) for (let x = 0; x < frame.width; x++) {
+        const dx = x + frame.bounds.left - bounds.left, dy = y + frame.bounds.top - bounds.top;
+        if (dx < 0 || dx >= width || dy < 0 || dy >= height) continue;
+        const from = (y * frame.width + x) * frame.components, to = (dy * width + dx) * 4;
+        for (let c = 0; c < 3; c++) data[to + c] = frame.data[from + c];
+        data[to + 3] = frame.components === 4 ? frame.data[from + 3] : frame.maximum;
+      }
+      return { ...frame, width, height, components: 4, bounds: { ...bounds }, data };
+  }
+
+  async function fingerprintPixels(documentId) {
+    const binding = inspect(documentId), expected = token(documentId), hash = sha256.create();
+    hash.update(JSON.stringify([binding.width, binding.height, binding.profile, binding.depth]));
+    for (let top = 0; top < binding.height; top += 1024) for (let left = 0; left < binding.width; left += 1024) {
+      if (token(documentId) !== expected) throw new Error('Image changed while its pixels were being verified');
+      const frame = await readRegion(documentId, { left, top, right: Math.min(left + 1024, binding.width), bottom: Math.min(top + 1024, binding.height) });
+      hash.update(JSON.stringify([frame.bounds, frame.components, frame.maximum]));
+      hash.update(new Uint8Array(frame.data.buffer, frame.data.byteOffset, frame.data.byteLength));
+    }
+    if (token(documentId) !== expected) throw new Error('Image changed while its pixels were being verified');
+    return hash.hex();
+  }
+
+  async function readPixelsInModal(documentId, maxEdge, bounds) {
       const doc = docById(documentId);
       const width = doc.width, height = doc.height;
       const reduced = Boolean(maxEdge && Math.max(width, height) > maxEdge);
@@ -259,6 +297,10 @@ function createPhotoshopAdapter(photoshop, options = {}) {
       const componentSize = reduced && doc.bitsPerChannel === constants.BitsPerChannelType.EIGHT ? 8 : 16;
       const request = { documentID: documentId, colorSpace: "RGB", colorProfile: ADOBE_RGB,
         componentSize, applyAlpha: false };
+      if (bounds) {
+        if (bounds.right > width || bounds.bottom > height) throw new Error('Pixel tile exceeds document bounds');
+        request.sourceBounds = bounds;
+      }
       if (reduced) {
         request.targetSize = width >= height ? { width: maxEdge } : { height: maxEdge };
       }
@@ -268,12 +310,16 @@ function createPhotoshopAdapter(photoshop, options = {}) {
         if (![8, 16].includes(actualSize)) throw new Error("Unsupported Photoshop pixel component size: " + actualSize);
         const raw = await image.imageData.getData({ fullRange: true });
         const data = actualSize === 8 ? new Uint8Array(raw) : new Uint16Array(raw);
+        if (image.imageData.components === 4) for (let i = 0; i < data.length; i += 4) {
+          // Photoshop may change hidden RGB when a transparent master reopens.
+          // Alpha remains exact; invisible RGB has one canonical representation.
+          if (data[i + 3] === 0) data[i] = data[i + 1] = data[i + 2] = 0;
+        }
         const scale = 2 ** (image.level || 0), b = image.sourceBounds;
         return { width: image.imageData.width, height: image.imageData.height, components: image.imageData.components,
           componentSize: actualSize, maximum: actualSize === 8 ? 255 : 65535, profile: ADOBE_RGB, data,
           bounds: { left: b.left * scale, top: b.top * scale, right: b.right * scale, bottom: b.bottom * scale } };
       } finally { image.imageData.dispose(); }
-    });
   }
 
   function flattenLayers(layers) {
@@ -299,6 +345,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     const readMask = getImage => modal('Read recoloring material mask', async () => {
       const image = await getImage();
       try {
+        if (image.imageData.width * image.imageData.height > 16000000) throw new Error('Material mask exceeds the bounded analysis budget. Select a smaller material region.');
         const componentSize = image.imageData.componentSize;
         const data = await image.imageData.getData({ fullRange: true });
         const mask = { width: image.imageData.width, height: image.imageData.height,
@@ -400,6 +447,15 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     if (token(session.documentId) !== session.expectedToken) throw Object.assign(new Error("Photoshop was edited outside the preview controls; existing edits were preserved. Create a new revision."), { code: "MANUAL_EDITS" });
   }
 
+  function assertCurrent(session) {
+    assertPreview(session);
+    if (token(session.snapshot.documentId) !== session.snapshot.snapshotToken) throw Object.assign(new Error('Frozen source changed; preserve this preview and start a new revision'), { code: 'FROZEN_SOURCE_CHANGED' });
+    if (session.recipe) {
+      const group = flattenLayers(docById(session.documentId).layers).find(layer => layer.id === session.groupId);
+      if (!group || Object.values(session.roles).some(layerId => !flattenLayers(group.layers).some(layer => layer.id === layerId))) throw new Error('Native adjustment ownership changed');
+    }
+  }
+
   async function showMaterialSelection(session, mask) {
     assertPreview(session); validateMask(mask);
     const doc = docById(session.documentId), width = doc.width, height = doc.height;
@@ -423,7 +479,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     session.expectedToken = token(doc.id);
   }
 
-  async function render(session, recipe, mask) {
+  async function render(session, recipe, mask, localMasks = {}) {
     assertPreview(session);
     const doc = docById(session.documentId), native = layerDescriptors(recipe);
     let groupId;
@@ -431,7 +487,8 @@ function createPhotoshopAdapter(photoshop, options = {}) {
     await atomic(doc.id, "Preview recoloring " + recipe.method, async () => {
       assertPreview(session);
       await selectDoc(doc.id);
-      if (session.groupId && session.recipe.method === recipe.method) {
+      if (session.groupId && session.recipe.method === recipe.method && session.recipe.engineVersion === recipe.engineVersion
+        && native.layers.every(entry => session.roles[entry.role]) && native.layers.length === Object.keys(session.roles).length) {
         const commands = native.layers.flatMap(entry => {
           const layerId = session.roles[entry.role];
           if (!layerId) throw new Error("Preview role ownership is ambiguous");
@@ -485,6 +542,10 @@ function createPhotoshopAdapter(photoshop, options = {}) {
           // child mask even without a selection. Keep material coverage once.
           await selectLayer(doc.id, layer.id);
           await play([{ _obj: "delete", _target: [{ _ref: "channel", _enum: "channel", _value: "mask" }], apply: false }]);
+        }
+        if (entry.localMask) {
+          if (!localMasks[entry.localMask]) throw new Error('Source-derived local correction mask is unavailable');
+          await putMask(doc.id, layer.id, localMasks[entry.localMask]);
         }
       }
       operation("WRITE_MATERIAL_MASK");
@@ -569,13 +630,82 @@ function createPhotoshopAdapter(photoshop, options = {}) {
   async function saveMaster(documentId, file, protectedPaths = []) {
     await checkOutput(file, ['psd', 'psb'], protectedPaths);
     const extension = /\.psb$/i.test(file.name) ? 'psb' : 'psd';
-    await modal('Save editable recolor master', async () => {
+    let verification;
+    await modal('Save and verify editable recolor master', async () => {
       const doc = requireMaster(documentId);
+      const prior = app.activeDocument.id;
       await checkOutput(file, ['psd', 'psb'], protectedPaths);
       await selectDoc(documentId);
       await doc.saveAs[extension](file, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
+      try { verification = await verifyMasterInModal(documentId, file); }
+      finally { if (documentIds().has(prior)) await selectDoc(prior); }
     });
-    return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB };
+    return { path: String(file.nativePath), format: extension, profile: ADOBE_RGB, verified: true, verification };
+  }
+
+  async function verifyMasterInModal(documentId, file) {
+    const original = requireMaster(documentId), expected = inspectSource(documentId);
+    const structure = audit => JSON.stringify(audit.layers.map(({ path, kind, visible, opacity, blendMode }) => [path, kind, visible, opacity, blendMode]));
+    async function controls(documentId) {
+      const layers = inspectSource(documentId).layers.filter(layer => layer.path.some(name => name.startsWith('AI Recolor'))), result = [];
+      for (const layer of layers) {
+        const [properties] = await play([{ _obj: 'get', _target: [{ _ref: 'layer', _id: layer.id }, { _ref: 'document', _id: documentId }] }]);
+        let mask = null;
+        if (properties.hasUserMask) {
+          const image = await imaging.getLayerMask({ documentID: documentId, layerID: layer.id, kind: 'user' });
+          try {
+            const pixels = await image.imageData.getData({ fullRange: true });
+            mask = { bounds: image.sourceBounds, width: image.imageData.width, height: image.imageData.height,
+              componentSize: image.imageData.componentSize, sha256: sha256.create().update(new Uint8Array(pixels.buffer, pixels.byteOffset, pixels.byteLength)).hex() };
+          } finally { image.imageData.dispose(); }
+        }
+        // Photoshop canonicalizes identity curves from Custom to Default when
+        // reopening. Preset labels are metadata, not adjustment parameters.
+        const adjustment = properties.adjustment ? JSON.parse(JSON.stringify(properties.adjustment, (key, value) => key === 'presetKind' ? undefined : value)) : null;
+        result.push({ path: layer.path, adjustment, mask, maskEnabled: properties.userMaskEnabled,
+          vectorMask: properties.hasVectorMask === true });
+      }
+      return result;
+    }
+    let reopened;
+    try {
+      const expectedControls = await controls(documentId);
+      reopened = await openInModal(file);
+      if (reopened.width !== original.width || reopened.height !== original.height || reopened.bitsPerChannel !== original.bitsPerChannel
+        || reopened.colorProfileName !== original.colorProfileName || structure(inspectSource(reopened.id)) !== structure(expected)) throw new Error('Saved master profile, precision, or editable layer structure differs');
+      const actualControls = await controls(reopened.id);
+      function difference(a, b, at = 'controls') {
+        if (a === b) return null;
+        // Native gradient RGB stops persist on Photoshop's 0..32768 grid.
+        // Compare color parameters at that precision, other controls exactly.
+        if (typeof a === 'number' && typeof b === 'number' && /\.color\.(red|grain|green|blue)$/.test(at)
+          && Math.abs(a - b) <= 255 / 32768 + 1e-6) return null;
+        if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return { at, expected: a, actual: b };
+        const keys = [...new Set(Object.keys(a).concat(Object.keys(b)))].sort();
+        for (const key of keys) { const found = difference(a[key], b[key], at + '.' + key); if (found) return found; }
+        return null;
+      }
+      const mismatch = difference(expectedControls, actualControls);
+      if (mismatch) throw new Error('Saved native adjustment controls or editable masks differ: ' + JSON.stringify(mismatch));
+      let compared = 0;
+      for (let top = 0; top < original.height; top += 1024) for (let left = 0; left < original.width; left += 1024) {
+        const bounds = { left, top, right: Math.min(left + 1024, original.width), bottom: Math.min(top + 1024, original.height) };
+        const a = paddedRegion(await readPixelsInModal(original.id, undefined, bounds), bounds);
+        const b = paddedRegion(await readPixelsInModal(reopened.id, undefined, bounds), bounds);
+        if (a.width !== b.width || a.height !== b.height) throw new Error('Saved master pixel geometry differs');
+        for (let i = 0; i < a.width * a.height; i++) {
+          for (let c = 0; c < 3; c++) if (Math.abs(a.data[i * a.components + c] - b.data[i * b.components + c]) > 2) throw new Error('Saved master appearance differs from the editable document');
+          const aa = a.components === 4 ? a.data[i * a.components + 3] : a.maximum, ba = b.components === 4 ? b.data[i * b.components + 3] : b.maximum;
+          if (aa !== ba) throw new Error('Saved master transparency differs');
+          compared++;
+        }
+      }
+      return { fullResolution: true, pixelsCompared: compared, maxFullRangeChannelTolerance: 2, nativePrecisionEquivalent: '1/32768', editableStructure: true, nativeControlsAndMasks: true, profile: original.colorProfileName };
+    } catch (error) {
+      error.savedMaster = { path: String(file.nativePath), verified: false };
+      error.message = 'Master file retained at ' + file.nativePath + ', but verification failed: ' + error.message;
+      throw error;
+    } finally { if (reopened && documentIds().has(reopened.id)) await reopened.closeWithoutSaving(); }
   }
 
   async function writeJpegInModal(documentId, jpegFile) {
@@ -632,6 +762,7 @@ function createPhotoshopAdapter(photoshop, options = {}) {
           await selectDoc(documentId);
           await doc.saveAs[extension](masterFile, { layers: true, embedColorProfile: true, maximizeCompatibility: true }, true);
           master = { path: String(masterFile.nativePath), format: extension, profile: ADOBE_RGB };
+          master.verification = await verifyMasterInModal(documentId, masterFile); master.verified = true;
           jpeg = await writeJpegInModal(documentId, jpegFile);
         } finally {
           if (documentIds().has(prior)) await selectDoc(prior);
@@ -639,15 +770,15 @@ function createPhotoshopAdapter(photoshop, options = {}) {
       });
     } catch (error) {
       if (master) {
-        error.savedMaster = master;
-        error.message = 'Master saved at ' + master.path + ', but JPEG export failed: ' + error.message + ' Existing files and the editable document were retained.';
+        error.savedMaster = { ...master, verified: master.verified === true };
+        error.message = 'Master retained at ' + master.path + ', but validation or JPEG export failed: ' + error.message + ' Existing files and the editable document were retained.';
       }
       throw error;
     }
     return { master, jpeg };
   }
 
-  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster, saveJpeg, saveOutputs,
+  return { inspect, inspectSource, atomic, captureSource, recoverSource, openDocument, saveSourceCheckpoint, restoreSourceCheckpoint, readPixels, readRegion, fingerprintPixels, assertCurrent, maskSources, acquireMask, createPreview, showMaterialSelection, render, toggle, commit, cancel, saveMaster, saveJpeg, saveOutputs,
     activateDocument: documentId => modal('Activate bound recoloring document', () => selectDoc(documentId)),
     markReference: documentId => openedReferences.add(documentId),
     releaseSource: snapshot => {
